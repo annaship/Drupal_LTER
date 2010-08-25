@@ -22,7 +22,9 @@ function print_tag_line($label, $content) {
 
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
-<xml>
+
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.0.1" xmlns:stmml="http://www.xml-cml.org/schema/stmml" xmlns:sw="eml://ecoinformatics.org/software-2.0.1" xmlns:cit="eml://ecoinformatics.org/literature-2.0.1" xmlns:ds="eml://ecoinformatics.org/dataset-2.0.1" xmlns:prot="eml://ecoinformatics.org/protocol-2.0.1" xmlns:doc="eml://ecoinformatics.org/documentation-2.0.1" xmlns:res="eml://ecoinformatics.org/resource-2.0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd" packageId="knb-lter-pie.3.6" system="knb">
+
 <?php foreach ($themed_rows as $count => $row): ?>
   <Dataset>
 
@@ -104,4 +106,4 @@ $label = "DatasetNid";
 <?php endforeach; ?>
   </Dataset>
 <?php endforeach; ?>
-</xml>
+</eml:eml>
