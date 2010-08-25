@@ -51,7 +51,10 @@ field_short_name
 field_var_ref
 */
       print_open_tag("Dataset");
-        foreach ($row as $field => $content):
+        foreach ($row as $field => $content):          
+          // $label = "DatasetId";
+          // print_tag_line($label, $content); 
+          $node = node_load($content);
           $field_arr = array("nid", 
           "field_abstract", 
           "field_beg_end_date", 
@@ -71,12 +74,33 @@ field_var_ref
           "field_short_name");
           foreach ($field_arr as &$value) {
             $label = $value;
-            // print_r($value);
+            print_open_tag($label);
+            $a = $node->$value;
+            // print($value);
+            // dpr($a);
+            // dpr($node->field_dataset_id[0][value]);
+            // $label = "DatasetId";
+            // print_tag_line($label, $node->$value); 
+            // $a = $node->field_beg_end_date;
+            foreach ($a as $key1 => $value1){
+              foreach ($value1 as $key2 => $value2){
+                // echo "\$value1[$key2] => $value2.\n";
+                print_tag_line($key2, $value2); 
+                // print $key2."->".$value2.", ";
+                // foreach ($a as $k => $v) {
+                    // echo "\$a[$k] => $v.\n";
+                // }
+                // print_tag_line($m, $node->); 
+                // dpr($node->field_dataset_id[$i][$m]);
+                // dpr($a);
+              }
+            }
+            print_close_tag($label);
           }
           
-          $label = "DatasetId";
-          print_tag_line($label, $content); 
-          $node = node_load($content);
+          
+          
+          
           if($node->type == "data_set"):
             $datafiles = $node->field_dataset_datafile_ref;   
             print_open_tag("datafiles");
