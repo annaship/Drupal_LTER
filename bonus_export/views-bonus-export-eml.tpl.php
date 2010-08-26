@@ -6,14 +6,13 @@
  * 1) add all tags
  * 2) parameters in tag <geographicCoverage id="GEO-13"> 
  *    as print '<'.$label.' '.$id_name.'="'.$id_value.'">'.$content.'</'.$label.'>';
+ * 3) easily change tag
+ * 4) how found if this field is reference/refferer/none
  *
  */
 
 function print_tag_line($label, $content) {
-  $arr_flag = 0;
   print '<'.$label.'>'.$content.'</'.$label.'>';
-  if (is_array($content)) { $arr_flag = 1; }
-  return $arr_flag;
 }
 
 function print_open_tag($tag) {
@@ -34,52 +33,42 @@ function print_node_attr($node, $drupal_node_attr) {
   print_close_tag($label);
 }
                                
-function print_in_cycle($key, $value) {
-  if (is_array($value))
-  {                        
-    print_open_tag($key);
-    foreach ($value as $key_in => $value_in) {
-      $key_in == "value" ? print $value_in : print_tag_line($key_in, $value_in);     
-      $flag = print_tag_line($key_in, $value_in);
-    }
-    print_close_tag($key);
-  }
-  else {
-    /* Use second line if "value" tag needed */  
-    $key == "value" ? print $value : print_tag_line($key, $value);
-    // print_tag_line($key, $value);                 
-  }
-}        
-
 function take_value($key2, $data) {
   if (is_array($data)) {
     foreach ($data as $key => $value) {
         take_value($key, $value);
       }
     }
-    else {      
+    else {                                               
+      if ($key2 == "field_attribute_assoc_datafile")
+      {
+        print "HERE!";
+      }
       /* Use second line if "value" tag needed */  
       $key2 == "value" ? print $data : print_tag_line($key2, $data);
       // print_tag_line($key2, $data);
     }
 }
-                               
                 
 /* Print tag and value of all fields from given table (Content Type) */
 function print_all_fields($field_arr, $node, $drupal_node_attr) {     
-  /* Uncomment the next line if drupal node attributes have to be printed out
-  */
+  /* Uncomment the next line if drupal node attributes have to be printed out */
   // print_node_attr($node, $drupal_node_attr);
-  foreach ($field_arr as $field_name => $tag_name) {
-    print_open_tag($tag_name);
-    $a = $node->$field_name;
-    foreach ($a as $key1 => $value1){
-      foreach ($value1 as $key2 => $value2){  
-        take_value($key2, $value2); 
-      }
-    }
-    print_close_tag($tag_name);
+  // print($node->type);    
+  // dpr($node);
+  foreach ($node as $key => $value) {
+    take_value($key, $value); 
   }
+  // foreach ($field_arr as $field_name => $tag_name) {
+  //   print_open_tag($tag_name);
+  //   $a = $node->$field_name;
+  //   foreach ($a as $key1 => $value1){
+  //     foreach ($value1 as $key2 => $value2){  
+  //       take_value($key2, $value2); 
+  //     }
+  //   }
+  //   print_close_tag($tag_name);
+  // }
 }           
 
 /*
@@ -240,34 +229,35 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
 */
       print_open_tag("Dataset");
         foreach ($row as $field => $content):          
-          $node = node_load($content);
-          print_all_fields($data_set_field_arr, $node, $drupal_node_attr);
-          if($node->type == "data_set"):
-            $datafiles_ref = $node->field_dataset_datafile_ref;  
-            print_open_tag("datafiles");
-            foreach ($datafiles_ref as &$datafile):   
-              print_open_tag("datafile");
-              $datafile_nid = $datafile[nid];      
-              $datafiles    = node_load($datafile_nid);   
-              // dpr($datafiles);
-              print_all_fields($data_file_field_arr, $datafiles, $drupal_node_attr);
-              $vars  = $datafiles->field_datafile_variable_ref;     
-              $label = "DatafileNid";
-              print_tag_line($label, $datafiles->nid); 
-              print_open_tag("variables");              
-              foreach ($vars as &$var):    
-                print_open_tag("variable");   
-                unset($var_nid);
-                $var_node = node_load($var[nid]);
-                print_all_fields($var_field_arr, $var_node, $drupal_node_attr);   
-                print_close_tag("variable");              
-              endforeach; //($vars as &$var)
-              unset($datafiles);
-              print_close_tag("variables");              
-              print_close_tag("datafile");              
-            endforeach; //($datafiles_ref as &$datafile)
-            print_close_tag("datafiles");              
-          endif; //($type == "data_set")
+          $node = node_load($content); 
+          print_all_fields($data_set_field_arr, $node, $drupal_node_attr);  
+          dpr($node);
+          // if($node->type == "data_set"):
+          //   $datafiles_ref = $node->field_dataset_datafile_ref;  
+          //   print_open_tag("datafiles");
+          //   foreach ($datafiles_ref as &$datafile):   
+          //     print_open_tag("datafile");
+          //     $datafile_nid = $datafile[nid];      
+          //     $datafiles    = node_load($datafile_nid);   
+          //     // dpr($datafiles);
+          //     print_all_fields($data_file_field_arr, $datafiles, $drupal_node_attr);
+          //     $vars  = $datafiles->field_datafile_variable_ref;     
+          //     $label = "DatafileNid";
+          //     print_tag_line($label, $datafiles->nid); 
+          //     print_open_tag("variables");              
+          //     foreach ($vars as &$var):    
+          //       print_open_tag("variable");   
+          //       unset($var_nid);
+          //       $var_node = node_load($var[nid]);
+          //       print_all_fields($var_field_arr, $var_node, $drupal_node_attr);   
+          //       print_close_tag("variable");              
+          //     endforeach; //($vars as &$var)
+          //     unset($datafiles);
+          //     print_close_tag("variables");              
+          //     print_close_tag("datafile");              
+          //   endforeach; //($datafiles_ref as &$datafile)
+          //   print_close_tag("datafiles");              
+          // endif; //($type == "data_set")
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");              
       endforeach; //($themed_rows as $count => $row)
