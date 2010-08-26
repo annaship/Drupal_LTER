@@ -72,9 +72,26 @@ function template_preprocess_views_bonus_export_xls(&$vars) {
 /**
  * Preprocess eml output template.
  */
+// function template_preprocess_views_bonus_export_eml(&$vars) {
+  // _views_bonus_export_shared_preprocess($vars);
+// }
 function template_preprocess_views_bonus_export_eml(&$vars) {
   _views_bonus_export_shared_preprocess($vars);
+
+  foreach ($vars['themed_rows'] as $num => $row) {
+    foreach ($row as $field => $content) {
+      // Prevent double encoding of the ampersand. Look for the entities produced by check_plain().
+      $content = preg_replace('/&(?!(amp|quot|#039|lt|gt);)/', '&amp;', $content);
+      // Convert < and > to HTML entities.
+      $content = str_replace(
+        array('<', '>'),
+        array('&lt;', '&gt;'),
+        $content);
+      $vars['themed_rows'][$num][$field] = $content;
+    }
+  }
 }
+
 
 
 /**

@@ -20,39 +20,74 @@ function print_open_tag($tag) {
 function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
+        
+function print_node_attr($node, $drupal_node_attr) {
+  $label = "drupal_node_attr";
+  print_open_tag($label);
+  foreach ($drupal_node_attr as $field_name => $tag_name) {
+    print_tag_line($field_name, $node->$field_name);                 
+  }
+  print_close_tag($label);
+}
 
-function print_all_fields($field_arr, $node) {
-  // dpr($node);
-  foreach ($field_arr as &$value) {
-    $label = $value;
-    print_open_tag($label);
-    $a = $node->$value;
+function print_all_fields($field_arr, $node, $drupal_node_attr) {     
+  print_node_attr($node, $drupal_node_attr);
+  foreach ($field_arr as $field_name => $tag_name) {
+    print_open_tag($tag_name);
+    $a = $node->$field_name;
     foreach ($a as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){
         print_tag_line($key2, $value2);                 
       }
     }
-    print_close_tag($label);
+    print_close_tag($tag_name);
   }
-}
+}               
 
-$dataset_arr = array("nid", 
-  "field_abstract", 
-  "field_beg_end_date", 
-  "field_dataset_add_info", 
-  "field_dataset_assct_biblio", 
-  "field_dataset_contact", 
-  "field_dataset_ext_assoc", 
-  "field_dataset_id", 
-  "field_dataset_instrument", 
-  "field_dataset_maintenance", 
-  "field_dataset_methods", 
-  "field_dataset_owner", 
-  "field_dataset_purpose", 
-  "field_dataset_quality", 
-  "field_dataset_sevid", 
-  "field_publication_date", 
-  "field_short_name"
+$drupal_node_attr = array(
+  "nid"       => "nid",
+  "type"      => "type",
+  "language"  => "language",
+  "uid"       => "uid",
+  "status"    => "status",
+  "created"   => "created",
+  "changed"   => "changed",
+  "comment"   => "comment",
+  "promote"   => "promote",
+  "moderate"  => "moderate",
+  "sticky"    => "sticky",
+  "tnid"      => "tnid",
+  "translate" => "translate",
+  "vid"       => "vid",
+  "revision_uid" => "revision_uid",
+  "title"     => "title",
+  "body"      => "body",
+  "teaser"    => "teaser",
+  "log"       => "log",
+  "revision_timestamp" => "revision_timestamp",
+  "format"    => "format",
+  "name"      => "name",
+  "picture"   => "picture",
+  "data"      => "data"
+  );
+
+$dataset_arr = array(
+  "field_abstract"              => "field_abstract",
+  "field_beg_end_date"          => "field_beg_end_date",
+  "field_dataset_add_info"      => "field_dataset_add_info",
+  "field_dataset_assct_biblio"  => "field_dataset_assct_biblio",
+  "field_dataset_contact"       => "field_dataset_contact",
+  "field_dataset_ext_assoc"     => "field_dataset_ext_assoc",
+  "field_dataset_id"            => "field_dataset_id",
+  "field_dataset_instrument"    => "field_dataset_instrument",
+  "field_dataset_maintenance"   => "field_dataset_maintenance",
+  "field_dataset_methods"       => "field_dataset_methods",
+  "field_dataset_owner"         => "field_dataset_owner",
+  "field_dataset_purpose"       => "field_dataset_purpose",
+  "field_dataset_quality"       => "field_dataset_quality",
+  "field_dataset_sevid"         => "field_dataset_sevid",
+  "field_publication_date"      => "field_publication_date",
+  "field_short_name"            => "field_short_name"
   // "field_dataset_datafile_ref", 
   // "field_dataset_datamanager_ref", 
   // "field_dataset_fieldcrew_ref", 
@@ -61,27 +96,43 @@ $dataset_arr = array("nid",
   // "field_var_ref"
 );
 
-
-$datafile_arr = array("nid",
-  "vid",
-  "field_datafile_date", 
-  "field_datafile_description", 
-  "field_datafile_name", 
+// "field_dataset_datafile_ref", 
+$datafile_arr = array(
+  "field_datafile_date"         => "field_datafile_date",
+  "field_datafile_description"  => "field_datafile_description",
+  "field_datafile_name"         => "field_datafile_name",
+  "field_data_file"             => "field_data_file",
+  "field_delimiter"             => "field_delimiter",
+  "field_method_description"    => "field_method_description",
+  "field_num_footer_lines"      => "field_num_footer_lines",
+  "field_num_header_line"       => "field_num_header_line",
+  "field_orientation"           => "field_orientation",
+  "field_quality_control"       => "field_quality_control",
+  "field_quote_character"       => "field_quote_character",
+  "field_record_delimiter"      => "field_record_delimiter",
+  "field_sampling_description"  => "field_sampling_description"
   // "field_datafile_site_ref", 
-  // "field_datafile_variable_ref", 
-  "field_data_file", 
-  "field_delimiter", 
-  "field_method_description", 
-  "field_num_footer_lines", 
-  "field_num_header_line", 
-  "field_orientation", 
-  "field_quality_control", 
-  "field_quote_character", 
-  "field_record_delimiter", 
-  "field_sampling_description"
+  // "field_datafile_variable_ref"
   ); 
 
- 
+// "field_datafile_variable_ref"      
+$varfield_arr = array(
+  "field_attribute_assoc_datafile" => "field_attribute_assoc_datafile", 
+  "field_attribute_formatstring" => "field_attribute_formatstring", 
+  "field_attribute_label" => "field_attribute_label", 
+  "field_attribute_maximum" => "field_attribute_maximum", 
+  "field_attribute_minimum" => "field_attribute_minimum", 
+  "field_attribute_precision" => "field_attribute_precision", 
+  "field_attribute_unit" => "field_attribute_unit", 
+  "field_code_definition" => "field_code_definition", 
+  "field_var_definition" => "field_var_definition", 
+  "field_var_missingvalues" => "field_var_missingvalues", 
+  "field_var_name" => "field_var_name"
+  );
+
+
+       
+
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
 
@@ -93,15 +144,16 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
       print_open_tag("Dataset");
         foreach ($row as $field => $content):          
           $node = node_load($content);
-          print_all_fields($dataset_arr, $node);
+          print_all_fields($dataset_arr, $node, $drupal_node_attr);
           if($node->type == "data_set"):
             $datafiles_ref = $node->field_dataset_datafile_ref;  
             print_open_tag("datafiles");
             foreach ($datafiles_ref as &$datafile):   
               print_open_tag("datafile");
               $datafile_nid = $datafile[nid];      
-              $datafiles    = node_load($datafile_nid);
-              print_all_fields($datafile_arr, $datafiles);
+              $datafiles    = node_load($datafile_nid);   
+              // dpr($datafiles);
+              print_all_fields($datafile_arr, $datafiles, $drupal_node_attr);
               $vars  = $datafiles->field_datafile_variable_ref;     
               $label = "DatafileNid";
               print_tag_line($label, $datafiles->nid); 
