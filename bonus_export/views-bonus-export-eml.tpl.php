@@ -13,6 +13,7 @@ function print_tag_line($label, $content) {
   $arr_flag = 0;
   print '<'.$label.'>'.$content.'</'.$label.'>';
   if (is_array($content)) { $arr_flag = 1; }
+  return $arr_flag;
 }
 
 function print_open_tag($tag) {
@@ -38,17 +39,29 @@ function print_in_cycle($key, $value) {
   {                        
     print_open_tag($key);
     foreach ($value as $key_in => $value_in) {
-      $key_in == "value" ? print $value_in
-      : print_tag_line($key_in, $value_in);
+      $key_in == "value" ? print $value_in : print_tag_line($key_in, $value_in);     
+      $flag = print_tag_line($key_in, $value_in);
     }
     print_close_tag($key);
   }
   else {
     /* Use second line if "value" tag needed */  
-    $key == "value" ? print $value
-    : print_tag_line($key, $value);
+    $key == "value" ? print $value : print_tag_line($key, $value);
     // print_tag_line($key, $value);                 
   }
+}        
+
+function take_value($key2, $data) {
+  if (is_array($data)) {
+    foreach ($data as $key => $value) {
+        take_value($key, $value);
+      }
+    }
+    else {      
+      /* Use second line if "value" tag needed */  
+      $key2 == "value" ? print $data : print_tag_line($key2, $data);
+      // print_tag_line($key2, $data);
+    }
 }
                                
                 
@@ -62,9 +75,7 @@ function print_all_fields($field_arr, $node, $drupal_node_attr) {
     $a = $node->$field_name;
     foreach ($a as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){  
-        // print gettype($value2); 
-        // print is_array($value2);
-        print_in_cycle($key2, $value2); 
+        take_value($key2, $value2); 
       }
     }
     print_close_tag($tag_name);
