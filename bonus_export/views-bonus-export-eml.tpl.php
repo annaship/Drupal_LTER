@@ -31,7 +31,8 @@ function print_node_attr($node, $drupal_node_attr) {
 }
 
 function print_all_fields($field_arr, $node, $drupal_node_attr) {     
-  print_node_attr($node, $drupal_node_attr);
+  // Uncomment the next line if drupal node attributes have to be printed out
+  // print_node_attr($node, $drupal_node_attr);
   foreach ($field_arr as $field_name => $tag_name) {
     print_open_tag($tag_name);
     $a = $node->$field_name;
@@ -42,7 +43,11 @@ function print_all_fields($field_arr, $node, $drupal_node_attr) {
     }
     print_close_tag($tag_name);
   }
-}               
+}           
+
+/*
+To change tag label change value in right coulmn
+*/    
 
 $drupal_node_attr = array(
   "nid"       => "nid",
@@ -70,8 +75,11 @@ $drupal_node_attr = array(
   "picture"   => "picture",
   "data"      => "data"
   );
-
-$dataset_arr = array(
+             
+/*
+"data_set"
+*/
+$data_set_field_arr = array(
   "field_abstract"              => "field_abstract",
   "field_beg_end_date"          => "field_beg_end_date",
   "field_dataset_add_info"      => "field_dataset_add_info",
@@ -93,11 +101,13 @@ $dataset_arr = array(
   // "field_dataset_fieldcrew_ref", 
   // "field_dataset_labcrew_ref", 
   // "field_dataset_site_ref", 
-  // "field_var_ref"
 );
-
+                              
+/*
+"data_file"
+*/
 // "field_dataset_datafile_ref", 
-$datafile_arr = array(
+$data_file_field_arr = array(
   "field_datafile_date"         => "field_datafile_date",
   "field_datafile_description"  => "field_datafile_description",
   "field_datafile_name"         => "field_datafile_name",
@@ -114,24 +124,77 @@ $datafile_arr = array(
   // "field_datafile_site_ref", 
   // "field_datafile_variable_ref"
   ); 
-
+                              
+/*
+"variable"
+*/
 // "field_datafile_variable_ref"      
-$varfield_arr = array(
-  "field_attribute_assoc_datafile" => "field_attribute_assoc_datafile", 
-  "field_attribute_formatstring" => "field_attribute_formatstring", 
-  "field_attribute_label" => "field_attribute_label", 
-  "field_attribute_maximum" => "field_attribute_maximum", 
-  "field_attribute_minimum" => "field_attribute_minimum", 
-  "field_attribute_precision" => "field_attribute_precision", 
-  "field_attribute_unit" => "field_attribute_unit", 
-  "field_code_definition" => "field_code_definition", 
-  "field_var_definition" => "field_var_definition", 
-  "field_var_missingvalues" => "field_var_missingvalues", 
-  "field_var_name" => "field_var_name"
+$var_field_arr = array(
+  "field_var_name"                  => "field_var_name_name",
+  "field_attribute_assoc_datafile"  => "field_attribute_assoc_datafile", 
+  "field_attribute_formatstring"    => "field_attribute_formatstring", 
+  "field_attribute_label"           => "field_attribute_label", 
+  "field_attribute_maximum"         => "field_attribute_maximum", 
+  "field_attribute_minimum"         => "field_attribute_minimum", 
+  "field_attribute_precision"       => "field_attribute_precision", 
+  "field_attribute_unit"            => "field_attribute_unit", 
+  "field_code_definition"           => "field_code_definition", 
+  "field_var_definition"            => "field_var_definition", 
+  "field_var_missingvalues"         => "field_var_missingvalues"
   );
-
-
-       
+                                 
+/*
+"research_site"
+*/
+// "field_datafile_site_ref", 
+$site_field_arr = array(
+  "field_research_site_climate"     => "field_research_site_climate", 
+  "field_research_site_elevation"   => "field_research_site_elevation", 
+  "field_research_site_geology"     => "field_research_site_geology", 
+  "field_research_site_history"     => "field_research_site_history", 
+  "field_research_site_hydrology"   => "field_research_site_hydrology", 
+  "field_research_site_landform"    => "field_research_site_landform", 
+  "field_research_site_pt_coords"   => "field_research_site_pt_coords", 
+  "field_research_site_siteid"      => "field_research_site_siteid", 
+  "field_research_site_soils"       => "field_research_site_soils", 
+  "field_research_site_vegetation"  => "field_research_site_vegetation"  
+  );
+                                
+/*
+"person"
+*/           
+// "field_dataset_datamanager_ref", 
+// "field_dataset_fieldcrew_ref", 
+// "field_dataset_labcrew_ref", 
+$person_field_arr = array(
+  "field_person_first_name"   => "field_person_first_name",
+  "field_person_last_name"    => "field_person_last_name",
+  "field_person_title"        => "field_person_title",
+  "field_person_address"      => "field_person_address",
+  "field_person_city"         => "field_person_city",
+  "field_person_state"        => "field_person_state",
+  "field_person_country"      => "field_person_country",
+  "field_person_zipcode"      => "field_person_zipcode",
+  "field_person_email"        => "field_person_email",
+  "field_person_fax"          => "field_person_fax",
+  "field_person_organization" => "field_person_organization",
+  "field_person_personid"     => "field_person_personid",
+  "field_person_phone"        => "field_person_phone",
+  "field_person_dataset"      => "field_person_dataset",
+  "field_person_proj"         => "field_person_proj",
+  "field_person_role"         => "field_person_role",
+  "field_person_user"         => "field_person_user"
+);   
+  
+/*
+"research_project"
+*/               
+$research_project_field_arr = array(
+  "field_project_description"     => "field_project_description", 
+  "field_research_project_data"   => "field_research_project_data", 
+  "field_research_project_invest" => "field_research_project_invest", 
+  "field_research_project_sites"  => "field_research_project_sites"
+  );
 
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
@@ -144,7 +207,7 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
       print_open_tag("Dataset");
         foreach ($row as $field => $content):          
           $node = node_load($content);
-          print_all_fields($dataset_arr, $node, $drupal_node_attr);
+          print_all_fields($data_set_field_arr, $node, $drupal_node_attr);
           if($node->type == "data_set"):
             $datafiles_ref = $node->field_dataset_datafile_ref;  
             print_open_tag("datafiles");
@@ -153,21 +216,22 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
               $datafile_nid = $datafile[nid];      
               $datafiles    = node_load($datafile_nid);   
               // dpr($datafiles);
-              print_all_fields($datafile_arr, $datafiles, $drupal_node_attr);
+              print_all_fields($data_file_field_arr, $datafiles, $drupal_node_attr);
               $vars  = $datafiles->field_datafile_variable_ref;     
               $label = "DatafileNid";
               print_tag_line($label, $datafiles->nid); 
               print_open_tag("variables");              
               foreach ($vars as &$var):    
-                print_open_tag("variable");              
+                print_open_tag("variable");   
                 unset($var_nid);
                 $var_node = node_load($var[nid]);
-                $var_nid  = $var[nid];
-                $label    = "VarNid";
-                print_tag_line($label, $var_nid); 
-                $maximum  = $var_node->field_attribute_maximum[0][value];   
-                $label    = "maximum";
-                print_tag_line($label, $maximum); 
+                print_all_fields($var_field_arr, $var_node, $drupal_node_attr);   
+                // $var_nid  = $var[nid];
+                // $label    = "VarNid";
+                // print_tag_line($label, $var_nid); 
+                // $maximum  = $var_node->field_attribute_maximum[0][value];   
+                // $label    = "maximum";
+                // print_tag_line($label, $maximum); 
                 print_close_tag("variable");              
               endforeach; //($vars as &$var)
               unset($datafiles);
