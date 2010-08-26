@@ -37,8 +37,11 @@ function print_all_fields($field_arr, $node, $drupal_node_attr) {
     print_open_tag($tag_name);
     $a = $node->$field_name;
     foreach ($a as $key1 => $value1){
-      foreach ($value1 as $key2 => $value2){
-        print_tag_line($key2, $value2);                 
+      foreach ($value1 as $key2 => $value2){  
+        $key2 == "value" ? print $value2
+        : print_tag_line($key2, $value2);
+        // 
+        // print_tag_line($key2, $value2);                 
       }
     }
     print_close_tag($tag_name);
