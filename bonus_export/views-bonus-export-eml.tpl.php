@@ -10,7 +10,9 @@
  */
 
 function print_tag_line($label, $content) {
-    print '<'.$label.'>'.$content.'</'.$label.'>';
+  $arr_flag = 0;
+  print '<'.$label.'>'.$content.'</'.$label.'>';
+  if (is_array($content)) { $arr_flag = 1; }
 }
 
 function print_open_tag($tag) {
@@ -20,7 +22,8 @@ function print_open_tag($tag) {
 function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
-        
+                  
+/* Prints out drupal node attributes (nid, type...) */
 function print_node_attr($node, $drupal_node_attr) {
   $label = "drupal_node_attr";
   print_open_tag($label);
@@ -29,19 +32,39 @@ function print_node_attr($node, $drupal_node_attr) {
   }
   print_close_tag($label);
 }
-
+                               
+function print_in_cycle($key, $value) {
+  if (is_array($value))
+  {                        
+    print_open_tag($key);
+    foreach ($value as $key_in => $value_in) {
+      $key_in == "value" ? print $value_in
+      : print_tag_line($key_in, $value_in);
+    }
+    print_close_tag($key);
+  }
+  else {
+    /* Use second line if "value" tag needed */  
+    $key == "value" ? print $value
+    : print_tag_line($key, $value);
+    // print_tag_line($key, $value);                 
+  }
+}
+                               
+                
+/* Print tag and value of all fields from given table (Content Type) */
 function print_all_fields($field_arr, $node, $drupal_node_attr) {     
-  // Uncomment the next line if drupal node attributes have to be printed out
+  /* Uncomment the next line if drupal node attributes have to be printed out
+  */
   // print_node_attr($node, $drupal_node_attr);
   foreach ($field_arr as $field_name => $tag_name) {
     print_open_tag($tag_name);
     $a = $node->$field_name;
     foreach ($a as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){  
-        $key2 == "value" ? print $value2
-        : print_tag_line($key2, $value2);
-        // 
-        // print_tag_line($key2, $value2);                 
+        // print gettype($value2); 
+        // print is_array($value2);
+        print_in_cycle($key2, $value2); 
       }
     }
     print_close_tag($tag_name);
@@ -134,7 +157,6 @@ $data_file_field_arr = array(
 // "field_datafile_variable_ref"      
 $var_field_arr = array(
   "field_var_name"                  => "field_var_name_name",
-  "field_attribute_assoc_datafile"  => "field_attribute_assoc_datafile", 
   "field_attribute_formatstring"    => "field_attribute_formatstring", 
   "field_attribute_label"           => "field_attribute_label", 
   "field_attribute_maximum"         => "field_attribute_maximum", 
@@ -183,20 +205,18 @@ $person_field_arr = array(
   "field_person_organization" => "field_person_organization",
   "field_person_personid"     => "field_person_personid",
   "field_person_phone"        => "field_person_phone",
-  "field_person_dataset"      => "field_person_dataset",
-  "field_person_proj"         => "field_person_proj",
-  "field_person_role"         => "field_person_role",
-  "field_person_user"         => "field_person_user"
+  "field_person_role"         => "field_person_role"
+  // "field_person_user"         => "field_person_user"
 );   
   
 /*
 "research_project"
 */               
 $research_project_field_arr = array(
-  "field_project_description"     => "field_project_description", 
-  "field_research_project_data"   => "field_research_project_data", 
-  "field_research_project_invest" => "field_research_project_invest", 
-  "field_research_project_sites"  => "field_research_project_sites"
+  "field_project_description"     => "field_project_description"
+  // "field_research_project_data"   => "field_research_project_data", 
+  // "field_research_project_invest" => "field_research_project_invest", 
+  // "field_research_project_sites"  => "field_research_project_sites"
   );
 
 print '<?xml version="1.0" encoding="UTF-8" ?>';
@@ -229,12 +249,6 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
                 unset($var_nid);
                 $var_node = node_load($var[nid]);
                 print_all_fields($var_field_arr, $var_node, $drupal_node_attr);   
-                // $var_nid  = $var[nid];
-                // $label    = "VarNid";
-                // print_tag_line($label, $var_nid); 
-                // $maximum  = $var_node->field_attribute_maximum[0][value];   
-                // $label    = "maximum";
-                // print_tag_line($label, $maximum); 
                 print_close_tag("variable");              
               endforeach; //($vars as &$var)
               unset($datafiles);
