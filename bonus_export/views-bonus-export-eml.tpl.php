@@ -51,7 +51,8 @@ function print_all_fields($field_arr, $node, $drupal_node_attr) {
 /*
 To change tag label change value in right coulmn
 */    
-
+          
+// do not print out value of those:
 $drupal_node_attr = array(
   "nid"       => "nid",
   "type"      => "type",
@@ -86,24 +87,29 @@ $data_set_field_arr = array(
   "field_abstract"              => "field_abstract",
   "field_beg_end_date"          => "field_beg_end_date",
   "field_dataset_add_info"      => "field_dataset_add_info",
-  "field_dataset_assct_biblio"  => "field_dataset_assct_biblio",
-  "field_dataset_contact"       => "field_dataset_contact",
-  "field_dataset_ext_assoc"     => "field_dataset_ext_assoc",
   "field_dataset_id"            => "field_dataset_id",
   "field_dataset_instrument"    => "field_dataset_instrument",
   "field_dataset_maintenance"   => "field_dataset_maintenance",
   "field_dataset_methods"       => "field_dataset_methods",
-  "field_dataset_owner"         => "field_dataset_owner",
   "field_dataset_purpose"       => "field_dataset_purpose",
   "field_dataset_quality"       => "field_dataset_quality",
-  "field_dataset_sevid"         => "field_dataset_sevid",
   "field_publication_date"      => "field_publication_date",
-  "field_short_name"            => "field_short_name"
-  // "field_dataset_datafile_ref", 
+  "field_short_name"            => "field_short_name",
+  "field_title"                 => "field_title"
+  // "field_dataset_assct_biblio"  => "field_dataset_assct_biblio",
+  // "field_dataset_sevid"         => "field_dataset_sevid",
   // "field_dataset_datamanager_ref", 
   // "field_dataset_fieldcrew_ref", 
   // "field_dataset_labcrew_ref", 
-  // "field_dataset_site_ref", 
+);
+
+$data_set_field_ref_arr = array(
+  "field_dataset_contact"       => "field_dataset_contact",
+  "field_dataset_datafile_ref"  => "field_dataset_datafile_ref", 
+  "field_dataset_ext_assoc"     => "field_dataset_ext_assoc",
+  "field_dataset_datafile_ref"  => "field_dataset_datafile_ref",
+  "field_dataset_owner"         => "field_dataset_owner",
+  "field_dataset_site_ref"      => "field_dataset_site_ref"
 );
                               
 /*
@@ -208,41 +214,20 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
 /* Dataset
 */
       print_open_tag("Dataset");
-        foreach ($row as $field => $content):          
+        foreach ($row as $field => $content):         
           $node = node_load($content);
-          print_all_fields($data_set_field_arr, $node, $drupal_node_attr);
-          if($node->type == "data_set"):
-            $datafiles_ref = $node->field_dataset_datafile_ref;  
-            print_open_tag("datafiles");
-            foreach ($datafiles_ref as &$datafile):   
-              print_open_tag("datafile");
-              $datafile_nid = $datafile[nid];      
-              $datafiles    = node_load($datafile_nid);   
-              // dpr($datafiles);
-              print_all_fields($data_file_field_arr, $datafiles, $drupal_node_attr);
-              $vars  = $datafiles->field_datafile_variable_ref;     
-              $label = "DatafileNid";
-              print_tag_line($label, $datafiles->nid); 
-              print_open_tag("variables");              
-              foreach ($vars as &$var):    
-                print_open_tag("variable");   
-                unset($var_nid);
-                $var_node = node_load($var[nid]);
-                print_all_fields($var_field_arr, $var_node, $drupal_node_attr);   
-                // $var_nid  = $var[nid];
-                // $label    = "VarNid";
-                // print_tag_line($label, $var_nid); 
-                // $maximum  = $var_node->field_attribute_maximum[0][value];   
-                // $label    = "maximum";
-                // print_tag_line($label, $maximum); 
-                print_close_tag("variable");              
-              endforeach; //($vars as &$var)
-              unset($datafiles);
-              print_close_tag("variables");              
-              print_close_tag("datafile");              
-            endforeach; //($datafiles_ref as &$datafile)
-            print_close_tag("datafiles");              
-          endif; //($type == "data_set")
+          foreach ($data_set_field_arr as $field_name => $tag_name):   
+            print_open_tag($tag_name); 
+            $field_value = $node->$field_name;
+            // dpr($field_value);
+            foreach ($field_value as $key1 => $value1){
+              foreach ($value1 as $key2 => $value2){  
+                $key2 == "value" ? print $value2 : print_tag_line($key2, $value2);
+                // print_tag_line($key2, $value2);                 
+              }
+            }
+              print_close_tag($tag_name);
+          endforeach; //($data_set_field_arr as $field_name => $tag_name)
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");              
       endforeach; //($themed_rows as $count => $row)
