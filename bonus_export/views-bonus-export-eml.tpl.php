@@ -30,21 +30,20 @@ function print_node_attr($node, $drupal_node_attr) {
   print_close_tag($label);
 }
 
-function print_all_fields($field_arr, $node, $drupal_node_attr) {     
+function print_values($field_arr, $node, $drupal_node_attr) {     
   // Uncomment the next line if drupal node attributes have to be printed out
   // print_node_attr($node, $drupal_node_attr);
   foreach ($field_arr as $field_name => $tag_name) {
-    print_open_tag($tag_name);
-    $a = $node->$field_name;
-    foreach ($a as $key1 => $value1){
+    print_open_tag($tag_name); 
+    $field_value = $node->$field_name;
+    // dpr($field_value);
+    foreach ($field_value as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){  
-        $key2 == "value" ? print $value2
-        : print_tag_line($key2, $value2);
-        // 
+        $key2 == "value" ? print $value2 : print_tag_line($key2, $value2);
         // print_tag_line($key2, $value2);                 
       }
     }
-    print_close_tag($tag_name);
+      print_close_tag($tag_name);
   }
 }           
 
@@ -215,19 +214,11 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
 */
       print_open_tag("Dataset");
         foreach ($row as $field => $content):         
-          $node = node_load($content);
-          foreach ($data_set_field_arr as $field_name => $tag_name):   
-            print_open_tag($tag_name); 
-            $field_value = $node->$field_name;
-            // dpr($field_value);
-            foreach ($field_value as $key1 => $value1){
-              foreach ($value1 as $key2 => $value2){  
-                $key2 == "value" ? print $value2 : print_tag_line($key2, $value2);
-                // print_tag_line($key2, $value2);                 
-              }
-            }
-              print_close_tag($tag_name);
-          endforeach; //($data_set_field_arr as $field_name => $tag_name)
+          $node = node_load($content);                                
+          // print out "direct" values
+          print_values($data_set_field_arr, $node, $drupal_node_attr);
+          // got to ref and print its value out
+          
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");              
       endforeach; //($themed_rows as $count => $row)
