@@ -31,81 +31,69 @@ function print_node_attr($node, $drupal_node_attr) {
 }
 
 function print_values($field_arr, $node, $drupal_node_attr, $drupal_node_flag = 0) {
+  // if $drupal_node_flag == 1 print out Drupal node attributes - nid, type...
   if ($drupal_node_flag == 1) {
     print_node_attr($node, $drupal_node_attr);
     $drupal_node_flag = 0;
   }
+          
+  // for every field name print out a tagged value
   foreach ($field_arr as $field_name => $tag_name) {
     print_open_tag($tag_name);
     $field_value = $node->$field_name;
-    // $key_f, 
-    // $value_f = 
-    double_for($field_value);
-    dpr($value_f);
-    foreach ($field_value as $key1 => $value1){
-      foreach ($value1 as $key2 => $value2){         
-        // if (is_array($value2)) {
-        //   dpr($value2);
-        // }
-        
-        $key2 == "value" ? print $value2 : print_tag_line($key2, $value2);
-        // print_tag_line($key2, $value2);
-      }
-    }
-  print_close_tag($tag_name);
+    through_array($field_value);
+    print_close_tag($tag_name);
   }
-}                 
+}
 
-function double_for($double_arr) {  
-  $my_arr = array();
-  foreach ($double_arr as $key1 => $value1){
-    print "value1 = ";
-    dpr($value1);
-    foreach ($value1 as $key2 => $value2){
-      // dpr($key2);
-      // $employee_title["Dana"] = "Owner";
-      $my_arr[$key2] = $value2;
-      // return $value2;
-      // d $key2, $value2;
+function through_array($double_arr) {
+  foreach ($double_arr as $key => $value){
+    // take group tag
+    $tag = $key;
+    // check if we'll go recursively
+    if (is_array($value)) {
+      // print group tag
+      if ($tag) {
+        print_open_tag($tag);
+        $flag = 1;
+      }
+      // if not end value, go through array again
+      through_array($value);
     }
-    print "my_arr = ";
-    dpr($my_arr);
-  }   
-  // return 
+    else {
+      // print out taged value
+      $key == "value" ? print $value : print_tag_line($key, $value);
+      // if tag <value></value> is needed, than change the line above with "print_tag_line($key, $value);"
+    }
+    if ($flag == 1) {
+      print_close_tag($tag);
+      $flag = 0;
+    }
+  }
 }
 
 function print_flat_ref_value($tag_name, $field_name, $node, $field_arr, $drupal_node_attr) {
-  print_open_tag($tag_name);     
-  $field_name  = $field_name;
-  $field_value = $node->$field_name;      
+  print_open_tag($tag_name);
+  $field_value = $node->$field_name;
   foreach ($field_value as $key1 => $value1){
-    foreach ($value1 as $key2 => $value2){  
-      // print_open_tag($value2);     
-      $ref_node = node_load($value2);   
-      // dpr($ref_node->nid);
+    foreach ($value1 as $key2 => $value2){
+      $ref_node = node_load($value2);
       print_values($field_arr, $ref_node, $drupal_node_attr);
-      // print_close_tag($value2);
     }
   }
   print_close_tag($tag_name);
 }
 
 function print_user($ref_node) {
-  print_open_tag("user");                       
+  print_open_tag("user");
   $user_id   = $ref_node->field_person_user;
   $user_nid  = $user_id[0][uid];
-  $user_node = user_load($user_nid);          
+  $user_node = user_load($user_nid);
   foreach ($user_node as $key1 => $value1){
     print_tag_line($key1, $value1);
-  }          
-  print_close_tag("user");     
-}     
-
-// function get_arr_value($arr) {
-//   foreach ($arr as $key => $value){
-//     if i
-//   }
-// }
+  }
+  print_close_tag("user");
+}
 
 /*
 To change tag label change value in right coulmn
@@ -142,7 +130,7 @@ $drupal_node_attr = array(
   "type"      => "type",
   "uid"       => "uid",
   "vid"       => "vid"
-  );              
+  );
 
 /*
 "user"
@@ -168,7 +156,7 @@ $drupal_user = array(
   "init"							=> "init",
   // "data"             => "data",
   "timezone_name"     => "timezone_name"
-);  
+);
   
 /*
 "data_set"
@@ -291,7 +279,7 @@ $research_project_field_ref_arr = array(
   "field_research_project_data"   => "field_research_project_data",
   "field_research_project_invest" => "field_research_project_invest",
   "field_research_project_sites"  => "field_research_project_sites"
-  );             
+  );
   
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 $drupal_node_flag = 0;
@@ -306,7 +294,7 @@ $drupal_node_flag = 0;
         foreach ($row as $field => $content):         
           // $name1 = "content";
           // dpr(${$name1});
-          $node = node_load($content);      
+          $node = node_load($content);
           // print out "direct" values
           print_values($data_set_field_arr, $node, $drupal_node_attr);
           // got to ref and print its values and refs out         
@@ -314,17 +302,17 @@ $drupal_node_flag = 0;
           // "field_dataset_contact"       => "contact",
           print_flat_ref_value("contact", "field_dataset_contact", $node, $person_field_arr, $drupal_node_attr);
           // $tag_name   = "contact";
-          // $field_name = "field_dataset_contact";    
+          // $field_name = "field_dataset_contact";
           // $field_arr  = $person_field_arr;
-          // print_open_tag($tag_name);     
-          // $field_value = $node->$field_name;      
+          // print_open_tag($tag_name);
+          // $field_value = $node->$field_name;
           // foreach ($field_value as $key1 => $value1){
-          //   foreach ($value1 as $key2 => $value2){  
-          //     $ref_node = node_load($value2);   
+          //   foreach ($value1 as $key2 => $value2){
+          //     $ref_node = node_load($value2);
           //     print_values($field_arr, $ref_node, $drupal_node_attr);
           //     // print_flat_ref_value("user", "field_person_user", $ref_node, $person_field_arr, $drupal_node_attr);
           //   }
-          // }          
+          // }
           // // print_flat_ref_value("field_person_user", "field_person_user", $node, $person_field_arr, $drupal_node_attr);
           // print_close_tag($tag_name);
 
@@ -337,18 +325,18 @@ $drupal_node_flag = 0;
           // "field_dataset_datafile_ref"  => "data_file",
           // print_flat_ref_value("data_file", "field_dataset_datafile_ref", $node, $data_file_field_arr, $drupal_node_attr);
           $tag_name   = "datafile_ref";
-          $field_name = "field_dataset_datafile_ref";    
+          $field_name = "field_dataset_datafile_ref";
           $field_arr  = $data_file_field_arr;
-          print_open_tag($tag_name);     
-          $field_value = $node->$field_name;      
+          print_open_tag($tag_name);
+          $field_value = $node->$field_name;
           foreach ($field_value as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){  
-              $ref_node = node_load($value2);   
+            foreach ($value1 as $key2 => $value2){
+              $ref_node = node_load($value2);
               print_values($field_arr, $ref_node, $drupal_node_attr);
               print_flat_ref_value("sites", "field_datafile_site_ref", $ref_node, $site_field_arr, $drupal_node_attr);
               print_flat_ref_value("variables", "field_datafile_variable_ref", $ref_node, $var_field_arr, $drupal_node_attr);
             }
-          }          
+          }
           print_close_tag($tag_name);
           
           // dpr($ref_node->field_datafile_variable_ref);
@@ -356,17 +344,17 @@ $drupal_node_flag = 0;
           // "field_dataset_ext_assoc"     => "ext_assoc",
           print_flat_ref_value("ext_assoc", "field_dataset_ext_assoc", $node, $person_field_arr, $drupal_node_attr);
           // $tag_name   = "ext_assoc";
-          // $field_name = "field_dataset_ext_assoc";    
+          // $field_name = "field_dataset_ext_assoc";
           // $field_arr  = $person_field_arr;
-          // print_open_tag($tag_name);     
-          // $field_value = $node->$field_name;      
+          // print_open_tag($tag_name);
+          // $field_value = $node->$field_name;
           // foreach ($field_value as $key1 => $value1){
-          //   foreach ($value1 as $key2 => $value2){  
-          //     $ref_node = node_load($value2);   
-          //     print_values($field_arr, $ref_node, $drupal_node_attr);  
+          //   foreach ($value1 as $key2 => $value2){
+          //     $ref_node = node_load($value2);
+          //     print_values($field_arr, $ref_node, $drupal_node_attr);
           //     // print_flat_ref_value("user", "field_person_user", $ref_node, $site_field_arr, $drupal_node_attr);
           //   }
-          // }          
+          // }
           // print_close_tag($tag_name);
           
           
@@ -374,21 +362,21 @@ $drupal_node_flag = 0;
           // "field_dataset_owner"         => "owner",
           print_flat_ref_value("owner", "field_dataset_owner", $node, $person_field_arr, $drupal_node_attr);
           // $tag_name   = "owner";
-          // $field_name = "field_dataset_owner";    
+          // $field_name = "field_dataset_owner";
           // $field_arr  = $person_field_arr;
-          // print_open_tag($tag_name);     
-          // $field_value = $node->$field_name;      
+          // print_open_tag($tag_name);
+          // $field_value = $node->$field_name;
           // foreach ($field_value as $key1 => $value1){
-          //   foreach ($value1 as $key2 => $value2){  
+          //   foreach ($value1 as $key2 => $value2){
           //     $ref_node  = node_load($value2);
           //     print_values($field_arr, $ref_node, $drupal_node_attr);
           //     print_user($ref_node);
           //   }
-          // }          
+          // }
           // print_close_tag($tag_name);
           
           // "field_dataset_site_ref"      => "site"
-          print_flat_ref_value("site", "field_dataset_site_ref", $node, $site_field_arr, $drupal_node_attr);   
+          print_flat_ref_value("site", "field_dataset_site_ref", $node, $site_field_arr, $drupal_node_attr);
           
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");
