@@ -162,37 +162,31 @@ $drupal_user = array(
 "data_set"
 */
 $data_set_field_arr = array(
-  "field_abstract"              => "abstract",
-  "field_beg_end_date"          => "field_beg_end_date",
-  "field_dataset_add_info"      => "field_dataset_add_info",
-  "field_dataset_id"            => "field_dataset_id",
-  "field_dataset_instrument"    => "field_dataset_instrument",
-  "field_dataset_maintenance"   => "field_dataset_maintenance",
-  "field_dataset_methods"       => "field_dataset_methods",
-  "field_dataset_purpose"       => "field_dataset_purpose",
-  "field_dataset_quality"       => "field_dataset_quality",
-  "field_publication_date"      => "field_publication_date",
-  "field_short_name"            => "field_short_name",
-  "field_title"                 => "field_title"
-  // "field_dataset_assct_biblio"  => "field_dataset_assct_biblio",
-  // "field_dataset_sevid"         => "field_dataset_sevid",
-  // "field_dataset_datamanager_ref",
-  // "field_dataset_fieldcrew_ref",
-  // "field_dataset_labcrew_ref",
+    "field_dataset_abstract" 					=> "abstract",
+    "field_dataset_short_name" 				=> "shortName",
+    "field_dataset_id" 					      => "field_dataset_id",
+    "field_dataset_purpose" 					=> "purpose",
+    "field_dataset_add_info" 					=> "additionalInfo",
+  "field_dataset_related_links"       => "related_links",
+    "field_dataset_maintenance"       => "maintenance",
+    "field_dataset_publication_date"  => "pubDate",
+    "field_beg_end_date" 		       		=> "field_beg_end_date",
+    "field_methods" 					        => "methodStep",
+    "field_instrumentation" 					=> "instrumentation",
+    "field_quality" 					        => "qualityControl"
 );
 $data_set_field_ref_arr = array(
-  "field_dataset_contact"       => "contact",
-  "field_dataset_datafile_ref"  => "data_file",
-  "field_dataset_ext_assoc"     => "ext_assoc",
-  "field_dataset_owner"         => "owner",
-  "field_dataset_site_ref"      => "site"
+    "field_dataset_datafile_ref"  => "data_file",
+  // "field_dataset_biblio_ref" => "biblio_ref",
+    "field_dataset_owner_ref"     => "owner",
+    "field_dataset_contact_ref"   => "contact",
+  "field_dataset_datamanager_ref" => "data_manager",
+  "field_dataset_fieldcrew_ref"   => "field_crew",
+  "field_dataset_labcrew_ref"     => "labcrew",
+    "field_dataset_ext_assoc_ref" => "ext_assoc",
+    "field_dataset_site_ref"      => "site"
 ); 
                                  
-    $shop = array( array("rose", 1.25 , 15),
-                   array("daisy", 0.75 , 25),
-                   array("orchid", 1.15 , 7) 
-                 );
-                 
 $data_set_field_ref_hash = array(
   array("field_name" => "field_dataset_contact",      "tag_name" => "contact",    "array_name" => "person_field_arr"),
   // array("field_name" => "field_dataset_datafile_ref", "tag_name" => "data_file",  "array_name" => "data_file_field_arr"),
@@ -206,23 +200,22 @@ $data_set_field_ref_hash = array(
 */
 // "field_dataset_datafile_ref",
 $data_file_field_arr = array(
-    "field_datafile_date"         => "field_datafile_date",
-    "field_datafile_description"  => "field_datafile_description",
-    "field_datafile_name"         => "field_datafile_name",
+    "field_datafile_description"  => "entityDescription",
     "field_data_file"             => "field_data_file",
-    "field_delimiter"             => "field_delimiter",
-    "field_method_description"    => "field_method_description",
-    "field_num_footer_lines"      => "field_num_footer_lines",
-    "field_num_header_line"       => "field_num_header_line",
-    "field_orientation"           => "field_orientation",
-    "field_quality_control"       => "field_quality_control",
+    "field_num_header_line"       => "numHeaderLines",
+    "field_num_footer_lines"      => "numFooteLines",
+    "field_orientation"           => "attributeOrientation",
     "field_quote_character"       => "field_quote_character",
+    "field_delimiter"             => "fieldDelimiter",
     "field_record_delimiter"      => "field_record_delimiter",
-    "field_sampling_description"  => "field_sampling_description"
+  "field_beg_end_date"            => "field_beg_end_date",
+    "field_methods"               => "methodStep",
+  "field_instrumentation"         => "field_instrumentation",
+    "field_quality"               => "qualityControl"
 );
 $data_file_field_ref_arr = array(
-  "field_datafile_site_ref"     => "field_datafile_site_ref",
-  "field_datafile_variable_ref" => "field_datafile_variable_ref"
+  "field_datafile_site_ref"     => "datafile_site",
+  "field_datafile_variable_ref" => "variables"
 );               
 
 $data_file_field_ref_hash = array(
@@ -235,71 +228,76 @@ $data_file_field_ref_hash = array(
 */
 // "field_datafile_variable_ref"      
 $var_field_arr = array(
-  "field_var_name"                  => "field_var_name_name",
-// "field_attribute_assoc_datafile"  => "field_attribute_assoc_datafile", Referrers
-  "field_attribute_formatstring"    => "field_attribute_formatstring",
-  "field_attribute_label"           => "field_attribute_label",
-  "field_attribute_maximum"         => "field_attribute_maximum",
-  "field_attribute_minimum"         => "field_attribute_minimum",
-  "field_attribute_precision"       => "field_attribute_precision",
-  "field_attribute_unit"            => "field_attribute_unit",
-  "field_code_definition"           => "field_code_definition",
-  "field_var_definition"            => "field_var_definition",
-  "field_var_missingvalues"         => "field_var_missingvalues"
+    "field_attribute_label" 			  => "attributeLabel",
+  "field_var_definition" 			      => "definition",
+    "field_var_missingvalues" 			=> "missingValues",
+    "field_attribute_unit" 			    => "unit",
+    "field_attribute_maximum" 			=> "maximum",
+    "field_attribute_minimum" 			=> "minimum",
+    "field_attribute_precision" 		=> "precision",
+    "field_attribute_formatstring"  => "formatstring",
+    "field_code_definition"         => "codeDefinition"
 );
+
+// "field_attribute_assoc_datafile" => "assoc_datafile", // "nodereferrer"
+
 /*
 "research_site"
 */
 $site_field_arr = array(
-  "field_research_site_climate"     => "field_research_site_climate",
-  "field_research_site_elevation"   => "field_research_site_elevation",
-  "field_research_site_geology"     => "field_research_site_geology",
-  "field_research_site_history"     => "field_research_site_history",
-  "field_research_site_hydrology"   => "field_research_site_hydrology",
-  "field_research_site_landform"    => "field_research_site_landform",
-  "field_research_site_pt_coords"   => "field_research_site_pt_coords",
-  "field_research_site_siteid"      => "field_research_site_siteid",
-  "field_research_site_soils"       => "field_research_site_soils",
-  "field_research_site_vegetation"  => "field_research_site_vegetation"  
+  "field_research_site_image"       => "field_research_site_image",
+    "field_research_site_pt_coords"   => "field_research_site_pt_coords",
+    "field_research_site_elevation"   => "elevation",
+    "field_research_site_landform"    => "field_research_site_landform",
+    "field_research_site_geology"     => "field_research_site_geology",
+    "field_research_site_soils"       => "field_research_site_soils",
+    "field_research_site_hydrology"   => "field_research_site_hydrology",
+    "field_research_site_vegetation"  => "field_research_site_vegetation",
+    "field_research_site_climate"     => "field_research_site_climate",
+    "field_research_site_history"     => "field_research_site_history",
+  "field_research_site_siteid"      => "field_research_site_siteid"
 );
 /*
 "person"
 */           
-// "field_dataset_datamanager_ref",
-// "field_dataset_fieldcrew_ref",
-// "field_dataset_labcrew_ref",
 $person_field_arr = array(
-  "field_person_first_name"   => "field_person_first_name",
-  "field_person_last_name"    => "field_person_last_name",
+  "field_person_first_name"   => "givenName",
+  "field_person_last_name"    => "surname",
+  "field_person_organization" => "organization",
+  "field_person_role"         => "role",
   "field_person_title"        => "field_person_title",
-  "field_person_address"      => "field_person_address",
-  "field_person_city"         => "field_person_city",
-  "field_person_state"        => "field_person_state",
-  "field_person_country"      => "field_person_country",
-  "field_person_zipcode"      => "field_person_zipcode",
-  "field_person_email"        => "field_person_email",
-  "field_person_fax"          => "field_person_fax",
-  "field_person_organization" => "field_person_organization",
-  "field_person_personid"     => "field_person_personid",
-  "field_person_phone"        => "field_person_phone",
-// "field_person_dataset"      => "field_person_dataset", Referrers
-// "field_person_proj"         => "field_person_proj",    Referrers
-  "field_person_role"         => "field_person_role",
+  "field_person_email"        => "electronicMailAddress",
+  "field_person_address"      => "deliveryPoint",
+  "field_person_city"         => "city",
+  "field_person_state"        => "administrativeArea",
+  "field_person_zipcode"      => "postalCode",
+  "field_person_country"      => "country",
+  "field_person_phone"        => "phone",
+  "field_person_fax"          => "fax",
+  "field_person_personid"     => "personid"
 );
+
+// "field_person_pubs" => "field_person_pubs",
+// "nodereference"
+
 $person_field_ref_arr = array(
   "field_person_user"         => "field_person_user"
 );
+// ref to biblio, do we need put it in eml?
+
 /*
 "research_project"
 */               
 $research_project_field_arr = array(
   "field_project_description"     => "field_project_description"
 );
+
 $research_project_field_ref_arr = array(
-  "field_research_project_data"   => "field_research_project_data",
-  "field_research_project_invest" => "field_research_project_invest",
-  "field_research_project_sites"  => "field_research_project_sites"
-  );
+  "field_research_project_invest"   => "field_research_project_invest",
+  "field_research_project_data"     => "field_research_project_data",
+  "field_research_project_sites"    => "field_research_project_sites",
+  "field_research_project_funding"  => "field_research_project_funding"
+);
   
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 $drupal_node_flag = 0;
