@@ -186,7 +186,21 @@ $data_set_field_ref_arr = array(
   "field_dataset_ext_assoc"     => "ext_assoc",
   "field_dataset_owner"         => "owner",
   "field_dataset_site_ref"      => "site"
+); 
+                                 
+    $shop = array( array("rose", 1.25 , 15),
+                   array("daisy", 0.75 , 25),
+                   array("orchid", 1.15 , 7) 
+                 );
+                 
+$data_set_field_ref_hash = array(
+  array("field_name" => "field_dataset_contact",      "tag_name" => "contact",    "array_name" => "person_field_arr"),
+  // array("field_name" => "field_dataset_datafile_ref", "tag_name" => "data_file",  "array_name" => "data_file_field_arr"),
+  array("field_name" => "field_dataset_ext_assoc",    "tag_name" => "ext_assoc",  "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_owner",        "tag_name" => "owner",      "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_site_ref",     "tag_name" => "site",       "array_name" => "site_field_arr")
 );
+
 /*
 "data_file"
 */
@@ -209,7 +223,13 @@ $data_file_field_arr = array(
 $data_file_field_ref_arr = array(
   "field_datafile_site_ref"     => "field_datafile_site_ref",
   "field_datafile_variable_ref" => "field_datafile_variable_ref"
+);               
+
+$data_file_field_ref_hash = array(
+  array("field_name" => "field_datafile_variable_ref",  "tag_name" => "variables",  "array_name" => "var_field_arr"),
+  array("field_name" => "field_datafile_site_ref",      "tag_name" => "site",       "array_name" => "site_field_arr")
 );
+
 /*
 "variable"
 */
@@ -294,11 +314,17 @@ $drupal_node_flag = 0;
         foreach ($row as $field => $content):         
           $node = node_load($content);
           // print out "direct" values
-          print_values($data_set_field_arr, $node, $drupal_node_attr);
+          print_values($data_set_field_arr, $node, $drupal_node_attr);  
+                   
+          foreach (array_values($data_set_field_ref_hash) as $val) {
+            // print "------- !!! -----------";
+            print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
+          }                        
+          
+          dpr($data_set_field_ref_hash);
 
           // TODO: for all "print_flat_ref_value" move label names, field names and array names into one "config" array in the beginning of the file.
           // go to refs and print its values and refs out         
-          print_flat_ref_value("field_dataset_contact", "contact", $node, $person_field_arr, $drupal_node_attr);
 
           // print_flat_ref_value("field_dataset_datafile_ref", "data_file", $node, $data_file_field_arr, $drupal_node_attr);
           $tag_name   = "datafile_ref";
@@ -315,11 +341,7 @@ $drupal_node_flag = 0;
             }
           }
           print_close_tag($tag_name);
-          
-          print_flat_ref_value("field_dataset_ext_assoc", "ext_assoc", $node, $person_field_arr, $drupal_node_attr);
-          print_flat_ref_value("field_dataset_owner",     "owner",     $node, $person_field_arr, $drupal_node_attr);
-          print_flat_ref_value("field_dataset_site_ref",  "site",      $node, $site_field_arr,   $drupal_node_attr);
-          
+
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");
       endforeach; //($themed_rows as $count => $row)
