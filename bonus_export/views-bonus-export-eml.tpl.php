@@ -313,13 +313,53 @@ $drupal_node_flag = 0;
           $node = node_load($content);
           // print out "direct" values
           print_values($data_set_field_arr, $node, $drupal_node_attr);  
+          //==================================
+          $all_info = array();
+          // $all_info = like print_values, but only store them in $all_info
+          // and add info for all ref
+                   // dpr($node->field_dataset_owner_ref);
+                   // dpr($node->field_dataset_contact_ref);
+                     $datamanager = $node->field_dataset_datamanager_ref;
+                     $datamanager_id = $datamanager[0][nid]; //(take id foreach $datamanager)
+                     $person_node = node_load($datamanager_id);
+                     $person_all_info = array();
+                     foreach ($person_field_arr as $field_name => $tag_name) {
+                         foreach ($person_node->$field_name as $val) {
+                           // dpr($val);
+                           // if $val1 is array go through again (collect "organization", f.e.)
+                           foreach ($val as $val1) {
+                             $person_all_info[$field_name] = $val1;
+                             // dpr($val1); //->field_person_first_name
+                           }
+                       }
+                       
+                     }
+                     $all_info["datamanager"] = $person_all_info;
+                     dpr($person_all_info["field_person_organization"]);
+                     // field_person_organization - Array
+                     
+                     // dpr($person_node); //->field_person_first_name
+                   //   dpr($person_node->title); //->field_person_first_name
+                   //   //put here all fields from person_fields array
+                   //   foreach ($person_node->field_person_first_name as $val) {
+                   //     dpr($val);
+                   //     foreach ($val as $val1) {
+                   //       $person_all_info['field_person_first_name'] = $val1;
+                   //       dpr($val1); //->field_person_first_name
+                   //     }
+                   // }
+                   dpr($all_info);
+                   // dpr($node->field_dataset_fieldcrew_ref);
+                   // dpr($node->field_dataset_labcrew_ref);
+                   // dpr($node->field_dataset_ext_assoc_ref);                   
+                   //==================================
                    
           foreach (array_values($data_set_field_ref_hash) as $val) {
             // print "------- !!! -----------";
             print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
           }                        
           
-          dpr($data_set_field_ref_hash);
+          // dpr($data_set_field_ref_hash);
 
           // TODO: for all "print_flat_ref_value" move label names, field names and array names into one "config" array in the beginning of the file.
           // go to refs and print its values and refs out         
