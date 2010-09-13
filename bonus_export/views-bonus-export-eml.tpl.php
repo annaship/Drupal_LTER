@@ -95,6 +95,11 @@ function print_user($ref_node) {
   print_close_tag("user");
 }
 
+function print_tag_val($tag, $value) {
+  print_open_tag($tag);
+  through_array($value);
+  print_close_tag($tag);
+}
 /*
 To change tag label change value in right coulmn
 */    
@@ -175,6 +180,7 @@ $data_set_field_arr = array(
     "field_instrumentation" 					=> "instrumentation",
     "field_quality" 					        => "qualityControl"
 );
+
 $data_set_field_ref_arr = array(
     "field_dataset_datafile_ref"  => "data_file",
   // "field_dataset_biblio_ref" => "biblio_ref",
@@ -209,9 +215,9 @@ $data_file_field_arr = array(
     "field_num_header_line"       => "numHeaderLines",
     "field_num_footer_lines"      => "numFooteLines",
     "field_orientation"           => "attributeOrientation",
-    "field_quote_character"       => "field_quote_character",
+    "field_quote_character"       => "QuoteCharacter",
     "field_delimiter"             => "fieldDelimiter",
-    "field_record_delimiter"      => "field_record_delimiter",
+    "field_record_delimiter"      => "recordDelimiter",
   "field_beg_end_date"            => "field_beg_end_date",
     "field_methods"               => "methodStep",
   "field_instrumentation"         => "field_instrumentation",
@@ -319,32 +325,269 @@ foreach ($themed_rows as $count => $row):
       print_open_tag("Dataset");
         foreach ($row as $field => $content):         
           $node = node_load($content);
-          // print out "direct" values:
-          print_values($data_set_field_arr, $node, $drupal_node_attr);  
-          
-          // print out references:
-          //datafile going differently, because of variables as subref
-          // print_flat_ref_value("field_dataset_datafile_ref", "data_file", $node, $data_file_field_arr, $drupal_node_attr);
-          $tag_name   = "datafile_ref";
-          $field_name = "field_dataset_datafile_ref";
-          $field_arr  = $data_file_field_arr;
-          print_open_tag($tag_name);
-          $field_value = $node->$field_name;
-          foreach ($field_value as $key1 => $value1){
+          // --------------------------------------
+          print_tag_line("title", $node->title);          
+          print_open_tag("methods");
+            print_open_tag("methodStep");
+              print_open_tag("instrumentation");
+                // dpr($node->field_instrumentation);
+                through_array($node->field_instrumentation);
+              print_close_tag("instrumentation");
+              print_open_tag("description");
+                // dpr($node->field_methods);
+                //remove format
+                through_array($node->field_methods);
+              print_close_tag("description");                  
+            print_close_tag("methodStep");   
+            print_open_tag("qualityControl");
+              through_array($node->field_quality);
+            print_close_tag("qualityControl");
+          print_close_tag("methods");
+          // take file
+          $file_nid = $node->field_dataset_datafile_ref;
+          foreach ($file_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
-              $ref_node = node_load($value2);
-              print_values($field_arr, $ref_node, $drupal_node_attr);
-              print_flat_ref_value("field_datafile_site_ref",      "sites",     $ref_node, $site_field_arr, $drupal_node_attr);
-              print_flat_ref_value("field_datafile_variable_ref",  "variables", $ref_node, $var_field_arr,  $drupal_node_attr);
+              $file_node = node_load($value2);
+              // dpr($file_node);
+              print_open_tag("dataTable");
+                print_open_tag("coverage");
+                      // "field_datafile_date" => "field_datafile_date", 
+                  print_tag_val("temporalCoverage", $file_node->field_datafile_date);
+                print_close_tag("coverage");
+                print_tag_val("entityDescription", $file_node->field_datafile_description);
+                print_tag_val("entityName", $file_node->field_datafile_name);
+                print_open_tag("physical");
+                  print_open_tag("distribution");
+                    foreach($file_node->field_data_file as $file_data) {
+                      print_tag_line("url", "http://www.blah-blah-blah/".$file_data["filepath"]);
+                    }
+                  print_close_tag("distribution");
+                print_close_tag("physical");
+                print_open_tag("dataFormat");
+                print_open_tag("textFormat");
+                print_open_tag("simpleDelimited");
+                  print_tag_val("fieldDelimiter", $file_node->field_delimiter);
+                  print_tag_val("QuoteCharacter", $file_node->field_quote_character);
+                print_close_tag("simpleDelimited");
+                print_tag_val("numFooterLines", $file_node->field_num_footer_lines);
+                print_tag_val("numHeaderLines", $file_node->field_num_header_line);
+                print_tag_val("attributeOrientation", $file_node->field_orientation);
+              
+                print_tag_val("recordDelimiter", $file_node->field_record_delimiter);
+                print_close_tag("textFormat");
+                print_close_tag("dataFormat");
+                print_open_tag("method");
+                foreach($file_node->field_method_description as $v1) {
+                  print_tag_line("methodStep", $v1['value']);                
+                }
+                    
+                print_close_tag("method");
+                print_open_tag("attributeList");
+                  // take variables
+                  $var_nid = $file_node->field_datafile_variable_ref;
+                  foreach ($var_nid as $key1 => $value1){
+                    foreach ($value1 as $key2 => $value2){
+                      $var_node = node_load($value2);
+                      print_open_tag("attribute");
+                      print_tag_val("attributeName", $var_node->field_var_name);
+                      print_tag_val("attributeLabel", $var_node->field_attribute_label);
+                      print_tag_val("attributeDefinition", $var_node->field_var_definition);
+                      print_open_tag("measurementScale");
+                      print_open_tag("datatime");
+                        print_tag_val("formatstring", $var_node->field_attribute_formatstring);
+                      print_close_tag("datatime");
+                      print_open_tag("ratio");
+                      print_open_tag("numericDomain");
+                      print_open_tag("bounds");
+                        print_tag_val("maximum", $var_node->field_attribute_maximum);
+                        print_tag_val("minimum", $var_node->field_attribute_minimum);
+                      print_close_tag("bounds");
+                      print_close_tag("numericDomain");
+                      print_tag_val("precision", $var_node->field_attribute_precision);
+                      print_open_tag("unit");
+                        print_tag_val("standardUnit", $var_node->field_attribute_unit);
+                      print_close_tag("unit");
+                      print_close_tag("ratio");
+                      print_open_tag("nominal");
+                      print_open_tag("nonNumericDomain");
+                      print_open_tag("enumeratedDomain");
+                      print_open_tag("codeDefinition");
+                        print_tag_val("codeDefinition", $var_node->field_code_definition);
+                      //                   code
+                      //                   definition
+                      print_close_tag("codeDefinition");
+                      print_close_tag("enumeratedDomain");
+                      print_close_tag("nonNumericDomain");
+                      print_close_tag("nominal");
+                      print_close_tag("measurementScale");
+                      print_open_tag("missingValueCode");
+                        print_tag_val("missingValues", $var_node->field_var_missingvalues);
+                      //           code
+                      //           value
+                      print_close_tag("missingValueCode");
+                      print_close_tag("attribute");
+                    }
+                  }                
+                print_close_tag("attributeList");
+              print_close_tag("dataTable");
             }
           }
-          print_close_tag($tag_name);
-
-          // print out all other references:
-          foreach (array_values($data_set_field_ref_hash) as $val) {
-            print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
-          }                        
+          // take owner
+          $owner_nid = $node->field_dataset_owner_ref;
+          foreach ($owner_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $owner_node = node_load($value2);
+              print_open_tag("owner");
+              
+                print_tag_val("givenName", $owner_node->field_person_first_name);
+                
+                print_tag_val("surname", $owner_node->field_person_last_name);
+                print_tag_val("organization", $owner_node->field_person_organization);
+                print_tag_val("role", $owner_node->field_person_role);
+                print_tag_val("title", $owner_node->field_person_title);
+                foreach($owner_node->field_person_email as $email) {
+                  print_tag_line("electronicMailAddress", $email["email"]);
+                }
+                print_tag_val("deliveryPoint", $owner_node->field_person_address);
+                print_tag_val("city", $owner_node->field_person_city);
+                print_tag_val("administrativeArea", $owner_node->field_person_state);
+                print_tag_val("postalCode", $owner_node->field_person_zipcode);
+                print_tag_val("country", $owner_node->field_person_country);
+                print_tag_val("phone", $owner_node->field_person_phone);
+                print_tag_val("fax", $owner_node->field_person_fax);
+                print_tag_val("personid", $owner_node->field_person_personid);              
+            }
+            print_close_tag("owner");
+          }
           
+          // array("field_name" => "field_dataset_contact_ref",      "tag_name" => "contact",      "array_name" => "person_field_arr"),
+          // take owner
+          $contact_nid = $node->field_dataset_contact_ref;
+          foreach ($contact_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $contact_node = node_load($value2);
+              print_open_tag("contact");
+              print_close_tag("contact");
+            }
+          }
+          // array("field_name" => "field_dataset_datamanager_ref",  "tag_name" => "data_manager", "array_name" => "person_field_arr"),
+          // take owner
+          $datamanager_nid = $node->field_dataset_datamanager_ref;
+          foreach ($datamanager_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $datamanager_node = node_load($value2);
+              print_open_tag("data_manager");
+              print_close_tag("data_manager");
+            }
+          }
+          // array("field_name" => "field_dataset_fieldcrew_ref",    "tag_name" => "field_crew",   "array_name" => "person_field_arr"),
+          // take owner
+          $fieldcrew_nid = $node->field_dataset_fieldcrew_ref;
+          foreach ($fieldcrew_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $fieldcrew_node = node_load($value2);
+              print_open_tag("field_crew");
+              print_close_tag("field_crew");
+            }
+          }
+          // array("field_name" => "field_dataset_labcrew_ref",      "tag_name" => "labcrew",      "array_name" => "person_field_arr"),
+          // take owner
+          $labcrew_nid = $node->field_dataset_labcrew_ref;
+          foreach ($labcrew_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $labcrew_node = node_load($value2);
+              print_open_tag("labcrew");
+              print_close_tag("labcrew");
+            }
+          }
+          // array("field_name" => "field_dataset_ext_assoc",        "tag_name" => "ext_assoc",    "array_name" => "person_field_arr"),
+          // take owner
+          $ext_assoc_nid = $node->field_dataset_ext_assoc_ref;
+          foreach ($ext_assoc_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $ext_assoc_node = node_load($value2);
+              print_open_tag("ext_assoc");
+              print_close_tag("ext_assoc");
+            }
+          }
+          // array("field_name" => "field_dataset_site_ref",         "tag_name" => "site",         "array_name" => "site_field_arr")
+          // take research_site
+          $research_site_nid = $node->field_dataset_site_ref;
+          foreach ($research_site_nid as $key1 => $value1){
+            foreach ($value1 as $key2 => $value2){
+              $research_site_node = node_load($value2);
+              print_open_tag("research_site");
+                print_open_tag("image");
+                print_close_tag("image");
+                print_open_tag("pt_coords");
+                print_close_tag("pt_coords");
+                print_open_tag("elevation");
+                print_close_tag("elevation");
+                print_open_tag("landform");
+                print_close_tag("landform");
+                print_open_tag("geology");
+                print_close_tag("geology");
+                print_open_tag("soils");
+                print_close_tag("soils");
+                print_open_tag("hydrology");
+                print_close_tag("hydrology");
+                print_open_tag("vegetation");
+                print_close_tag("vegetation");
+                print_open_tag("climate");
+                print_close_tag("climate");
+                print_open_tag("history");
+                print_close_tag("history");
+                print_open_tag("siteid");
+                print_close_tag("siteid");
+                
+              // dpr($research_site_node);
+                // print_tag_val("image",      $research_site_node->field_research_site_image);       
+                // print_tag_val("pt_coords",  $research_site_node->field_research_site_pt_coords);   
+                // print_tag_val("elevation",  $research_site_node->field_research_site_elevation);   
+                // print_tag_val("landform",   $research_site_node->field_research_site_landform);    
+                // print_tag_val("geology",    $research_site_node->field_research_site_geology);     
+                // print_tag_val("soils",      $research_site_node->field_research_site_soils);       
+                // print_tag_val("hydrology",  $research_site_node->field_research_site_hydrology);   
+                // print_tag_val("vegetation", $research_site_node->field_research_site_vegetation);  
+                // print_tag_val("climate",    $research_site_node->field_research_site_climate);     
+                // print_tag_val("history",    $research_site_node->field_research_site_history);     
+                // print_tag_val("siteid",     $research_site_node->field_research_site_siteid);      
+              print_close_tag("research_site");
+            }
+          }
+
+          //  "field_datafile_date" => "field_datafile_date", 
+          // //ISG changed ckkField, reusing previous file(PATH eml/dataset/dataTable/coverage/temporalCoverage)
+
+          // --------------------------------------
+
+
+          // // print out "direct" values:
+          // print_values($data_set_field_arr, $node, $drupal_node_attr);  
+          // 
+          // // print out references:
+          // //datafile going differently, because of variables as subref
+          // // print_flat_ref_value("field_dataset_datafile_ref", "data_file", $node, $data_file_field_arr, $drupal_node_attr);
+          // $tag_name   = "datafile_ref";
+          // $field_name = "field_dataset_datafile_ref";
+          // $field_arr  = $data_file_field_arr;
+          // print_open_tag($tag_name);
+          // $field_value = $node->$field_name;
+          // foreach ($field_value as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $ref_node = node_load($value2);
+          //     print_values($field_arr, $ref_node, $drupal_node_attr);
+          //     print_flat_ref_value("field_datafile_site_ref",      "sites",     $ref_node, $site_field_arr, $drupal_node_attr);
+          //     print_flat_ref_value("field_datafile_variable_ref",  "variables", $ref_node, $var_field_arr,  $drupal_node_attr);
+          //   }
+          // }
+          // print_close_tag($tag_name);
+          // 
+          // // print out all other references:
+          // foreach (array_values($data_set_field_ref_hash) as $val) {
+          //   print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
+          // }                        
+          // 
 
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");
