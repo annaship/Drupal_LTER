@@ -186,13 +186,17 @@ $data_set_field_ref_arr = array(
     "field_dataset_ext_assoc_ref" => "ext_assoc",
     "field_dataset_site_ref"      => "site"
 ); 
+
                                  
 $data_set_field_ref_hash = array(
-  array("field_name" => "field_dataset_contact",      "tag_name" => "contact",    "array_name" => "person_field_arr"),
   // array("field_name" => "field_dataset_datafile_ref", "tag_name" => "data_file",  "array_name" => "data_file_field_arr"),
-  array("field_name" => "field_dataset_ext_assoc",    "tag_name" => "ext_assoc",  "array_name" => "person_field_arr"),
-  array("field_name" => "field_dataset_owner",        "tag_name" => "owner",      "array_name" => "person_field_arr"),
-  array("field_name" => "field_dataset_site_ref",     "tag_name" => "site",       "array_name" => "site_field_arr")
+  array("field_name" => "field_dataset_owner_ref",        "tag_name" => "owner",        "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_contact_ref",      "tag_name" => "contact",      "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_datamanager_ref",  "tag_name" => "data_manager", "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_fieldcrew_ref",    "tag_name" => "field_crew",   "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_labcrew_ref",      "tag_name" => "labcrew",      "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_ext_assoc",        "tag_name" => "ext_assoc",    "array_name" => "person_field_arr"),
+  array("field_name" => "field_dataset_site_ref",         "tag_name" => "site",         "array_name" => "site_field_arr")
 );
 
 /*
@@ -214,8 +218,8 @@ $data_file_field_arr = array(
     "field_quality"               => "qualityControl"
 );
 $data_file_field_ref_arr = array(
-  "field_datafile_site_ref"     => "datafile_site",
-  "field_datafile_variable_ref" => "variables"
+  "field_datafile_variable_ref" => "variables",
+  "field_datafile_site_ref"     => "site"
 );               
 
 $data_file_field_ref_hash = array(
@@ -308,17 +312,18 @@ $drupal_node_flag = 0;
 <eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.0.1" xmlns:stmml="http://www.xml-cml.org/schema/stmml" xmlns:sw="eml://ecoinformatics.org/software-2.0.1" xmlns:cit="eml://ecoinformatics.org/literature-2.0.1" xmlns:ds="eml://ecoinformatics.org/dataset-2.0.1" xmlns:prot="eml://ecoinformatics.org/protocol-2.0.1" xmlns:doc="eml://ecoinformatics.org/documentation-2.0.1" xmlns:res="eml://ecoinformatics.org/resource-2.0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd" packageId="knb-lter-pie.3.6" system="knb">
 
 <?php 
-                   
-          foreach (array_values($data_set_field_ref_hash) as $val) {
-            // print "------- !!! -----------";
-            print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
-          }                        
+
+foreach ($themed_rows as $count => $row): 
+/* Dataset
+*/
+      print_open_tag("Dataset");
+        foreach ($row as $field => $content):         
+          $node = node_load($content);
+          // print out "direct" values:
+          print_values($data_set_field_arr, $node, $drupal_node_attr);  
           
-          // dpr($data_set_field_ref_hash);
-
-          // TODO: for all "print_flat_ref_value" move label names, field names and array names into one "config" array in the beginning of the file.
-          // go to refs and print its values and refs out         
-
+          // print out references:
+          //datafile going differently, because of variables as subref
           // print_flat_ref_value("field_dataset_datafile_ref", "data_file", $node, $data_file_field_arr, $drupal_node_attr);
           $tag_name   = "datafile_ref";
           $field_name = "field_dataset_datafile_ref";
@@ -334,6 +339,12 @@ $drupal_node_flag = 0;
             }
           }
           print_close_tag($tag_name);
+
+          // print out all other references:
+          foreach (array_values($data_set_field_ref_hash) as $val) {
+            print_flat_ref_value($val[field_name], $val[tag_name], $node, ${$val[array_name]}, $drupal_node_attr);
+          }                        
+          
 
         endforeach; //($row as $field => $content)
         print_close_tag("Dataset");
