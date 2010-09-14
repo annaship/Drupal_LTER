@@ -21,8 +21,33 @@ function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
 
-
-        
+function print_person($ref_field_arr, $person_tag)
+{                                                         
+  foreach ($ref_field_arr as $key1 => $value1){
+    foreach ($value1 as $key2 => $value2){
+      $person_node = node_load($value2);      
+      print_open_tag($person_tag);
+        print_value("title",              $person_node->field_person_title);
+        print_value("givenName",          $person_node->field_person_first_name);
+        print_value("surname",            $person_node->field_person_last_name);
+        print_value("organization",       $person_node->field_person_organization);
+        print_value("role",               $person_node->field_person_role);
+        print_value("deliveryPoint",      $person_node->field_person_address);
+        print_value("city",               $person_node->field_person_city);
+        print_value("administrativeArea", $person_node->field_person_state);
+        print_value("postalCode",         $person_node->field_person_zipcode);
+        print_value("country",            $person_node->field_person_country);
+        print_value("phone",              $person_node->field_person_phone);
+        print_value("fax",                $person_node->field_person_fax);
+        foreach($person_node->field_person_email as $email) {
+          print_tag_line("electronicMailAddress", $email["email"]);
+        }
+        print_value("personid",           $owner_node->field_person_personid);              
+    }
+    print_close_tag($person_tag);
+  }
+} 
+       
 function print_values($field_arr, $node, $drupal_node_attr, $drupal_node_flag = 0) {
   // if $drupal_node_flag == 1 print out Drupal node attributes - nid, type...
   if ($drupal_node_flag == 1) {
@@ -477,84 +502,92 @@ foreach ($themed_rows as $count => $row):
               print_close_tag("dataTable");
             }
           }  
-          // TODO: move repeated parts into function print_person and call 
+
+          // person refs
+          print_person($node->field_dataset_contact_ref,      "owner");
+          print_person($node->field_dataset_contact_ref,      "contact");
+          print_person($node->field_dataset_datamanager_ref,  "data_manager");
+          print_person($node->field_dataset_fieldcrew_ref,    "field_crew");
+          print_person($node->field_dataset_labcrew_ref,      "labcrew");
+          print_person($node->field_dataset_ext_assoc,        "ext_assoc");
+
           // take owner
-          $owner_nid = $node->field_dataset_owner_ref;
-          foreach ($owner_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $owner_node = node_load($value2);      
-              print_open_tag("owner");
-                print_value("title",              $owner_node->field_person_title);
-                print_value("givenName",          $owner_node->field_person_first_name);
-                print_value("surname",            $owner_node->field_person_last_name);
-                print_value("organization",       $owner_node->field_person_organization);
-                print_value("role",               $owner_node->field_person_role);
-                print_value("deliveryPoint",      $owner_node->field_person_address);
-                print_value("city",               $owner_node->field_person_city);
-                print_value("administrativeArea", $owner_node->field_person_state);
-                print_value("postalCode",         $owner_node->field_person_zipcode);
-                print_value("country",            $owner_node->field_person_country);
-                print_value("phone",              $owner_node->field_person_phone);
-                print_value("fax",                $owner_node->field_person_fax);
-                foreach($owner_node->field_person_email as $email) {
-                  print_tag_line("electronicMailAddress", $email["email"]);
-                }
-                print_value("personid",           $owner_node->field_person_personid);              
-            }
-            print_close_tag("owner");
-          }
-          
+          // $owner_nid = $node->field_dataset_owner_ref;
+          // foreach ($owner_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $owner_node = node_load($value2);      
+          //     print_open_tag("owner");
+          //       print_value("title",              $owner_node->field_person_title);
+          //       print_value("givenName",          $owner_node->field_person_first_name);
+          //       print_value("surname",            $owner_node->field_person_last_name);
+          //       print_value("organization",       $owner_node->field_person_organization);
+          //       print_value("role",               $owner_node->field_person_role);
+          //       print_value("deliveryPoint",      $owner_node->field_person_address);
+          //       print_value("city",               $owner_node->field_person_city);
+          //       print_value("administrativeArea", $owner_node->field_person_state);
+          //       print_value("postalCode",         $owner_node->field_person_zipcode);
+          //       print_value("country",            $owner_node->field_person_country);
+          //       print_value("phone",              $owner_node->field_person_phone);
+          //       print_value("fax",                $owner_node->field_person_fax);
+          //       foreach($owner_node->field_person_email as $email) {
+          //         print_tag_line("electronicMailAddress", $email["email"]);
+          //       }
+          //       print_value("personid",           $owner_node->field_person_personid);              
+          //   }
+          //   print_close_tag("owner");
+          // }
+                
           // array("field_name" => "field_dataset_contact_ref",      "tag_name" => "contact",      "array_name" => "person_field_arr"),
-          // take contact
-          $contact_nid = $node->field_dataset_contact_ref;
-          foreach ($contact_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $contact_node = node_load($value2);
-              print_open_tag("contact");
-              print_close_tag("contact");
-            }
-          }
-          // array("field_name" => "field_dataset_datamanager_ref",  "tag_name" => "data_manager", "array_name" => "person_field_arr"),
-          // take data_manager
-          $datamanager_nid = $node->field_dataset_datamanager_ref;
-          foreach ($datamanager_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $datamanager_node = node_load($value2);
-              print_open_tag("data_manager");
-              print_close_tag("data_manager");
-            }
-          }
-          // array("field_name" => "field_dataset_fieldcrew_ref",    "tag_name" => "field_crew",   "array_name" => "person_field_arr"),
-          // take field_crew
-          $fieldcrew_nid = $node->field_dataset_fieldcrew_ref;
-          foreach ($fieldcrew_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $fieldcrew_node = node_load($value2);
-              print_open_tag("field_crew");
-              print_close_tag("field_crew");
-            }
-          }
-          // array("field_name" => "field_dataset_labcrew_ref",      "tag_name" => "labcrew",      "array_name" => "person_field_arr"),
-          // take labcrew
-          $labcrew_nid = $node->field_dataset_labcrew_ref;
-          foreach ($labcrew_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $labcrew_node = node_load($value2);
-              print_open_tag("labcrew");
-              print_close_tag("labcrew");
-            }
-          }
-          // array("field_name" => "field_dataset_ext_assoc",        "tag_name" => "ext_assoc",    "array_name" => "person_field_arr"),
-          // take ext_assoc
-          $ext_assoc_nid = $node->field_dataset_ext_assoc_ref;
-          foreach ($ext_assoc_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $ext_assoc_node = node_load($value2);
-              print_open_tag("ext_assoc");
-              print_close_tag("ext_assoc");
-            }
-          }
-          // array("field_name" => "field_dataset_site_ref",         "tag_name" => "site",         "array_name" => "site_field_arr")
+          // // take contact
+          // $contact_nid = $node->field_dataset_contact_ref;
+          // foreach ($contact_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $contact_node = node_load($value2);
+          //     print_open_tag("contact");
+          //     print_close_tag("contact");
+          //   }
+          // }
+          // // array("field_name" => "field_dataset_datamanager_ref",  "tag_name" => "data_manager", "array_name" => "person_field_arr"),
+          // // take data_manager
+          // $datamanager_nid = $node->field_dataset_datamanager_ref;
+          // foreach ($datamanager_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $datamanager_node = node_load($value2);
+          //     print_open_tag("data_manager");
+          //     print_close_tag("data_manager");
+          //   }
+          // }
+          // // array("field_name" => "field_dataset_fieldcrew_ref",    "tag_name" => "field_crew",   "array_name" => "person_field_arr"),
+          // // take field_crew
+          // $fieldcrew_nid = $node->field_dataset_fieldcrew_ref;
+          // foreach ($fieldcrew_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $fieldcrew_node = node_load($value2);
+          //     print_open_tag("field_crew");
+          //     print_close_tag("field_crew");
+          //   }
+          // }
+          // // array("field_name" => "field_dataset_labcrew_ref",      "tag_name" => "labcrew",      "array_name" => "person_field_arr"),
+          // // take labcrew
+          // $labcrew_nid = $node->field_dataset_labcrew_ref;
+          // foreach ($labcrew_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $labcrew_node = node_load($value2);
+          //     print_open_tag("labcrew");
+          //     print_close_tag("labcrew");
+          //   }
+          // }
+          // // array("field_name" => "field_dataset_ext_assoc",        "tag_name" => "ext_assoc",    "array_name" => "person_field_arr"),
+          // // take ext_assoc
+          // $ext_assoc_nid = $node->field_dataset_ext_assoc_ref;
+          // foreach ($ext_assoc_nid as $key1 => $value1){
+          //   foreach ($value1 as $key2 => $value2){
+          //     $ext_assoc_node = node_load($value2);
+          //     print_open_tag("ext_assoc");
+          //     print_close_tag("ext_assoc");
+          //   }
+          // }
+          // // array("field_name" => "field_dataset_site_ref",         "tag_name" => "site",         "array_name" => "site_field_arr")
           // take research_site
           $research_site_nid = $node->field_dataset_site_ref;
           foreach ($research_site_nid as $key1 => $value1){
