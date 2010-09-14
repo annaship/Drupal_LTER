@@ -339,7 +339,6 @@ To change tag label change value in right coulmn
 //   "field_research_project_funding"  => "field_research_project_funding"
 // );
 
-
   
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 $drupal_node_flag = 0;
@@ -372,6 +371,7 @@ foreach ($themed_rows as $count => $row):
 
           print_value("pubDate", $node->field_dataset_publication_date);
           print_value("abstract", $node->field_dataset_abstract);       
+          // "coverage" repeated in data_file, TODO: move to function
           print_open_tag("coverage");           
             print_open_tag("temporalCoverage");
               print_open_tag("rangeOfDates");
@@ -592,7 +592,14 @@ foreach ($themed_rows as $count => $row):
           $research_site_nid = $node->field_dataset_site_ref;
           foreach ($research_site_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
-              $research_site_node = node_load($value2);   
+              $research_site_node = node_load($value2);     
+              print_open_tag("geographicCoverage");      
+                print_open_tag("geographicDescription");      
+              
+                print_close_tag("geographicDescription");
+              
+              print_close_tag("geographicCoverage");
+              
               print_open_tag("research_site");
                 print_open_tag("image");  
                   print_value("image",      $research_site_node->field_research_site_image);       
