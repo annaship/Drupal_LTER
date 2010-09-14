@@ -355,7 +355,7 @@ $drupal_node_flag = 0;
 
 foreach ($themed_rows as $count => $row): 
 /* Dataset
-*/
+*/                                                        
       print_open_tag("Dataset");
         foreach ($row as $field => $content):         
           $node = node_load($content);
@@ -363,6 +363,17 @@ foreach ($themed_rows as $count => $row):
           // dpr($node);
           print_value("shortName", $node->field_dataset_short_name);
           print_tag_line("title", $node->title);          
+
+          // person refs
+          print_person($node->field_dataset_owner_ref,          "owner");
+          print_person($node->field_dataset_contact_ref,        "contact");
+          print_open_tag("associatedParty");
+            print_person($node->field_dataset_datamanager_ref,  "data_manager");
+            print_person($node->field_dataset_fieldcrew_ref,    "field_crew");
+            print_person($node->field_dataset_labcrew_ref,      "labcrew");
+            print_person($node->field_dataset_ext_assoc,        "ext_assoc");
+          print_close_tag("associatedParty");
+
           print_value("pubDate", $node->field_dataset_publication_date);
           print_value("abstract", $node->field_dataset_abstract);       
           print_open_tag("coverage");           
@@ -503,13 +514,6 @@ foreach ($themed_rows as $count => $row):
             }
           }  
 
-          // person refs
-          print_person($node->field_dataset_contact_ref,      "owner");
-          print_person($node->field_dataset_contact_ref,      "contact");
-          print_person($node->field_dataset_datamanager_ref,  "data_manager");
-          print_person($node->field_dataset_fieldcrew_ref,    "field_crew");
-          print_person($node->field_dataset_labcrew_ref,      "labcrew");
-          print_person($node->field_dataset_ext_assoc,        "ext_assoc");
 
           // take owner
           // $owner_nid = $node->field_dataset_owner_ref;
@@ -592,29 +596,41 @@ foreach ($themed_rows as $count => $row):
           $research_site_nid = $node->field_dataset_site_ref;
           foreach ($research_site_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
-              $research_site_node = node_load($value2);
+              $research_site_node = node_load($value2);   
+              dpr($research_site_node);
               print_open_tag("research_site");
-                print_open_tag("image");
+                print_open_tag("image");  
+                  print_value("image",      $research_site_node->field_research_site_image);       
                 print_close_tag("image");
                 print_open_tag("pt_coords");
+                  print_value("pt_coords",  $research_site_node->field_research_site_pt_coords);   
                 print_close_tag("pt_coords");
                 print_open_tag("elevation");
+                  print_value("elevation",  $research_site_node->field_research_site_elevation);   
                 print_close_tag("elevation");
                 print_open_tag("landform");
+                  print_value("landform",   $research_site_node->field_research_site_landform);    
                 print_close_tag("landform");
                 print_open_tag("geology");
+                  print_value("geology",    $research_site_node->field_research_site_geology);     
                 print_close_tag("geology");
                 print_open_tag("soils");
+                  print_value("soils",      $research_site_node->field_research_site_soils);       
                 print_close_tag("soils");
                 print_open_tag("hydrology");
+                  print_value("hydrology",  $research_site_node->field_research_site_hydrology);   
                 print_close_tag("hydrology");
                 print_open_tag("vegetation");
+                  print_value("vegetation", $research_site_node->field_research_site_vegetation);  
                 print_close_tag("vegetation");
                 print_open_tag("climate");
+                  print_value("climate",    $research_site_node->field_research_site_climate);     
                 print_close_tag("climate");
                 print_open_tag("history");
+                  print_value("history",    $research_site_node->field_research_site_history);     
                 print_close_tag("history");
                 print_open_tag("siteid");
+                  print_value("siteid",     $research_site_node->field_research_site_siteid);      
                 print_close_tag("siteid");
                 
               // dpr($research_site_node);
