@@ -20,6 +20,8 @@ function print_open_tag($tag) {
 function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
+
+
         
 function print_values($field_arr, $node, $drupal_node_attr, $drupal_node_flag = 0) {
   // if $drupal_node_flag == 1 print out Drupal node attributes - nid, type...
@@ -53,8 +55,9 @@ function through_array($double_arr) {
     }
     else {
       // print out taged value
-      $key == "value" ? print $value : print_tag_line($key, $value);
+      // $key == "value" ? print $value : print_tag_line($key, $value);
       // if tag <value></value> is needed, than change the line above with "print_tag_line($key, $value);"
+      print_tag_line($key, $value);
     }
     if ($flag == 1) {
       print_close_tag($tag);
@@ -99,6 +102,12 @@ function print_tag_val($tag, $value) {
   print_open_tag($tag);
   through_array($value);
   print_close_tag($tag);
+}                       
+
+function print_value($tag, $arr) {
+  foreach ($arr as $in_arr) {
+    print_tag_line($tag, $in_arr['value']);          
+  }
 }
 /*
 To change tag label change value in right coulmn
@@ -109,12 +118,12 @@ $drupal_node_attr = array(
   "body"      => "body",
   "changed"   => "changed",
   "comment"   => "comment",
-  "comment_count"			      => "comment_count",
+  "comment_count"            => "comment_count",
   "created"   => "created",
   "data"      => "data",
   "format"    => "format",
   "language"  => "language",
-  "last_comment_name"			  => "last_comment_name",
+  "last_comment_name"        => "last_comment_name",
   "last_comment_timestamp"  => "last_comment_timestamp",
   "log"       => "log",
   "moderate"  => "moderate",
@@ -126,9 +135,9 @@ $drupal_node_attr = array(
   "revision_uid"            => "revision_uid",
   "status"    => "status",
   "sticky"    => "sticky",
-  "taxonomy"			          => "taxonomy",
+  "taxonomy"                => "taxonomy",
   "teaser"    => "teaser",
-  "themekey_ui_theme"			  => "themekey_ui_theme",
+  "themekey_ui_theme"        => "themekey_ui_theme",
   "title"     => "title",
   "tnid"      => "tnid",
   "translate" => "translate",
@@ -142,23 +151,23 @@ $drupal_node_attr = array(
 */
 $drupal_user = array(
   // "uid"               => "uid",
-  "name"							=> "name",
+  "name"              => "name",
   // "pass"             => "pass",
-  "mail"							=> "mail",
-  "mode"							=> "mode",
-  "sort"							=> "sort",
+  "mail"              => "mail",
+  "mode"              => "mode",
+  "sort"              => "sort",
   "threshold"         => "threshold",
   "theme"             => "theme",
   "signature"         => "signature",
   "signature_format"  => "signature_format",
-  "created"						=> "created",
-  "access"						=> "access",
-  "login"							=> "login",
-  "status"						=> "status",
-  "timezone"					=> "timezone",
-  "language"					=> "language",
-  "picture"						=> "picture",
-  "init"							=> "init",
+  "created"            => "created",
+  "access"            => "access",
+  "login"              => "login",
+  "status"            => "status",
+  "timezone"          => "timezone",
+  "language"          => "language",
+  "picture"            => "picture",
+  "init"              => "init",
   // "data"             => "data",
   "timezone_name"     => "timezone_name"
 );
@@ -167,18 +176,18 @@ $drupal_user = array(
 "data_set"
 */
 $data_set_field_arr = array(
-    "field_dataset_abstract" 					=> "abstract",
-    "field_dataset_short_name" 				=> "shortName",
-    "field_dataset_id" 					      => "field_dataset_id",
-    "field_dataset_purpose" 					=> "purpose",
-    "field_dataset_add_info" 					=> "additionalInfo",
+    "field_dataset_abstract"           => "abstract",
+    "field_dataset_short_name"         => "shortName",
+    "field_dataset_id"                 => "field_dataset_id",
+    "field_dataset_purpose"           => "purpose",
+    "field_dataset_add_info"           => "additionalInfo",
   "field_dataset_related_links"       => "related_links",
     "field_dataset_maintenance"       => "maintenance",
     "field_dataset_publication_date"  => "pubDate",
-    "field_beg_end_date" 		       		=> "field_beg_end_date",
-    "field_methods" 					        => "methodStep",
-    "field_instrumentation" 					=> "instrumentation",
-    "field_quality" 					        => "qualityControl"
+    "field_beg_end_date"                => "field_beg_end_date",
+    "field_methods"                   => "methodStep",
+    "field_instrumentation"           => "instrumentation",
+    "field_quality"                   => "qualityControl"
 );
 
 $data_set_field_ref_arr = array(
@@ -238,13 +247,13 @@ $data_file_field_ref_hash = array(
 */
 // "field_datafile_variable_ref"      
 $var_field_arr = array(
-    "field_attribute_label" 			  => "attributeLabel",
-  "field_var_definition" 			      => "definition",
-    "field_var_missingvalues" 			=> "missingValues",
-    "field_attribute_unit" 			    => "unit",
-    "field_attribute_maximum" 			=> "maximum",
-    "field_attribute_minimum" 			=> "minimum",
-    "field_attribute_precision" 		=> "precision",
+    "field_attribute_label"         => "attributeLabel",
+  "field_var_definition"             => "definition",
+    "field_var_missingvalues"       => "missingValues",
+    "field_attribute_unit"           => "unit",
+    "field_attribute_maximum"       => "maximum",
+    "field_attribute_minimum"       => "minimum",
+    "field_attribute_precision"     => "precision",
     "field_attribute_formatstring"  => "formatstring",
     "field_code_definition"         => "codeDefinition"
 );
@@ -326,23 +335,43 @@ foreach ($themed_rows as $count => $row):
         foreach ($row as $field => $content):         
           $node = node_load($content);
           // --------------------------------------
+          // dpr($node);
+          print_value("shortName", $node->field_dataset_short_name);
           print_tag_line("title", $node->title);          
+          print_value("pubDate", $node->field_dataset_publication_date);
+          print_value("abstract", $node->field_dataset_abstract);       
+          print_open_tag("coverage");           
+            print_open_tag("temporalCoverage");
+              print_open_tag("rangeOfDates");
+                foreach($node->field_beg_end_date as $dataset_date) {
+                  print_open_tag("beginDate");
+                    print_tag_line("calendarDate", $dataset_date["value"]);          
+                  print_close_tag("beginDate");
+                  print_open_tag("endDate");
+                    print_tag_line("calendarDate", $dataset_date["value2"]);          
+                  print_close_tag("endDate");
+                }
+              print_close_tag("rangeOfDates");
+            print_close_tag("temporalCoverage");
+          print_close_tag("coverage");
+          print_value("purpose", $node->field_dataset_purpose);
+          print_value("maintenance", $node->field_dataset_maintenance);
+
           print_open_tag("methods");
             print_open_tag("methodStep");
-              print_open_tag("instrumentation");
-                // dpr($node->field_instrumentation);
-                through_array($node->field_instrumentation);
-              print_close_tag("instrumentation");
-              print_open_tag("description");
-                // dpr($node->field_methods);
-                //remove format
-                through_array($node->field_methods);
-              print_close_tag("description");                  
-            print_close_tag("methodStep");   
+              print_value("instrumentation", $node->field_instrumentation);
+              print_value("description", $node->field_methods);
+            print_close_tag("methodStep"); 
             print_open_tag("qualityControl");
-              through_array($node->field_quality);
+              print_value("description", $node->field_quality);
             print_close_tag("qualityControl");
           print_close_tag("methods");
+         
+          print_value("field_dataset_id", $node->field_dataset_id);
+          print_value("additionalInfo", $node->field_dataset_add_info);
+          print_value("related_links", $node->field_dataset_related_links);
+
+
           // take file
           $file_nid = $node->field_dataset_datafile_ref;
           foreach ($file_nid as $key1 => $value1){
@@ -350,38 +379,56 @@ foreach ($themed_rows as $count => $row):
               $file_node = node_load($value2);
               // dpr($file_node);
               print_open_tag("dataTable");
-                print_open_tag("coverage");
-                      // "field_datafile_date" => "field_datafile_date", 
-                  print_tag_val("temporalCoverage", $file_node->field_datafile_date);
-                print_close_tag("coverage");
-                print_tag_val("entityDescription", $file_node->field_datafile_description);
-                print_tag_val("entityName", $file_node->field_datafile_name);
-                print_open_tag("physical");
-                  print_open_tag("distribution");
-                    foreach($file_node->field_data_file as $file_data) {
-                      print_tag_line("url", "http://www.blah-blah-blah/".$file_data["filepath"]);
-                    }
-                  print_close_tag("distribution");
-                print_close_tag("physical");
-                print_open_tag("dataFormat");
-                print_open_tag("textFormat");
-                print_open_tag("simpleDelimited");
-                  print_tag_val("fieldDelimiter", $file_node->field_delimiter);
-                  print_tag_val("QuoteCharacter", $file_node->field_quote_character);
-                print_close_tag("simpleDelimited");
-                print_tag_val("numFooterLines", $file_node->field_num_footer_lines);
-                print_tag_val("numHeaderLines", $file_node->field_num_header_line);
-                print_tag_val("attributeOrientation", $file_node->field_orientation);
-              
-                print_tag_val("recordDelimiter", $file_node->field_record_delimiter);
-                print_close_tag("textFormat");
-                print_close_tag("dataFormat");
-                print_open_tag("method");
-                foreach($file_node->field_method_description as $v1) {
-                  print_tag_line("methodStep", $v1['value']);                
+                // todo: take once and keep filename and filepath in some array to use later, should be faster
+                foreach($file_node->field_data_file as $file_data) {
+                  print_tag_line("entityName", $file_data["filename"]);
                 }
-                    
-                print_close_tag("method");
+                print_value("entityDescription", $file_node->field_datafile_description);
+                print_open_tag("physical");
+                  print_open_tag("dataFormat");
+                    print_open_tag("textFormat");
+                      print_value("numHeaderLines", $file_node->field_num_header_line);
+                      print_value("numFooterLines", $file_node->field_num_footer_lines);
+                      print_value("recordDelimiter", $file_node->field_record_delimiter);
+                      print_value("attributeOrientation", $file_node->field_orientation);
+                      print_open_tag("simpleDelimited");
+                        print_value("fieldDelimiter", $file_node->field_delimiter);
+                        print_value("QuoteCharacter", $file_node->field_quote_character);
+                      print_close_tag("simpleDelimited");
+                    print_close_tag("textFormat");
+                  print_close_tag("dataFormat");
+                  foreach($file_node->field_data_file as $file_data) {
+                    print_open_tag("distribution");
+                      print_tag_line("url", "http://www.blah-blah-blah/".$file_data["filepath"]);
+                    print_close_tag("distribution");  
+                  }
+                print_close_tag("physical");
+
+                print_open_tag("coverage");           
+                  print_open_tag("temporalCoverage");
+                    print_open_tag("rangeOfDates");
+                      foreach($file_node->field_beg_end_date as $dataset_date) {
+                        print_open_tag("beginDate");
+                          print_tag_line("calendarDate", $dataset_date["value"]);          
+                        print_close_tag("beginDate");
+                        print_open_tag("endDate");
+                          print_tag_line("calendarDate", $dataset_date["value2"]);          
+                        print_close_tag("endDate");
+                      }
+                    print_close_tag("rangeOfDates");
+                  print_close_tag("temporalCoverage");
+                print_close_tag("coverage");
+
+                print_open_tag("methods");
+                  print_open_tag("methodStep");
+                    print_value("instrumentation", $file_node->field_instrumentation);
+                    print_value("description", $file_node->field_methods);
+                  print_close_tag("methodStep"); 
+                  print_open_tag("qualityControl");
+                    print_value("description", $file_node->field_quality);
+                  print_close_tag("qualityControl");
+                print_close_tag("methods");
+
                 print_open_tag("attributeList");
                   // take variables
                   $var_nid = $file_node->field_datafile_variable_ref;
@@ -389,79 +436,76 @@ foreach ($themed_rows as $count => $row):
                     foreach ($value1 as $key2 => $value2){
                       $var_node = node_load($value2);
                       print_open_tag("attribute");
-                      print_tag_val("attributeName", $var_node->field_var_name);
-                      print_tag_val("attributeLabel", $var_node->field_attribute_label);
-                      print_tag_val("attributeDefinition", $var_node->field_var_definition);
-                      print_open_tag("measurementScale");
-                      print_open_tag("datatime");
-                        print_tag_val("formatstring", $var_node->field_attribute_formatstring);
-                      print_close_tag("datatime");
-                      print_open_tag("ratio");
-                      print_open_tag("numericDomain");
-                      print_open_tag("bounds");
-                        print_tag_val("maximum", $var_node->field_attribute_maximum);
-                        print_tag_val("minimum", $var_node->field_attribute_minimum);
-                      print_close_tag("bounds");
-                      print_close_tag("numericDomain");
-                      print_tag_val("precision", $var_node->field_attribute_precision);
-                      print_open_tag("unit");
-                        print_tag_val("standardUnit", $var_node->field_attribute_unit);
-                      print_close_tag("unit");
-                      print_close_tag("ratio");
-                      print_open_tag("nominal");
-                      print_open_tag("nonNumericDomain");
-                      print_open_tag("enumeratedDomain");
-                      print_open_tag("codeDefinition");
-                        print_tag_val("codeDefinition", $var_node->field_code_definition);
-                      //                   code
-                      //                   definition
-                      print_close_tag("codeDefinition");
-                      print_close_tag("enumeratedDomain");
-                      print_close_tag("nonNumericDomain");
-                      print_close_tag("nominal");
-                      print_close_tag("measurementScale");
-                      print_open_tag("missingValueCode");
-                        print_tag_val("missingValues", $var_node->field_var_missingvalues);
-                      //           code
-                      //           value
-                      print_close_tag("missingValueCode");
+                        print_tag_val("attributeName", $var_node->field_var_name);
+                        print_value("attributeLabel", $var_node->field_attribute_label);
+                        print_value("attributeDefinition", $var_node->field_var_definition);
+                        print_open_tag("measurementScale");
+                          print_open_tag("datatime");
+                            print_value("formatstring", $var_node->field_attribute_formatstring);
+                          print_close_tag("datatime");
+                          print_open_tag("ratio");
+                            print_open_tag("numericDomain");
+                              print_open_tag("bounds");
+                                print_value("maximum", $var_node->field_attribute_maximum);
+                                print_value("minimum", $var_node->field_attribute_minimum);
+                              print_close_tag("bounds");
+                            print_close_tag("numericDomain");
+                            print_value("precision", $var_node->field_attribute_precision);
+                            print_open_tag("unit");
+                              print_value("standardUnit", $var_node->field_attribute_unit);
+                            print_close_tag("unit");
+                          print_close_tag("ratio");
+                          print_open_tag("nominal");
+                            print_open_tag("nonNumericDomain");
+                              print_open_tag("enumeratedDomain");
+                                print_value("codeDefinition", $var_node->field_code_definition);
+                              //                   code
+                              //                   definition
+                              print_close_tag("enumeratedDomain");
+                            print_close_tag("nonNumericDomain");
+                          print_close_tag("nominal");
+                        print_close_tag("measurementScale");
+                        print_open_tag("missingValueCode");
+                          print_value("missingValues", $var_node->field_var_missingvalues);
+                        //           code
+                        //           value
+                        print_close_tag("missingValueCode");
                       print_close_tag("attribute");
                     }
                   }                
                 print_close_tag("attributeList");
               print_close_tag("dataTable");
             }
-          }
+          }  
+          // TODO: move repeated parts into function print_person and call 
           // take owner
           $owner_nid = $node->field_dataset_owner_ref;
           foreach ($owner_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
-              $owner_node = node_load($value2);
+              $owner_node = node_load($value2);      
               print_open_tag("owner");
-              
-                print_tag_val("givenName", $owner_node->field_person_first_name);
-                
-                print_tag_val("surname", $owner_node->field_person_last_name);
-                print_tag_val("organization", $owner_node->field_person_organization);
-                print_tag_val("role", $owner_node->field_person_role);
-                print_tag_val("title", $owner_node->field_person_title);
+                print_value("title",              $owner_node->field_person_title);
+                print_value("givenName",          $owner_node->field_person_first_name);
+                print_value("surname",            $owner_node->field_person_last_name);
+                print_value("organization",       $owner_node->field_person_organization);
+                print_value("role",               $owner_node->field_person_role);
+                print_value("deliveryPoint",      $owner_node->field_person_address);
+                print_value("city",               $owner_node->field_person_city);
+                print_value("administrativeArea", $owner_node->field_person_state);
+                print_value("postalCode",         $owner_node->field_person_zipcode);
+                print_value("country",            $owner_node->field_person_country);
+                print_value("phone",              $owner_node->field_person_phone);
+                print_value("fax",                $owner_node->field_person_fax);
                 foreach($owner_node->field_person_email as $email) {
                   print_tag_line("electronicMailAddress", $email["email"]);
                 }
-                print_tag_val("deliveryPoint", $owner_node->field_person_address);
-                print_tag_val("city", $owner_node->field_person_city);
-                print_tag_val("administrativeArea", $owner_node->field_person_state);
-                print_tag_val("postalCode", $owner_node->field_person_zipcode);
-                print_tag_val("country", $owner_node->field_person_country);
-                print_tag_val("phone", $owner_node->field_person_phone);
-                print_tag_val("fax", $owner_node->field_person_fax);
-                print_tag_val("personid", $owner_node->field_person_personid);              
+                print_value("personid",           $owner_node->field_person_personid);              
             }
             print_close_tag("owner");
           }
           
           // array("field_name" => "field_dataset_contact_ref",      "tag_name" => "contact",      "array_name" => "person_field_arr"),
-          // take owner
+          // take contact
           $contact_nid = $node->field_dataset_contact_ref;
           foreach ($contact_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -471,7 +515,7 @@ foreach ($themed_rows as $count => $row):
             }
           }
           // array("field_name" => "field_dataset_datamanager_ref",  "tag_name" => "data_manager", "array_name" => "person_field_arr"),
-          // take owner
+          // take data_manager
           $datamanager_nid = $node->field_dataset_datamanager_ref;
           foreach ($datamanager_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -481,7 +525,7 @@ foreach ($themed_rows as $count => $row):
             }
           }
           // array("field_name" => "field_dataset_fieldcrew_ref",    "tag_name" => "field_crew",   "array_name" => "person_field_arr"),
-          // take owner
+          // take field_crew
           $fieldcrew_nid = $node->field_dataset_fieldcrew_ref;
           foreach ($fieldcrew_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -491,7 +535,7 @@ foreach ($themed_rows as $count => $row):
             }
           }
           // array("field_name" => "field_dataset_labcrew_ref",      "tag_name" => "labcrew",      "array_name" => "person_field_arr"),
-          // take owner
+          // take labcrew
           $labcrew_nid = $node->field_dataset_labcrew_ref;
           foreach ($labcrew_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -501,7 +545,7 @@ foreach ($themed_rows as $count => $row):
             }
           }
           // array("field_name" => "field_dataset_ext_assoc",        "tag_name" => "ext_assoc",    "array_name" => "person_field_arr"),
-          // take owner
+          // take ext_assoc
           $ext_assoc_nid = $node->field_dataset_ext_assoc_ref;
           foreach ($ext_assoc_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -541,17 +585,17 @@ foreach ($themed_rows as $count => $row):
                 print_close_tag("siteid");
                 
               // dpr($research_site_node);
-                // print_tag_val("image",      $research_site_node->field_research_site_image);       
-                // print_tag_val("pt_coords",  $research_site_node->field_research_site_pt_coords);   
-                // print_tag_val("elevation",  $research_site_node->field_research_site_elevation);   
-                // print_tag_val("landform",   $research_site_node->field_research_site_landform);    
-                // print_tag_val("geology",    $research_site_node->field_research_site_geology);     
-                // print_tag_val("soils",      $research_site_node->field_research_site_soils);       
-                // print_tag_val("hydrology",  $research_site_node->field_research_site_hydrology);   
-                // print_tag_val("vegetation", $research_site_node->field_research_site_vegetation);  
-                // print_tag_val("climate",    $research_site_node->field_research_site_climate);     
-                // print_tag_val("history",    $research_site_node->field_research_site_history);     
-                // print_tag_val("siteid",     $research_site_node->field_research_site_siteid);      
+                // print_value("image",      $research_site_node->field_research_site_image);       
+                // print_value("pt_coords",  $research_site_node->field_research_site_pt_coords);   
+                // print_value("elevation",  $research_site_node->field_research_site_elevation);   
+                // print_value("landform",   $research_site_node->field_research_site_landform);    
+                // print_value("geology",    $research_site_node->field_research_site_geology);     
+                // print_value("soils",      $research_site_node->field_research_site_soils);       
+                // print_value("hydrology",  $research_site_node->field_research_site_hydrology);   
+                // print_value("vegetation", $research_site_node->field_research_site_vegetation);  
+                // print_value("climate",    $research_site_node->field_research_site_climate);     
+                // print_value("history",    $research_site_node->field_research_site_history);     
+                // print_value("siteid",     $research_site_node->field_research_site_siteid);      
               print_close_tag("research_site");
             }
           }
