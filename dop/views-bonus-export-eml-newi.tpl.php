@@ -304,10 +304,10 @@ foreach ($themed_rows as $count => $row):
                           print_open_tag("nominal");
                             print_open_tag("nonNumericDomain");
                               print_open_tag("enumeratedDomain");
-                                // foreach.. cycle over multiple field_code_definition values.. there may be many
+???example                                // foreach.. cycle over multiple field_code_definition values.. there may be many
                                 print_open_tag("codeDefinition");
                                      $codeDef=$var_node->field_code_definition);
-                                     // example???
+example???
                                      // dpr($codeDef);
                                      // <codeDefinition>G=five-points grass core site</codeDefinition>
                                      // <codeDefinition>C=Rio Salado</codeDefinition>
@@ -400,7 +400,8 @@ foreach ($themed_rows as $count => $row):
                    // print_close_tag("research_site");     
                   print_close_tag("geographicDescription");
                   print_open_tag("boundingCoordinates");
-                    print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                    print_value("westBoundingCoordinate",
+???example                     $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                     print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                     print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                     print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only

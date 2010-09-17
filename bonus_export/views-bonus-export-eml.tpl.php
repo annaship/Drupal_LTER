@@ -469,6 +469,7 @@ foreach ($themed_rows as $count => $row):
                                   // )
                                   // </pre>
                                   preg_match('/(?<code>\w+)=(?<definition>\w+)/', $codeDef, $matches);
+                                  // ???what if there're no matches?
                                   print_value("code", $matches["code"]);                     //                   code
                                   print_value("definition", $matches["definition"]);         //                   definition
                                 print_close_tag("codeDefinition");
