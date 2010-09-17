@@ -106,6 +106,30 @@ function print_person($ref_field_arr, $person_tag)
   }
 } 
        
+function print_temporal_coverage($beg_end_date) {
+  print_open_tag("temporalCoverage");        
+  foreach($beg_end_date as $dataset_date) {         
+    $first_date  = $dataset_date["value"];
+    $second_date = $dataset_date["value2"];
+    if ($first_date== $second_date) {
+       print_open_tag("singleDateTime");
+         print_tag_line("calendarDate", $first_date);          
+       print_close_tag("singleDateTime");
+    } 
+    else {
+      print_open_tag("rangeOfDates");
+        print_open_tag("beginDate");
+          print_tag_line("calendarDate", $first_date);          
+        print_close_tag("beginDate");
+        print_open_tag("endDate");
+          print_tag_line("calendarDate", $second_date);          
+        print_close_tag("endDate");
+      print_close_tag("rangeOfDates");
+    }
+  }
+  print_close_tag("temporalCoverage");
+}       
+       
 // url for datafile urls
 $urlBase="http://".$_SERVER['HTTP_HOST']."/";
 
@@ -235,27 +259,7 @@ foreach ($themed_rows as $count => $row):
 
           // "coverage" repeated in data_file, TODO: move to function
           print_open_tag("coverage");           
-            print_open_tag("temporalCoverage");        
-            foreach($node->field_beg_end_date as $dataset_date) {         
-              $first_date  = $dataset_date["value"];
-              $second_date = $dataset_date["value2"];
-              if ($first_date== $second_date) {
-                 print_open_tag("singleDateTime");
-                   print_tag_line("calendarDate", $first_date);          
-                 print_close_tag("singleDateTime");
-              } 
-              else {
-                print_open_tag("rangeOfDates");
-                  print_open_tag("beginDate");
-                    print_tag_line("calendarDate", $first_date);          
-                  print_close_tag("beginDate");
-                  print_open_tag("endDate");
-                    print_tag_line("calendarDate", $second_date);          
-                  print_close_tag("endDate");
-                print_close_tag("rangeOfDates");
-              }
-            }
-            print_close_tag("temporalCoverage");
+            print_temporal_coverage($node->field_beg_end_date);
           print_close_tag("coverage");        
           
           print_open_tag("purpose");
@@ -345,19 +349,9 @@ foreach ($themed_rows as $count => $row):
           
                 print_open_tag("coverage");          
                 //  geo coverage here
-                  print_open_tag("temporalCoverage");
-                    print_open_tag("rangeOfDates");
-                      foreach($file_node->field_beg_end_date as $dataset_date) {
-                        print_open_tag("beginDate");
-                          print_tag_line("calendarDate", $dataset_date["value"]);          
-                        print_close_tag("beginDate");
-                        print_open_tag("endDate");
-                          print_tag_line("calendarDate", $dataset_date["value2"]);          
-                        print_close_tag("endDate");
-                      }
-                    print_close_tag("rangeOfDates");
-                  print_close_tag("temporalCoverage");
-                  // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
+                // ??? all the same as for dataset? repeat geo info?
+                print_temporal_coverage($file_node->field_datafile_date);
+                // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
                 print_close_tag("coverage");
           
                 print_open_tag("methods");
@@ -449,6 +443,7 @@ foreach ($themed_rows as $count => $row):
           // }  
           
           // take research_site
+          // ??? what move into "coverage"? all that?:
           $research_site_nid = $node->field_dataset_site_ref;
           foreach ($research_site_nid as $key1 => $value1):
             foreach ($value1 as $key2 => $value2){
