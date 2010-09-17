@@ -41,7 +41,7 @@ function print_person($ref_field_arr, $person_tag) {
         print_value("administrativeArea", $person_node->field_person_state);
         print_value("postalCode",         $person_node->field_person_zipcode);
         print_value("country",            $person_node->field_person_country);
-!!!        print_value("phone",              $person_node->field_person_phone); // in reality, phone and fax are both <phone> tags in EML, the disctintion is in the attribute "phonetype (voice or fax)"
+        print_value("phone",              $person_node->field_person_phone); // in reality, phone and fax are both <phone> tags in EML, the disctintion is in the attribute "phonetype (voice or fax)"
         print_value("fax",                $person_node->field_person_fax);      
         $person_role = $person_node->field_person_role;
       //   if ($person_role != "owner" AND $person_role != "creator" AND $person_role != "contact") {
@@ -73,12 +73,12 @@ foreach ($themed_rows as $count => $row):
           $node = node_load($content);
           // --------------------------------------
           // dpr($node);
-!!!          print_value("shortName", $node->field_dataset_short_name);  // conditional (it is optional)
+          print_value("shortName", $node->field_dataset_short_name);  // conditional (it is optional)
           print_tag_line("title", $node->title);          
 
           // person refs
           print_person($node->field_dataset_owner_ref,          "owner");
-!!!          // HERE we need to hardcode the metadataProvider -- it has the structure of a "person"
+???          // HERE we need to hardcode the metadataProvider -- it has the structure of a "person"
           // but it is the same for any given LTER site.
           //
           print_open_tag("associatedParty");
@@ -94,10 +94,10 @@ foreach ($themed_rows as $count => $row):
           //  here we would need to print the keywords from the taxonomies associated with the "Data Set" CCT
           //  hopefully, only ONE vocabulary for a given Data Set CCT
           print_open_tag("keywordSet");
-!!!need example!!!            foreach (term): // obviously, needs work
+???need example!!!            foreach (term): // obviously, needs work
               print_value("keyword", node->taxonomy->term);
             }
-!!!            print_value("keywordThesaurus", node->taxonomy->vocabularyName); // needs work :)
+???            print_value("keywordThesaurus", node->taxonomy->vocabularyName); // needs work :)
           print_close_tag("keywordSet");
           
           //  i added additional info block in here.
@@ -158,7 +158,7 @@ foreach ($themed_rows as $count => $row):
             
           print_close_tag("coverage");
     
-!!!put allwed tags into strip_tag above //some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
+???put allowed tags into strip_tag above //some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
           
           print_open_tag("purpose");
              print_open_tag("para");
@@ -166,7 +166,7 @@ foreach ($themed_rows as $count => $row):
              print_close_tag("para");
           print_clsose_tag("purpose");
           
-!!!put allwed tags into strip_tag above          // some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
+???put allowed tags into strip_tag above          // some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
           
           print_open_tag("maintenance");
             print_open_tag("description");
@@ -206,7 +206,7 @@ foreach ($themed_rows as $count => $row):
           
          // this... im not sure where it maps, let me think  
          // 
-!!!          print_value("related_links", $node->field_dataset_related_links);
+???          print_value("related_links", $node->field_dataset_related_links);
 
           // take file  -- ISG it is good here.
           $file_nid = $node->field_dataset_datafile_ref;
@@ -281,7 +281,7 @@ foreach ($themed_rows as $count => $row):
                         
                         print_open_tag("measurementScale"); 
                         
-!!!                        // in here is important the conditionals, 
+??? example                        // in here is important the conditionals, 
                           // since we can only choose one type (datetime OR ration OR nominal)
                           //
                           print_open_tag("datatime");

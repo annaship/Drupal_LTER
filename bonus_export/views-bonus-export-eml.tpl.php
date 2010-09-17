@@ -9,17 +9,20 @@
  *
  */
 
-// $html_tags_allowed = "<p><h1><h2><h3><h4><h5><a><pre><para>";
+// put allowed HTML tags here
+function my_strip_tags($content) {
+  return strip_tags($content, "<p><h1><h2><h3><h4><h5><a><pre><para>");
+}
 
 function print_tag_line($label, $content) {  
   if (isset($content) && !empty($content)) {
-    print '<'.$label.'>'.strip_tags($content, "<p><h1><h2><h3><h4><h5><a><pre><para>").'</'.$label.'>';
+    print '<'.$label.'>'.my_strip_tags($content).'</'.$label.'>';
   }
 }
 
 function print_attr_line($label, $content, $attribute_name, $attribute_value) {    
   if (isset($content) && !empty($content)) {
-    print '<'.$label.' '.$attribute_name.'="'.$attribute_value.'">'.strip_tags($content, "<p><h1><h2><h3><h4><h5><a><pre><para>").'</'.$label.'>';
+    print '<'.$label.' '.$attribute_name.'="'.$attribute_value.'">'.my_strip_tags($content).'</'.$label.'>';
     
   }
 }
@@ -37,7 +40,7 @@ function print_value($tag, $content) {
     foreach ($content as $in_arr) {
       // open when tree will be settled
       // if (!empty($in_arr['value'])) {    
-        print_tag_line($tag, strip_tags($in_arr['value'], "<p><h1><h2><h3><h4><h5><a><pre><para>"));
+        print_tag_line($tag, my_strip_tags($in_arr['value']));
       // }
     }
   }
@@ -48,7 +51,7 @@ function get_uniq_value($content) {
     // foreach ($content as $in_arr) {
       // open when tree will be settled
       // if (!empty($in_arr['value'])) {    
-        return strip_tags($content[0]['value'], "<p><h1><h2><h3><h4><h5><a><pre><para>");
+        return my_strip_tags($content[0]['value']);
       // }
     // }
   }
