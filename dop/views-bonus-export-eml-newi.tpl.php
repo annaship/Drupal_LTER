@@ -94,7 +94,7 @@ foreach ($themed_rows as $count => $row):
           //  here we would need to print the keywords from the taxonomies associated with the "Data Set" CCT
           //  hopefully, only ONE vocabulary for a given Data Set CCT
           print_open_tag("keywordSet");
-???need example!!!            foreach (term): // obviously, needs work
+???need an example!!!            foreach (term): // obviously, needs work
               print_value("keyword", node->taxonomy->term);
             }
 ???            print_value("keywordThesaurus", node->taxonomy->vocabularyName); // needs work :)

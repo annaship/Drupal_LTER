@@ -82,7 +82,7 @@ function print_person($ref_field_arr, $person_tag)
         $person_node = node_load($value2);      
         print_open_tag($person_tag);
           print_value("givenName",          $person_node->field_person_first_name);
-          print_value("surname",            $person_node->field_person_last_name);
+          print_value("surName",            $person_node->field_person_last_name);
           print_value("organization",       $person_node->field_person_organization);
           print_value("deliveryPoint",      $person_node->field_person_address);
           print_value("city",               $person_node->field_person_city);
@@ -158,6 +158,8 @@ foreach ($themed_rows as $count => $row):
           print_value("shortName", $node->field_dataset_short_name);
           print_tag_line("title", $node->title);    
           
+          // person refs
+          print_person($node->field_dataset_owner_ref,          "owner");
           // TODO, hardcode the metadataProvider
           print_open_tag("metadataProvider");
             print_tag_line("givenName",             "");
@@ -175,8 +177,6 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("personid",              "");              
           print_close_tag("metadataProvider");
           
-          // person refs
-          print_person($node->field_dataset_owner_ref,          "owner");
           print_open_tag("associatedParty");
             print_person($node->field_dataset_datamanager_ref,  "data_manager");
             print_person($node->field_dataset_fieldcrew_ref,    "field_crew");
@@ -251,14 +251,24 @@ foreach ($themed_rows as $count => $row):
                     </url>
                     </distribution>
                     */          
-          
-            foreach ($file_data_arr as $file_data) {
-              if (isset($file_data) && !empty($file_data["filepath"])) {
-                  print_tag_line("url", $urlBase.$file_data["filepath"]);
-              } 
-            }
-          print_close_tag("distribution");  
+                    
+                    /*
+                    $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
 
+                    echo $path_parts['dirname'], "\n";
+                    echo $path_parts['basename'], "\n";
+                    echo $path_parts['extension'], "\n";
+                    echo $path_parts['filename'], "\n"; // since PHP 5.2.0
+                    */
+          
+            // foreach ($file_data_arr as $file_data) {
+            //   if (isset($file_data) && !empty($file_data["filepath"])) {
+            //       print_tag_line("url", $urlBase.dirname($file_data["filepath"]));
+            //   } 
+            // }
+            // ??? what if dirname is different for dif. files?
+                print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
+          print_close_tag("distribution");  
 
           // "coverage" repeated in data_file, TODO: move to function
           print_open_tag("coverage");           
