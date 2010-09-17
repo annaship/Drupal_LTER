@@ -9,9 +9,18 @@
  *
  */
 
-function print_tag_line($label, $content) {    
-  if (!empty($content)) {
+// $html_tags_allowed = "<p><h1><h2><h3><h4><h5><a><pre><para>";
+
+function print_tag_line($label, $content) {  
+  if (isset($content) && !empty($content)) {
     print '<'.$label.'>'.strip_tags($content, "<p><h1><h2><h3><h4><h5><a><pre><para>").'</'.$label.'>';
+  }
+}
+
+function print_attr_line($label, $content, $attribute_name, $attribute_value) {    
+  if (isset($content) && !empty($content)) {
+    print '<'.$label.' '.$attribute_name.'="'.$attribute_value.'">'.strip_tags($content, "<p><h1><h2><h3><h4><h5><a><pre><para>").'</'.$label.'>';
+    
   }
 }
 
@@ -23,9 +32,9 @@ function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
                                
-function print_value($tag, $arr) {
-  if (!empty($arr)) {
-    foreach ($arr as $in_arr) {
+function print_value($tag, $content) {
+  if (isset($content) && !empty($content)) {
+    foreach ($content as $in_arr) {
       // open when tree will be settled
       // if (!empty($in_arr['value'])) {    
         print_tag_line($tag, strip_tags($in_arr['value'], "<p><h1><h2><h3><h4><h5><a><pre><para>"));
@@ -34,23 +43,37 @@ function print_value($tag, $arr) {
   }
 }
 
-function get_geo($label, $arr) {
-  foreach($arr as $value) {  
-    if (!empty($value['value'])) {
-      if (!empty($geoDesc)) {
-        $geoDesc .= ", ".$label.": ".$value['value']; 
+function get_uniq_value($content) {
+  if (isset($content) && !empty($content)) {
+    // foreach ($content as $in_arr) {
+      // open when tree will be settled
+      // if (!empty($in_arr['value'])) {    
+        return strip_tags($content[0]['value'], "<p><h1><h2><h3><h4><h5><a><pre><para>");
+      // }
+    // }
+  }
+}
+
+// first time make $comma_flag = 0, to skip comma
+function get_geo($label, $content, $comma_flag = 1) {
+  if (isset($content) && !empty($content)) {
+    foreach($content as $value) {  
+      if (!empty($value['value'])) {   
+        if ($comma_flag == 1) {
+          $geoDesc .= ", ".$label.": ".$value['value']; 
+        }
+        else {
+          $geoDesc .= $label.": ".$value['value'];
+        }
       }
-      else {
-        $geoDesc .= $label.": ".$value['value'];
-      }
-    }
-  }             
+    }             
+  }
   return $geoDesc;
 }
 
 function print_person($ref_field_arr, $person_tag)
 {                                                         
-  if (!empty($ref_field_arr)) {
+  if (isset($ref_field_arr) && !empty($ref_field_arr)) {
     foreach ($ref_field_arr as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){
         $person_node = node_load($value2);      
@@ -63,8 +86,10 @@ function print_person($ref_field_arr, $person_tag)
           print_value("administrativeArea", $person_node->field_person_state);
           print_value("postalCode",         $person_node->field_person_zipcode);
           print_value("country",            $person_node->field_person_country);
-          print_value("phone",              $person_node->field_person_phone);
-          print_value("fax",                $person_node->field_person_fax);
+          print_attr_line('phone', get_uniq_value($person_node->field_person_phone),
+                          'phonetype', 'voice');
+          print_attr_line('phone', get_uniq_value($person_node->field_person_fax),
+                          'phonetype', 'fax');
           $person_role_arr = $person_node->field_person_role;         
           $person_role     = $person_role_arr[0][value];   
           $not_show_role   = array ("owner", "creator", "contact");    
@@ -83,6 +108,8 @@ function print_person($ref_field_arr, $person_tag)
        
 // url for datafile urls
 $urlBase="http://".$_SERVER['HTTP_HOST']."/";
+
+// ---------- end of config section ----------
   
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 
@@ -92,6 +119,8 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
 
 <?php 
 
+// ??? packageId="knb-lter-pie.3.6" above ???
+
 foreach ($themed_rows as $count => $row): 
 /* dataset
 */                                                        
@@ -100,7 +129,24 @@ foreach ($themed_rows as $count => $row):
         foreach ($row as $field => $content):         
           $node = node_load($content);             
           print_value("shortName", $node->field_dataset_short_name);
-          print_tag_line("title", $node->title);          
+          print_tag_line("title", $node->title);    
+          
+          // TODO, hardcode the metadataProvider
+          print_open_tag("metadataProvider");
+            print_tag_line("givenName",             "");
+            print_tag_line("surname",               "");
+            print_tag_line("organization",          "");
+            print_tag_line("deliveryPoint",         "");
+            print_tag_line("city",                  "");
+            print_tag_line("administrativeArea",    "");
+            print_tag_line("postalCode",            "");
+            print_tag_line("country",               "");
+            print_tag_line("phone",                 "");
+            print_tag_line("fax",                   "");
+            print_tag_line("role",                  "");
+            print_tag_line("electronicMailAddress", "");
+            print_tag_line("personid",              "");              
+          print_close_tag("metadataProvider");
           
           // person refs
           print_person($node->field_dataset_owner_ref,          "owner");
@@ -136,22 +182,57 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("section");
           print_close_tag("intellectualRights");
                                                          
-          // we are going through that twice, here and in DataTable, TODO: move to array once and use
+          // take a file, result used here and in DataTable
           $file_nid = $node->field_dataset_datafile_ref;
           foreach ($file_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
               $file_node = node_load($value2);
+              $file_node_arr[] = $file_node;
               foreach($file_node->field_data_file as $file_data) {
-                // open when tree will be settled
-                // if (!empty($file_data["filepath"])) {
-                  print_open_tag("distribution");                      
-                    print_tag_line("url", $urlBase.$file_data["filepath"]);
-                  print_close_tag("distribution");  
-                // } 
+                $file_data_arr[] = $file_data;
               }
             }
           }
+
+          print_open_tag("distribution");    
+                    // ??? if there are several files from different dirs?
+                    /*
+                    <distribution>
+                    −
+                    <url>
+                    http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
+                    </url>
+                    −
+                    <url>
+                    http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
+                    </url>
+                    </distribution>
+                    */
+          // or
+                    /*
+                    <distribution>
+                    −
+                    <url>
+                    http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
+                    </url>
+                    </distribution>
+                    −
+                    <distribution>
+                    −
+                    <url>
+                    http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
+                    </url>
+                    </distribution>
+                    */          
           
+            foreach ($file_data_arr as $file_data) {
+              if (isset($file_data) && !empty($file_data["filepath"])) {
+                  print_tag_line("url", $urlBase.$file_data["filepath"]);
+              } 
+            }
+          print_close_tag("distribution");  
+
+
           // "coverage" repeated in data_file, TODO: move to function
           print_open_tag("coverage");           
             print_open_tag("temporalCoverage");        
@@ -210,7 +291,7 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("personid",              "");              
           print_close_tag("publiser");
           
-          // pubPlace here, harcoded to the site. <pubPLace> Plum Island Ecosystems LTER </pubPlace>
+          // pubPlace here, harcoded??? to the site. <pubPLace> Plum Island Ecosystems LTER </pubPlace>
           $site_name = variable_get("site_name", NULL);
           print_tag_line("pubPlace", $site_name);
 
@@ -230,19 +311,15 @@ foreach ($themed_rows as $count => $row):
           print_value("related_links", $node->field_dataset_related_links);
           
           
-          // take file
-          $file_nid = $node->field_dataset_datafile_ref;
-          foreach ($file_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $file_node = node_load($value2);
+          // data_file
+            foreach ($file_node_arr as $file_node) {
               print_open_tag("dataTable");
-                // todo: take once and keep filename and filepath in some array to use later, should be faster
-                foreach($file_node->field_data_file as $file_data) {
+                foreach ($file_node->field_data_file as $file_data) {
                   print_tag_line("entityName", $file_data["filename"]);
                 }
                 print_value("entityDescription", $file_node->field_datafile_description);
                 print_open_tag("physical");   
-                  foreach($file_node->field_data_file as $file_data) {
+                  foreach ($file_node->field_data_file as $file_data) {
                     print_tag_line("objectName", $file_data["filename"]);
                   }
                   print_open_tag("dataFormat");
@@ -257,7 +334,7 @@ foreach ($themed_rows as $count => $row):
                       print_close_tag("simpleDelimited");
                     print_close_tag("textFormat");
                   print_close_tag("dataFormat");
-                  foreach($file_node->field_data_file as $file_data) {
+                  foreach ($file_node->field_data_file as $file_data) {
                     if (!empty($file_data["filepath"])) {
                       print_open_tag("distribution");                      
                         print_tag_line("url", $urlBase.$file_data["filepath"]);
@@ -267,7 +344,7 @@ foreach ($themed_rows as $count => $row):
                 print_close_tag("physical");
           
                 print_open_tag("coverage");          
-                //  geo coverage here.
+                //  geo coverage here
                   print_open_tag("temporalCoverage");
                     print_open_tag("rangeOfDates");
                       foreach($file_node->field_beg_end_date as $dataset_date) {
@@ -305,6 +382,8 @@ foreach ($themed_rows as $count => $row):
                         print_value("attributeDefinition", $var_node->field_var_definition);       
                         
                         print_open_tag("measurementScale");
+                          // $a = $var_node->field_attribute_maximum;
+                          // dpr(!empty($a[0]['value']));
                           print_open_tag("datatime");
                             print_value("formatstring", $var_node->field_attribute_formatstring);
                           print_close_tag("datatime");
@@ -366,16 +445,16 @@ foreach ($themed_rows as $count => $row):
                 print_close_tag("attributeList");
               print_close_tag("dataTable");
             }
-          }  
+            // }
+          // }  
           
           // take research_site
           $research_site_nid = $node->field_dataset_site_ref;
-          foreach ($research_site_nid as $key1 => $value1){
+          foreach ($research_site_nid as $key1 => $value1):
             foreach ($value1 as $key2 => $value2){
               $research_site_node = node_load($value2);      
               print_open_tag("geographicCoverage");      
-              // TODO: ", " before 
-                $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform);
+                $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
                 $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
                 $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
                 $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
@@ -384,45 +463,21 @@ foreach ($themed_rows as $count => $row):
                 $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
                 $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
                 print_tag_line("geographicDescription", $geoDesc);
+
+                //                 example!!!
+                print_open_tag("boundingCoordinates");
+                  print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                  print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                  print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                  print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                  print_open_tag("boundingAltitudes"); //conditional on content
+                    print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
+                    print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
+                  print_close_tag("boundingAltitudes");
+                print_close_tag("boundingCoordinates");
               print_close_tag("geographicCoverage");
-   
-           
-              print_open_tag("research_site");
-                print_open_tag("pt_coords");
-                  print_value("pt_coords",  $research_site_node->field_research_site_pt_coords);   
-                print_close_tag("pt_coords");
-                print_open_tag("elevation");
-                  print_value("elevation",  $research_site_node->field_research_site_elevation);   
-                print_close_tag("elevation");
-                print_open_tag("landform");
-                  print_value("landform",   $research_site_node->field_research_site_landform);    
-                print_close_tag("landform");
-                print_open_tag("geology");
-                  print_value("geology",    $research_site_node->field_research_site_geology);     
-                print_close_tag("geology");
-                print_open_tag("soils");
-                  print_value("soils",      $research_site_node->field_research_site_soils);       
-                print_close_tag("soils");
-                print_open_tag("hydrology");
-                  print_value("hydrology",  $research_site_node->field_research_site_hydrology);   
-                print_close_tag("hydrology");
-                print_open_tag("vegetation");
-                  print_value("vegetation", $research_site_node->field_research_site_vegetation);  
-                print_close_tag("vegetation");
-                print_open_tag("climate");
-                  print_value("climate",    $research_site_node->field_research_site_climate);     
-                print_close_tag("climate");
-                print_open_tag("history");
-                  print_value("history",    $research_site_node->field_research_site_history);     
-                print_close_tag("history");
-                print_open_tag("siteid");
-                  print_value("siteid",     $research_site_node->field_research_site_siteid);      
-                print_close_tag("siteid");
-                
-              print_close_tag("research_site");
             }
-          }
-          
+          endforeach; //research_site_nid
         endforeach; //($row as $field => $content)
         print_close_tag("dataset");
       endforeach; //($themed_rows as $count => $row)
