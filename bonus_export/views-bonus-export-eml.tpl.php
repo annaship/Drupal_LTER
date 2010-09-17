@@ -244,7 +244,7 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("section");
           print_close_tag("intellectualRights");
                                                          
-          // take a file, result used here and in DataTable
+          // take file, a result used here and in DataTable
           $file_nid = $node->field_dataset_datafile_ref;
           foreach ($file_nid as $key1 => $value1){
             foreach ($value1 as $key2 => $value2){
@@ -383,7 +383,7 @@ foreach ($themed_rows as $count => $row):
                       print_value("attributeOrientation", $file_node->field_orientation);
                       print_open_tag("simpleDelimited");
                         print_value("fieldDelimiter", $file_node->field_delimiter);
-                        print_value("QuoteCharacter", $file_node->field_quote_character);
+                        print_value("quoteCharacter", $file_node->field_quote_character);
                       print_close_tag("simpleDelimited");
                     print_close_tag("textFormat");
                   print_close_tag("dataFormat");
@@ -403,7 +403,7 @@ foreach ($themed_rows as $count => $row):
                   // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
                 print_close_tag("coverage");
           
-                print_open_tag("methods");
+                print_open_tag("method");
                   print_open_tag("methodStep");
                     print_value("instrumentation", $file_node->field_instrumentation);
                     print_value("description", $file_node->field_methods);
@@ -411,7 +411,7 @@ foreach ($themed_rows as $count => $row):
                   print_open_tag("qualityControl");
                     print_value("description", $file_node->field_quality);
                   print_close_tag("qualityControl");
-                print_close_tag("methods");
+                print_close_tag("method");
           
                 print_open_tag("attributeList");
                   // take variables
@@ -420,7 +420,7 @@ foreach ($themed_rows as $count => $row):
                     foreach ($value1 as $key2 => $value2){
                       $var_node = node_load($value2);
                       print_open_tag("attribute");      
-                        print_value("attributeName", $var_node->title);
+                        print_tag_line("attributeName", $var_node->title);
                         print_value("attributeLabel", $var_node->field_attribute_label);
                         print_value("attributeDefinition", $var_node->field_var_definition);       
                         
