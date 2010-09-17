@@ -132,6 +132,41 @@ function print_temporal_coverage($beg_end_date) {
   }
   print_close_tag("temporalCoverage");
 }       
+
+// take research_site as geographicCoverage
+// ??? what move into "coverage"? all that?:
+function print_geographic_coverage($research_site_nid) {
+  // $research_site_nid = $node->field_dataset_site_ref;
+  foreach ($research_site_nid as $key1 => $value1):
+    foreach ($value1 as $key2 => $value2){
+      $research_site_node = node_load($value2);      
+      print_open_tag("geographicCoverage");      
+        $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
+        $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
+        $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
+        $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
+        $geoDesc .= get_geo("Vegetation", $research_site_node->field_research_site_vegetation);
+        $geoDesc .= get_geo("Climate",    $research_site_node->field_research_site_climate);
+        $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
+        $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
+        print_tag_line("geographicDescription", $geoDesc);
+
+        //                 example!!!
+        print_open_tag("boundingCoordinates");
+          print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+          print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+          print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+          print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+          print_open_tag("boundingAltitudes"); //conditional on content
+            print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
+            print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
+          print_close_tag("boundingAltitudes");
+        print_close_tag("boundingCoordinates");
+      print_close_tag("geographicCoverage");
+    }
+  endforeach; //research_site_nid
+}
+
        
 // url for datafile urls
 $urlBase="http://".$_SERVER['HTTP_HOST']."/";
@@ -270,9 +305,10 @@ foreach ($themed_rows as $count => $row):
                 print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
           print_close_tag("distribution");  
 
-          // "coverage" repeated in data_file, TODO: move to function
           print_open_tag("coverage");           
+            print_geographic_coverage($node->field_dataset_site_ref);
             print_temporal_coverage($node->field_beg_end_date);
+            // taxonomicCoverage
           print_close_tag("coverage");        
           
           print_open_tag("purpose");
@@ -361,10 +397,10 @@ foreach ($themed_rows as $count => $row):
                 print_close_tag("physical");
           
                 print_open_tag("coverage");          
-                //  geo coverage here
-                // ??? all the same as for dataset? repeat geo info?
-                print_temporal_coverage($file_node->field_datafile_date);
-                // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
+                  // if several sites? see localhost
+                  print_geographic_coverage($file_node->field_datafile_site_ref);
+                  print_temporal_coverage($file_node->field_datafile_date);
+                  // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
                 print_close_tag("coverage");
           
                 print_open_tag("methods");
@@ -455,37 +491,6 @@ foreach ($themed_rows as $count => $row):
             // }
           // }  
           
-          // take research_site
-          // ??? what move into "coverage"? all that?:
-          $research_site_nid = $node->field_dataset_site_ref;
-          foreach ($research_site_nid as $key1 => $value1):
-            foreach ($value1 as $key2 => $value2){
-              $research_site_node = node_load($value2);      
-              print_open_tag("geographicCoverage");      
-                $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
-                $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
-                $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
-                $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
-                $geoDesc .= get_geo("Vegetation", $research_site_node->field_research_site_vegetation);
-                $geoDesc .= get_geo("Climate",    $research_site_node->field_research_site_climate);
-                $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
-                $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
-                print_tag_line("geographicDescription", $geoDesc);
-
-                //                 example!!!
-                print_open_tag("boundingCoordinates");
-                  print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                  print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                  print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                  print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                  print_open_tag("boundingAltitudes"); //conditional on content
-                    print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
-                    print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
-                  print_close_tag("boundingAltitudes");
-                print_close_tag("boundingCoordinates");
-              print_close_tag("geographicCoverage");
-            }
-          endforeach; //research_site_nid
         endforeach; //($row as $field => $content)
         print_close_tag("dataset");
       endforeach; //($themed_rows as $count => $row)
