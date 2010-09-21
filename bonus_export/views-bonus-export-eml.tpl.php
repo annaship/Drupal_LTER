@@ -37,12 +37,9 @@ function print_close_tag($tag) {
 }
                                
 function print_value($tag, $content) {      
-  if ($content) {
+  if ($content[0]['value']) {
     foreach ($content as $in_arr) {
-      // open when tree will be settled
-      // if (!empty($in_arr['value'])) {    
         print_tag_line($tag, my_strip_tags($in_arr['value']));
-      // }
     }
   }
 }
@@ -54,25 +51,22 @@ function get_uniq_value($content) {
 }
 
 // first time make $comma_flag = 0, to skip comma
-function get_geo($label, $content, $comma_flag = 1) {
-  if (isset($content) && !empty($content)) {
+function get_geo($label, $content, $comma_flag = 1) {   
+  if ($content[0]['value']) {
     foreach($content as $value) {  
-      if (!empty($value['value'])) {   
-        if ($comma_flag == 1) {
-          $geoDesc .= ", ".$label.": ".$value['value']; 
-        }
-        else {
-          $geoDesc .= $label.": ".$value['value'];
-        }
+      if ($comma_flag == 1) {
+        $geoDesc .= ", ".$label.": ".$value['value']; 
       }
-    }             
-  }
+      else {
+        $geoDesc .= $label.": ".$value['value'];
+      }
+    }
+  }             
   return $geoDesc;
 }
 
-function print_person($person_tag, $ref_field_arr)
-{                          
-  if (isset($ref_field_arr) && !empty($ref_field_arr)) {
+function print_person($person_tag, $ref_field_arr) {                 
+  if ($ref_field_arr[0]['nid']) {
     foreach ($ref_field_arr as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){
         $person_node          = node_load($value2);                                    
@@ -89,13 +83,13 @@ function print_person($person_tag, $ref_field_arr)
         $person_email         = $person_node->field_person_email;
         $person_personid      = $owner_node->field_person_personid;
         $person_role_arr      = $person_node->field_person_role;         
-        $person_role          = $person_role_arr[0][value];   
+        $person_role          = $person_role_arr[0]['value'];   
         $not_show_role        = array ("owner", "creator", "contact");    
 
         print_open_tag($person_tag);
           print_value("givenName",          $person_first_name); 
           print_value("surName",            $person_last_name);
-          print_value("organization",       $person_organization);
+          print_value("organization",       $person_organization);      
           print_value("deliveryPoint",      $person_address);
           print_value("city",               $person_city);
           print_value("administrativeArea", $person_state);
@@ -108,7 +102,7 @@ function print_person($person_tag, $ref_field_arr)
           if (!in_array($person_role, $not_show_role)) {
             print_tag_line("role", $person_role);
           }              
-          if ($person_email[0][email]) {
+          if ($person_email[0]['email']) {
             foreach($person_email as $email) {
               print_tag_line("electronicMailAddress", $email["email"]);
             }
@@ -120,8 +114,8 @@ function print_person($person_tag, $ref_field_arr)
   }
 } 
        
-function print_temporal_coverage($beg_end_date) {
-  if (!empty($beg_end_date)) {
+function print_temporal_coverage($beg_end_date) { 
+  if ($beg_end_date[0]['value']) {
     print_open_tag("temporalCoverage");        
     foreach($beg_end_date as $dataset_date) {         
       $first_date  = $dataset_date["value"];
@@ -149,8 +143,7 @@ function print_temporal_coverage($beg_end_date) {
 // take research_site as geographicCoverage
 // ??? what move into "coverage"? all that?:
 function print_geographic_coverage($research_site_nid) {       
-
-  if ($research_site_nid) { 
+  if ($research_site_nid[0]['nid']) { 
     // $research_site_nid = $node->field_dataset_site_ref;
     foreach ($research_site_nid as $key1 => $value1):
       foreach ($value1 as $key2 => $value2){
@@ -165,11 +158,11 @@ function print_geographic_coverage($research_site_nid) {
         $research_site_siteid     = $research_site_node->field_research_site_siteid;
         $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
         $research_site_elevation  = $research_site_node->field_research_site_elevation;        
-        if ($research_site_landform[0][value]   || $research_site_geology[0][value] || 
-            $research_site_soils[0][value]      || $research_site_hydrology[0][value] || 
-            $research_site_vegetation[0][value] || $research_site_climate[0][value] || 
-            $research_site_history[0][value]    || $research_site_siteid[0][value] || 
-            !empty($research_site_pt_coords)    || $research_site_elevation[0][value]) {
+        if ($research_site_landform[0]['value']   || $research_site_geology[0]['value'] || 
+            $research_site_soils[0]['value']      || $research_site_hydrology[0]['value'] || 
+            $research_site_vegetation[0]['value'] || $research_site_climate[0]['value'] || 
+            $research_site_history[0]['value']    || $research_site_siteid[0]['value'] || 
+            !empty($research_site_pt_coords)      || $research_site_elevation[0]['value']) {
           print_open_tag("geographicCoverage");      
             $geoDesc  = get_geo("Landform",   $research_site_landform, 0);
             $geoDesc .= get_geo("Geology",    $research_site_geology);
@@ -182,7 +175,7 @@ function print_geographic_coverage($research_site_nid) {
             print_tag_line("geographicDescription", $geoDesc);
 
             //                 example!!!                
-            if (!empty($research_site_pt_coords) || ($research_site_elevation[0][value])) {
+            if (!empty($research_site_pt_coords) || ($research_site_elevation[0]['value'])) {
               print_open_tag("boundingCoordinates");
                 print_value("westBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                 print_value("eastBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
@@ -250,8 +243,8 @@ foreach ($themed_rows as $count => $row):
           $dataset_related_links    = $node->field_dataset_related_links;
 
           // take file, a result used here and in DataTable
-          $file_nid = $node->field_dataset_datafile_ref;
-          if ($file_nid) {
+          $file_nid = $node->field_dataset_datafile_ref; 
+          if ($file_nid[0]['nid']) {
             foreach ($file_nid as $key1 => $value1){
               foreach ($value1 as $key2 => $value2){
                 $file_node = node_load($value2);
@@ -263,7 +256,7 @@ foreach ($themed_rows as $count => $row):
             }
           }
 
-          if ($dataset_short_name[0][value]) {
+          if ($dataset_short_name[0]['value']) {
             print_value("shortName", $dataset_short_name);
           }
           print_tag_line("title", $dataset_title);    
@@ -287,10 +280,11 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("personid",              "");              
           print_close_tag("metadataProvider");
                                                
-          if (($dataset_datamanager_ref[0][nid]) || ($dataset_fieldcrew_ref[0][nid]) || ($dataset_labcrew_ref[0][nid]) || ($dataset_ext_assoc[0][nid])) {                     
+          if ($dataset_datamanager_ref[0]['nid'] || $dataset_fieldcrew_ref[0]['nid'] || 
+              $dataset_labcrew_ref[0]['nid'] || $dataset_ext_assoc[0]['nid']) {                     
             // ??? empty tags, because all field_person are empty, but 
-            // [title] => Hap Garritt
-            // [name] => admin
+            // ['title'] => Hap Garritt
+            // ['name'] => admin
             print_open_tag("associatedParty");
               print_person("data_manager",  $dataset_datamanager_ref);
               print_person("field_crew",    $dataset_fieldcrew_ref);
@@ -299,7 +293,7 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("associatedParty");
           }          
           
-          print_value("pubDate", $dataset_publication_date);
+          print_value("pubDate",  $dataset_publication_date);
           print_value("abstract", $dataset_abstract);         
                      
           // TODO: add if, depend of structure
@@ -374,7 +368,7 @@ foreach ($themed_rows as $count => $row):
                 print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
           print_close_tag("distribution");  
                                   
-          if ($dataset_site_ref[0][nid] || $dataset_beg_end_date[0][value]) {
+          if ($dataset_site_ref[0]['nid'] || $dataset_beg_end_date[0]['value']) {
             print_open_tag("coverage");           
               print_geographic_coverage($dataset_site_ref);
               print_temporal_coverage($dataset_beg_end_date);
@@ -419,16 +413,16 @@ foreach ($themed_rows as $count => $row):
           $site_name = variable_get("site_name", NULL);
           print_tag_line("pubPlace", $site_name);
 
-          if ($dataset_instrumentation[0][value] || $dataset_methods[0][value] || $dataset_quality[0][value]) {
+          if ($dataset_instrumentation[0]['value'] || $dataset_methods[0]['value'] || $dataset_quality[0]['value']) {
             print_open_tag("methods");
-            if ($dataset_instrumentation[0][value] || $dataset_methods[0][value]) {
+            if ($dataset_instrumentation[0]['value'] || $dataset_methods[0]['value']) {
               print_open_tag("methodStep");
                 print_value("instrumentation",  $dataset_instrumentation); 
                 print_value("description",      $dataset_methods);
               print_close_tag("methodStep");                    
             }
             
-            if ($dataset_quality[0][value]) {
+            if ($dataset_quality[0]['value']) {
               print_open_tag("qualityControl");
                 print_value("description",      $dataset_quality);
               print_close_tag("qualityControl");
@@ -466,7 +460,7 @@ foreach ($themed_rows as $count => $row):
                     print_close_tag("textFormat");
                   print_close_tag("dataFormat");
                   foreach ($file_node->field_data_file as $file_data) {
-                    if (!empty($file_data["filepath"])) {
+                    if ($file_data["filepath"]) {
                       print_open_tag("distribution");                      
                         print_tag_line("url", $urlBase.$file_data["filepath"]);
                       print_close_tag("distribution");  
@@ -476,7 +470,7 @@ foreach ($themed_rows as $count => $row):
                 
                 $datafile_site_ref  = $file_node->field_datafile_site_ref;
                 $datafile_date      = $file_node->field_datafile_date;
-                if ($datafile_site_ref[0][nid] || $datafile_date[0][nid]) {
+                if ($datafile_site_ref[0]['nid'] || $datafile_date[0]['nid']) {
                   print_open_tag("coverage");             
                     // if several sites? see localhost
                     print_geographic_coverage($datafile_site_ref);
@@ -489,15 +483,15 @@ foreach ($themed_rows as $count => $row):
                 $methods          = $file_node->field_methods;
                 $quality          = $file_node->field_quality;
                 
-                if ($instrumentation[0][value] || $methods[0][value] || $quality[0][value]) {
+                if ($instrumentation[0]['value'] || $methods[0]['value'] || $quality[0]['value']) {
                   print_open_tag("method");
-                  if ($instrumentation[0][value] || $methods[0][value]) {
+                  if ($instrumentation[0]['value'] || $methods[0]['value']) {
                     print_open_tag("methodStep");
                       print_value("instrumentation",  $file_node->field_instrumentation);
                       print_value("description",      $file_node->field_methods);
                     print_close_tag("methodStep"); 
                   }
-                  if ($quality[0][value]) {
+                  if ($quality[0]['value']) {
                     print_open_tag("qualityControl");
                       print_value("description",      $file_node->field_quality);
                     print_close_tag("qualityControl");
@@ -525,7 +519,7 @@ foreach ($themed_rows as $count => $row):
                       
                       print_open_tag("attribute");      
                         print_tag_line("attributeName",    $var_title);
-                        if ($attribute_label[0][value]) {
+                        if ($attribute_label[0]['value']) {
                           print_value("attributeLabel",    $attribute_label);
                         }
                         print_value("attributeDefinition", $var_definition);       
@@ -567,12 +561,12 @@ foreach ($themed_rows as $count => $row):
                                   // (
                                   //     [0] => Array
                                   //         (
-                                  //             [value] => G=five-points grass core site
+                                  //             ['value'] => G=five-points grass core site
                                   //         )
                                   // 
                                   //     [1] => Array
                                   //         (
-                                  //             [value] => C=Rio Salado
+                                  //             ['value'] => C=Rio Salado
                                   //         )
                                   // 
                                   // )
@@ -589,7 +583,7 @@ foreach ($themed_rows as $count => $row):
                           print_close_tag("nominal");
                         print_close_tag("measurementScale");
                                                  
-                        if ($var_missingvalues[0][value]) {
+                        if ($var_missingvalues[0]['value']) {
                           print_open_tag("missingValueCode");
                             print_value("missingValues", $var_missingvalues);
                           //           code
