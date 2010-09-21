@@ -1,0 +1,184 @@
+diff --git a/bonus_export/views-bonus-export-eml.tpl.php b/bonus_export/views-bonus-export-eml.tpl.php
+index 53da1f5..8e51d57 100644
+--- a/bonus_export/views-bonus-export-eml.tpl.php
++++ b/bonus_export/views-bonus-export-eml.tpl.php
+@@ -249,9 +249,6 @@ foreach ($themed_rows as $count => $row):
+               foreach ($value1 as $key2 => $value2){
+                 $file_node = node_load($value2);
+                 $file_node_arr[] = $file_node;
+-                foreach($file_node->field_data_file as $file_data) {
+-                  $file_data_arr[] = $file_data;
+-                }
+               }
+             }
+           }
+@@ -280,8 +277,8 @@ foreach ($themed_rows as $count => $row):
+             print_tag_line("personid",              "");              
+           print_close_tag("metadataProvider");
+                                                
+-          if ($dataset_datamanager_ref[0]['nid'] || $dataset_fieldcrew_ref[0]['nid'] || 
+-              $dataset_labcrew_ref[0]['nid'] || $dataset_ext_assoc[0]['nid']) {                     
++          if ($dataset_datamanager_ref[0]['nid']  || $dataset_fieldcrew_ref[0]['nid'] || 
++              $dataset_labcrew_ref[0]['nid']      || $dataset_ext_assoc[0]['nid']) {                     
+             // ??? empty tags, because all field_person are empty, but 
+             // ['title'] => Hap Garritt
+             // ['name'] => admin
+@@ -292,7 +289,7 @@ foreach ($themed_rows as $count => $row):
+               print_person("ext_assoc",     $dataset_ext_assoc);
+             print_close_tag("associatedParty");
+           }          
+-          
++                                   
+           print_value("pubDate",  $dataset_publication_date);
+           print_value("abstract", $dataset_abstract);         
+                      
+@@ -320,55 +317,62 @@ foreach ($themed_rows as $count => $row):
+             print_close_tag("para");
+             print_close_tag("section");
+           print_close_tag("intellectualRights");
+-                                                         
+-          print_open_tag("distribution");    
+-                    // ??? if there are several files from different dirs?
+-                    /*
+-                    <distribution>
+-                    −
+-                    <url>
+-                    http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
+-                    </url>
+-                    −
+-                    <url>
+-                    http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
+-                    </url>
+-                    </distribution>
+-                    */
+-          // or
+-                    /*
+-                    <distribution>
+-                    −
+-                    <url>
+-                    http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
+-                    </url>
+-                    </distribution>
+-                    −
+-                    <distribution>
+-                    −
+-                    <url>
+-                    http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
+-                    </url>
+-                    </distribution>
+-                    */          
++                            
++          foreach($file_node_arr as $file_node) {   
++            foreach($file_node->field_data_file as $file_data) {  
++              $file_path = $file_data["filepath"];
++              if ($file_path) {                                              
++                print_open_tag("distribution");    
++                          // ??? if there are several files from different dirs?
++                          /*
++                          <distribution>
++                          −
++                          <url>
++                          http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
++                          </url>
++                          −
++                          <url>
++                          http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
++                          </url>
++                          </distribution>
++                          */
++                // or
++                          /*
++                          <distribution>
++                          −
++                          <url>
++                          http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
++                          </url>
++                          </distribution>
++                          −
++                          <distribution>
++                          −
++                          <url>
++                          http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
++                          </url>
++                          </distribution>
++                          */          
+                     
+-                    /*
+-                    $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
++                          /*
++                          $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
+ 
+-                    echo $path_parts['dirname'], "\n";
+-                    echo $path_parts['basename'], "\n";
+-                    echo $path_parts['extension'], "\n";
+-                    echo $path_parts['filename'], "\n"; // since PHP 5.2.0
+-                    */
++                          echo $path_parts['dirname'], "\n";
++                          echo $path_parts['basename'], "\n";
++                          echo $path_parts['extension'], "\n";
++                          echo $path_parts['filename'], "\n"; // since PHP 5.2.0
++                          */
+           
+-            // foreach ($file_data_arr as $file_data) {
+-            //   if (isset($file_data) && !empty($file_data["filepath"])) {
+-            //       print_tag_line("url", $urlBase.dirname($file_data["filepath"]));
+-            //   } 
+-            // }
+-            // ??? what if dirname is different for dif. files?
+-                print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
+-          print_close_tag("distribution");  
++                  // foreach ($file_data_arr as $file_data) {
++                  //   if (isset($file_data) && !empty($file_data["filepath"])) {
++                  //       print_tag_line("url", $urlBase.dirname($file_data["filepath"]));
++                  //   } 
++                  // }
++                  // ??? what if dirname is different for dif. files?
++                  print_tag_line("url", $urlBase.dirname($file_path));
++                print_close_tag("distribution");
++              }
++            }
++          }
+                                   
+           if ($dataset_site_ref[0]['nid'] || $dataset_beg_end_date[0]['value']) {
+             print_open_tag("coverage");           
+@@ -443,7 +447,8 @@ foreach ($themed_rows as $count => $row):
+           
+           
+           // data_file
+-            foreach ($file_node_arr as $file_node) {
++            foreach ($file_node_arr as $file_node) {          
++              // dpr($file_node);
+               print_open_tag("dataTable");
+                 foreach ($file_node->field_data_file as $file_data) {
+                   print_tag_line("entityName", $file_data["filename"]);
+@@ -453,7 +458,8 @@ foreach ($themed_rows as $count => $row):
+                   foreach ($file_node->field_data_file as $file_data) {
+                     print_tag_line("objectName", $file_data["filename"]);
+                   }
+-                  print_open_tag("dataFormat");
++                  print_open_tag("dataFormat");     
++                  // here some tags are obligate: textFormat, attributeOrientation,  simpleDelimited, fieldDelimiter, complex
+                     print_open_tag("textFormat");
+                       print_value("numHeaderLines", $file_node->field_num_header_line);
+                       print_value("numFooterLines", $file_node->field_num_footer_lines);
+@@ -464,7 +470,8 @@ foreach ($themed_rows as $count => $row):
+                         print_value("quoteCharacter", $file_node->field_quote_character);
+                       print_close_tag("simpleDelimited");
+                     print_close_tag("textFormat");
+-                  print_close_tag("dataFormat");
++                  print_close_tag("dataFormat");      
++                  // dpr($file_node->field_data_file);
+                   foreach ($file_node->field_data_file as $file_data) {
+                     if ($file_data["filepath"]) {
+                       print_open_tag("distribution");                      
+@@ -525,9 +532,7 @@ foreach ($themed_rows as $count => $row):
+                       
+                       print_open_tag("attribute");      
+                         print_tag_line("attributeName",    $var_title);
+-                        if ($attribute_label[0]['value']) {
+-                          print_value("attributeLabel",    $attribute_label);
+-                        }
++                        print_value("attributeLabel",    $attribute_label);
+                         print_value("attributeDefinition", $var_definition);       
+                                                             
+                         /* ??? measurementScale, datatime, ratio, nominal are obligate, but missing in prototype

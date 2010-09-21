@@ -249,12 +249,14 @@ foreach ($themed_rows as $count => $row):
               foreach ($value1 as $key2 => $value2){
                 $file_node = node_load($value2);
                 $file_node_arr[] = $file_node;
+                // used only for dataset distribution; colleted here to avode one more foreach
                 foreach($file_node->field_data_file as $file_data) {
                   $file_data_arr[] = $file_data;
                 }
               }
             }
           }
+          //dpr($file_data_arr);
 
           if ($dataset_short_name[0]['value']) {
             print_value("shortName", $dataset_short_name);
@@ -280,8 +282,8 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("personid",              "");              
           print_close_tag("metadataProvider");
                                                
-          if ($dataset_datamanager_ref[0]['nid'] || $dataset_fieldcrew_ref[0]['nid'] || 
-              $dataset_labcrew_ref[0]['nid'] || $dataset_ext_assoc[0]['nid']) {                     
+          if ($dataset_datamanager_ref[0]['nid']  || $dataset_fieldcrew_ref[0]['nid'] || 
+              $dataset_labcrew_ref[0]['nid']      || $dataset_ext_assoc[0]['nid']) {                     
             // ??? empty tags, because all field_person are empty, but 
             // ['title'] => Hap Garritt
             // ['name'] => admin
@@ -367,7 +369,8 @@ foreach ($themed_rows as $count => $row):
             //   } 
             // }
             // ??? what if dirname is different for dif. files?
-                print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
+            //dpr($file_data_arr);
+            print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
           print_close_tag("distribution");  
                                   
           if ($dataset_site_ref[0]['nid'] || $dataset_beg_end_date[0]['value']) {
@@ -444,28 +447,47 @@ foreach ($themed_rows as $count => $row):
           
           // data_file
             foreach ($file_node_arr as $file_node) {
+              $file_data_file         = $file_node->field_data_file;
+              $datafile_description = $file_node->field_datafile_description;
+              $file_num_header_line   = $file_node->field_num_header_line;
+              $file_num_footer_lines  = $file_node->field_num_footer_lines;
+              $file_record_delimiter  = $file_node->field_record_delimiter;
+              $file_orientation       = $file_node->field_orientation;
+              $file_delimiter         = $file_node->field_delimiter;
+              $file_quote_character   = $file_node->field_quote_character;
+              $datafile_site_ref      = $file_node->field_datafile_site_ref;
+              $datafile_date          = $file_node->field_datafile_date;
+              $file_instrumentation   = $file_node->field_instrumentation;
+              $file_methods           = $file_node->field_methods;
+              $file_quality           = $file_node->field_quality;
+              
+              
+              
+              
+              //dpr($file_data_arr);
               print_open_tag("dataTable");
-                foreach ($file_node->field_data_file as $file_data) {
+                foreach ($file_data_file as $file_data) {
                   print_tag_line("entityName", $file_data["filename"]);
                 }                                           
-                print_value("entityDescription", $file_node->field_datafile_description);
+                print_value("entityDescription", $datafile_description);
                 print_open_tag("physical");   
-                  foreach ($file_node->field_data_file as $file_data) {
+                  foreach ($file_data_file as $file_data) {
                     print_tag_line("objectName", $file_data["filename"]);
                   }
                   print_open_tag("dataFormat");
+                  // here some tags are obligate: textFormat, attributeOrientation,  simpleDelimited, fieldDelimiter, complex             
                     print_open_tag("textFormat");
-                      print_value("numHeaderLines", $file_node->field_num_header_line);
-                      print_value("numFooterLines", $file_node->field_num_footer_lines);
-                      print_value("recordDelimiter", $file_node->field_record_delimiter);
-                      print_value("attributeOrientation", $file_node->field_orientation);
+                      print_value("numHeaderLines",       $file_num_header_line);
+                      print_value("numFooterLines",       $file_num_footer_lines);
+                      print_value("recordDelimiter",      $file_record_delimiter);
+                      print_value("attributeOrientation", $file_orientation);
                       print_open_tag("simpleDelimited");
-                        print_value("fieldDelimiter", $file_node->field_delimiter);
-                        print_value("quoteCharacter", $file_node->field_quote_character);
+                        print_value("fieldDelimiter",     $file_delimiter);
+                        print_value("quoteCharacter",     $file_quote_character);
                       print_close_tag("simpleDelimited");
                     print_close_tag("textFormat");
                   print_close_tag("dataFormat");
-                  foreach ($file_node->field_data_file as $file_data) {
+                  foreach ($file_data_file as $file_data) {
                     if ($file_data["filepath"]) {
                       print_open_tag("distribution");                      
                         print_tag_line("url", $urlBase.$file_data["filepath"]);
@@ -474,8 +496,6 @@ foreach ($themed_rows as $count => $row):
                   }
                 print_close_tag("physical");
                 
-                $datafile_site_ref  = $file_node->field_datafile_site_ref;
-                $datafile_date      = $file_node->field_datafile_date;
                 if ($datafile_site_ref[0]['nid'] || $datafile_date[0]['nid']) {
                   print_open_tag("coverage");             
                     // if several sites? see localhost
@@ -485,21 +505,17 @@ foreach ($themed_rows as $count => $row):
                   print_close_tag("coverage");
                 }
                                                     
-                $instrumentation  = $file_node->field_instrumentation;
-                $methods          = $file_node->field_methods;
-                $quality          = $file_node->field_quality;
-                
-                if ($instrumentation[0]['value'] || $methods[0]['value'] || $quality[0]['value']) {
+                if ($file_instrumentation[0]['value'] || $file_methods[0]['value'] || $quality[0]['value']) {
                   print_open_tag("method");
-                  if ($instrumentation[0]['value'] || $methods[0]['value']) {
+                  if ($file_instrumentation[0]['value'] || $file_methods[0]['value']) {
                     print_open_tag("methodStep");
-                      print_value("instrumentation",  $file_node->field_instrumentation);
-                      print_value("description",      $file_node->field_methods);
+                      print_value("instrumentation",  $file_instrumentation);
+                      print_value("description",      $file_methods);
                     print_close_tag("methodStep"); 
                   }
-                  if ($quality[0]['value']) {
+                  if ($file_quality[0]['value']) {
                     print_open_tag("qualityControl");
-                      print_value("description",      $file_node->field_quality);
+                      print_value("description",      $file_quality);
                     print_close_tag("qualityControl");
                   }
                   print_close_tag("method");
@@ -525,9 +541,7 @@ foreach ($themed_rows as $count => $row):
                       
                       print_open_tag("attribute");      
                         print_tag_line("attributeName",    $var_title);
-                        if ($attribute_label[0]['value']) {
-                          print_value("attributeLabel",    $attribute_label);
-                        }
+                        print_value("attributeLabel",      $attribute_label);
                         print_value("attributeDefinition", $var_definition);       
                                                             
                         /* ??? measurementScale, datatime, ratio, nominal are obligate, but missing in prototype
