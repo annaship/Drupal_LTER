@@ -144,7 +144,6 @@ function print_temporal_coverage($beg_end_date) {
 // ??? what move into "coverage"? all that?:
 function print_geographic_coverage($research_site_nid) {       
   if ($research_site_nid[0]['nid']) { 
-    // $research_site_nid = $node->field_dataset_site_ref;
     foreach ($research_site_nid as $key1 => $value1):
       foreach ($value1 as $key2 => $value2){
         $research_site_node = node_load($value2);    
@@ -243,13 +242,13 @@ foreach ($themed_rows as $count => $row):
           $dataset_related_links    = $node->field_dataset_related_links;
 
           // take file, a result used here and in DataTable
-          $file_nid = $node->field_dataset_datafile_ref; 
+          $file_nid                 = $node->field_dataset_datafile_ref; 
           if ($file_nid[0]['nid']) {
             foreach ($file_nid as $key1 => $value1){
               foreach ($value1 as $key2 => $value2){
                 $file_node = node_load($value2);
                 $file_node_arr[] = $file_node;
-                // used only for dataset distribution; colleted here to avode one more foreach
+                // used only for dataset distribution; collected here to avoid one more foreach
                 foreach($file_node->field_data_file as $file_data) {
                   $file_data_arr[] = $file_data;
                 }
@@ -447,8 +446,10 @@ foreach ($themed_rows as $count => $row):
           
           // data_file
             foreach ($file_node_arr as $file_node) {
+
+              // collect all data_file values here to use in a conditions 
               $file_data_file         = $file_node->field_data_file;
-              $datafile_description = $file_node->field_datafile_description;
+              $datafile_description   = $file_node->field_datafile_description;
               $file_num_header_line   = $file_node->field_num_header_line;
               $file_num_footer_lines  = $file_node->field_num_footer_lines;
               $file_record_delimiter  = $file_node->field_record_delimiter;
@@ -461,10 +462,6 @@ foreach ($themed_rows as $count => $row):
               $file_methods           = $file_node->field_methods;
               $file_quality           = $file_node->field_quality;
               
-              
-              
-              
-              //dpr($file_data_arr);
               print_open_tag("dataTable");
                 foreach ($file_data_file as $file_data) {
                   print_tag_line("entityName", $file_data["filename"]);
