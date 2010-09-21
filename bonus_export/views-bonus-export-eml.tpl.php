@@ -75,32 +75,45 @@ function print_person($person_tag, $ref_field_arr)
   if (isset($ref_field_arr) && !empty($ref_field_arr)) {
     foreach ($ref_field_arr as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){
-        $person_node = node_load($value2);       
+        $person_node          = node_load($value2);                                    
+        $person_first_name    = $person_node->field_person_first_name;
+        $person_last_name     = $person_node->field_person_last_name;
+        $person_organization  = $person_node->field_person_organization;
+        $person_address       = $person_node->field_person_address;
+        $person_city          = $person_node->field_person_city;
+        $person_state         = $person_node->field_person_state;
+        $person_zipcode       = $person_node->field_person_zipcode;
+        $person_country       = $person_node->field_person_country;
+        $person_phone         = $person_node->field_person_phone;
+        $person_fax           = $person_node->field_person_fax;
+        $person_email         = $person_node->field_person_email;
+        $person_personid      = $owner_node->field_person_personid;
+        $person_role_arr      = $person_node->field_person_role;         
+        $person_role          = $person_role_arr[0][value];   
+        $not_show_role        = array ("owner", "creator", "contact");    
+
         print_open_tag($person_tag);
-          print_value("givenName",          $person_node->field_person_first_name); 
-          print_value("surName",            $person_node->field_person_last_name);
-          print_value("organization",       $person_node->field_person_organization);
-          print_value("deliveryPoint",      $person_node->field_person_address);
-          print_value("city",               $person_node->field_person_city);
-          print_value("administrativeArea", $person_node->field_person_state);
-          print_value("postalCode",         $person_node->field_person_zipcode);
-          print_value("country",            $person_node->field_person_country);
-          print_attr_line('phone', get_uniq_value($person_node->field_person_phone),
+          print_value("givenName",          $person_first_name); 
+          print_value("surName",            $person_last_name);
+          print_value("organization",       $person_organization);
+          print_value("deliveryPoint",      $person_address);
+          print_value("city",               $person_city);
+          print_value("administrativeArea", $person_state);
+          print_value("postalCode",         $person_zipcode);
+          print_value("country",            $person_country);
+          print_attr_line('phone', get_uniq_value($person_phone),
                           'phonetype', 'voice');
-          print_attr_line('phone', get_uniq_value($person_node->field_person_fax),
+          print_attr_line('phone', get_uniq_value($person_fax),
                           'phonetype', 'fax');
-          $person_role_arr = $person_node->field_person_role;         
-          $person_role     = $person_role_arr[0][value];   
-          $not_show_role   = array ("owner", "creator", "contact");    
           if (!in_array($person_role, $not_show_role)) {
-            print_tag_line("role",          $person_role);
-          }
-          if (!empty($person_node)) {
-            foreach($person_node->field_person_email as $email) {
+            print_tag_line("role", $person_role);
+          }              
+          if ($person_email[0][email]) {
+            foreach($person_email as $email) {
               print_tag_line("electronicMailAddress", $email["email"]);
             }
           }
-          print_value("personid",           $owner_node->field_person_personid);              
+          print_value("personid", $person_personid);              
       }
       print_close_tag($person_tag);
     }
