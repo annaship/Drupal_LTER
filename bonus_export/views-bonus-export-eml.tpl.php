@@ -387,20 +387,35 @@ foreach ($themed_rows as $count => $row):
           $site_name = variable_get("site_name", NULL);
           print_tag_line("pubPlace", $site_name);
 
-          print_open_tag("methods");
-            print_open_tag("methodStep");
-              print_value("instrumentation", $node->field_instrumentation); 
-              print_value("description", $node->field_methods);
-            print_close_tag("methodStep"); 
+           // Array
+           // (
+           //     [0] => Array
+           //         (
+           //             [value]
+          $instrumentation = $node->field_instrumentation;
+          $methods         = $node->field_methods;
+          $quality         = $node->field_quality;
+          if ($instrumentation[0][value] || $methods[0][value] || $quality[0][value]) {
+            print_open_tag("methods");
+            if ($instrumentation[0][value] || $methods[0][value]) {
+              print_open_tag("methodStep");
+                print_value("instrumentation",  $instrumentation); 
+                print_value("description",      $methods);
+              print_close_tag("methodStep");                    
+            }
             
-            print_open_tag("qualityControl");
-              print_value("description", $node->field_quality);
-            print_close_tag("qualityControl");
-          print_close_tag("methods");
-                   
+            if ($quality[0][value]) {
+              print_open_tag("qualityControl");
+                print_value("description",      $quality);
+              print_close_tag("qualityControl");
+            }
+            print_close_tag("methods");
+          }
+                                          
+          // ??? are it and next one optional?
           print_value("field_dataset_id", $node->field_dataset_id);     
           
-          print_value("related_links", $node->field_dataset_related_links);
+          print_value("related_links",    $node->field_dataset_related_links);
           
           
           // data_file
