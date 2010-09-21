@@ -161,27 +161,27 @@ function print_geographic_coverage($research_site_nid) {
           $research_site_history[0][value]    || $research_site_siteid[0][value] || 
           !empty($research_site_pt_coords)    || $research_site_elevation[0][value]) {
         print_open_tag("geographicCoverage");      
-          $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
-          $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
-          $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
-          $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
-          $geoDesc .= get_geo("Vegetation", $research_site_node->field_research_site_vegetation);
-          $geoDesc .= get_geo("Climate",    $research_site_node->field_research_site_climate);
-          $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
-          $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
+          $geoDesc  = get_geo("Landform",   $research_site_landform, 0);
+          $geoDesc .= get_geo("Geology",    $research_site_geology);
+          $geoDesc .= get_geo("Soils",      $research_site_soils);
+          $geoDesc .= get_geo("Hydrology",  $research_site_hydrology);
+          $geoDesc .= get_geo("Vegetation", $research_site_vegetation);
+          $geoDesc .= get_geo("Climate",    $research_site_climate);
+          $geoDesc .= get_geo("History",    $research_site_history);
+          $geoDesc .= get_geo("siteid",     $research_site_siteid);
           print_tag_line("geographicDescription", $geoDesc);
 
           //                 example!!!                
           if (!empty($research_site_pt_coords) || ($research_site_elevation[0][value])) {
             print_open_tag("boundingCoordinates");
-              print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("westBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("eastBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("northBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("southBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                                             
               print_open_tag("boundingAltitudes"); //conditional on content
-                print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
-                print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
+                print_value("altitudeMinimum",  $research_site_elevation);   
+                print_value("altitudeMaximum",  $research_site_elevation);   
               print_close_tag("boundingAltitudes");    
             print_close_tag("boundingCoordinates");
           }
@@ -343,12 +343,16 @@ foreach ($themed_rows as $count => $row):
             // ??? what if dirname is different for dif. files?
                 print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
           print_close_tag("distribution");  
-
-          print_open_tag("coverage");           
-            print_geographic_coverage($node->field_dataset_site_ref);
-            print_temporal_coverage($node->field_beg_end_date);
-            // taxonomicCoverage
-          print_close_tag("coverage");        
+                                  
+          $dataset_site_ref = $node->field_dataset_site_ref;
+          $beg_end_date     = $node->field_beg_end_date;
+          if ($dataset_site_ref[0][nid] || $beg_end_date[0][value]) {
+            print_open_tag("coverage");           
+              print_geographic_coverage($dataset_site_ref);
+              print_temporal_coverage($beg_end_date);
+              // taxonomicCoverage
+            print_close_tag("coverage");        
+          }
           
           print_open_tag("purpose");
              print_open_tag("para");
@@ -387,11 +391,6 @@ foreach ($themed_rows as $count => $row):
           $site_name = variable_get("site_name", NULL);
           print_tag_line("pubPlace", $site_name);
 
-           // Array
-           // (
-           //     [0] => Array
-           //         (
-           //             [value]
           $instrumentation = $node->field_instrumentation;
           $methods         = $node->field_methods;
           $quality         = $node->field_quality;
@@ -449,13 +448,17 @@ foreach ($themed_rows as $count => $row):
                     }
                   }
                 print_close_tag("physical");
-          
-                print_open_tag("coverage");          
-                  // if several sites? see localhost
-                  print_geographic_coverage($file_node->field_datafile_site_ref);
-                  print_temporal_coverage($file_node->field_datafile_date);
-                  // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
-                print_close_tag("coverage");
+                
+                $datafile_site_ref  = $file_node->field_datafile_site_ref;
+                $datafile_date      = $file_node->field_datafile_date;
+                if ($datafile_site_ref[0][nid] || $datafile_date[0][nid]) {
+                  print_open_tag("coverage");             
+                    // if several sites? see localhost
+                    print_geographic_coverage($datafile_site_ref);
+                    print_temporal_coverage($datafile_date);
+                    // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
+                  print_close_tag("coverage");
+                }
           
                 print_open_tag("method");
                   print_open_tag("methodStep");
