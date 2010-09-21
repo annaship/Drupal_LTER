@@ -6,7 +6,7 @@
  * 1) add all tags
  * 2) parameters in tag <geographicCoverage id="GEO-13"> 
  *    as print '<'.$label.' '.$id_name.'="'.$id_value.'">'.$content.'</'.$label.'>';
- * 3) add ifs to additionalInfo, purpose, maintenance, 
+ * 3) add ifs to maintenance, 
  *
  */
 
@@ -301,13 +301,15 @@ foreach ($themed_rows as $count => $row):
             // dpr($node->taxonomy);
             // print_value("keyword", node->taxonomy->term);
             // print_value("keywordThesaurus", node->taxonomy->vocabularyName); 
-          print_close_tag("keywordSet");
-                  
-          print_open_tag("additionalInfo");
-            print_open_tag("para");
-               print_value("literalLayout", $dataset_add_info);
-            print_close_tag("para");
-          print_close_tag("additionalInfo");
+          print_close_tag("keywordSet");  
+          
+          if ($dataset_add_info[0]['value']) {
+            print_open_tag("additionalInfo");
+              print_open_tag("para");
+                 print_value("literalLayout", $dataset_add_info);
+              print_close_tag("para");
+            print_close_tag("additionalInfo");
+          }
           
           print_open_tag("intellectualRights");
             print_open_tag("section");
@@ -375,12 +377,14 @@ foreach ($themed_rows as $count => $row):
               // taxonomicCoverage
             print_close_tag("coverage");        
           }
-          
-          print_open_tag("purpose");
-             print_open_tag("para");
-                print_value("literalLayout", $dataset_purpose);
-             print_close_tag("para");
-          print_close_tag("purpose");
+                                 
+          if ($dataset_purpose[0]['value']) {
+            print_open_tag("purpose");
+               print_open_tag("para");
+                  print_value("literalLayout", $dataset_purpose);
+               print_close_tag("para");
+            print_close_tag("purpose");
+          }
           
           print_open_tag("maintenance");
             print_open_tag("description");
