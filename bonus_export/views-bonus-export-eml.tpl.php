@@ -6,6 +6,7 @@
  * 1) add all tags
  * 2) parameters in tag <geographicCoverage id="GEO-13"> 
  *    as print '<'.$label.' '.$id_name.'="'.$id_value.'">'.$content.'</'.$label.'>';
+ * 3) add ifs to additionalInfo, purpose, maintenance, 
  *
  */
 
@@ -15,13 +16,13 @@ function my_strip_tags($content) {
 }
 
 function print_tag_line($label, $content) {  
-  if (isset($content) && !empty($content)) {
+  if ($content) {
     print '<'.$label.'>'.my_strip_tags($content).'</'.$label.'>';
   }
 }
 
 function print_attr_line($label, $content, $attribute_name, $attribute_value) {    
-  if (isset($content) && !empty($content)) {
+  if ($content) {
     print '<'.$label.' '.$attribute_name.'="'.$attribute_value.'">'.my_strip_tags($content).'</'.$label.'>';
     
   }
@@ -36,7 +37,7 @@ function print_close_tag($tag) {
 }
                                
 function print_value($tag, $content) {      
-  if (isset($content) && !empty($content)) {
+  if ($content) {
     foreach ($content as $in_arr) {
       // open when tree will be settled
       // if (!empty($in_arr['value'])) {    
@@ -47,13 +48,8 @@ function print_value($tag, $content) {
 }
 
 function get_uniq_value($content) {
-  if (isset($content) && !empty($content)) {
-    // foreach ($content as $in_arr) {
-      // open when tree will be settled
-      // if (!empty($in_arr['value'])) {    
-        return my_strip_tags($content[0]['value']);
-      // }
-    // }
+  if ($content[0]['value']) {
+    return my_strip_tags($content[0]['value']);
   }
 }
 
@@ -215,15 +211,52 @@ foreach ($themed_rows as $count => $row):
       print_open_tag("dataset");      
 
         foreach ($row as $field => $content):         
-          $node = node_load($content);           
-          $short_name = $node->field_dataset_short_name;
-          if (!empty($short_name)) {
-            print_value("shortName", $short_name);
+          $node = node_load($content);   
+          
+          // collect all values here to use in a conditions 
+          $dataset_short_name       = $node->field_dataset_short_name;   
+          $dataset_title            = $node->title;
+          $dataset_owner_ref        = $node->field_dataset_owner_ref;
+          $dataset_datamanager_ref  = $node->field_dataset_datamanager_ref;
+          $dataset_fieldcrew_ref    = $node->field_dataset_fieldcrew_ref;
+          $dataset_labcrew_ref      = $node->field_dataset_labcrew_ref;  
+          // ??? no such field ?
+          $dataset_ext_assoc        = $node->field_dataset_ext_assoc;
+          $dataset_publication_date = $node->field_dataset_publication_date;
+          $dataset_abstract         = $node->field_dataset_abstract;
+          $dataset_add_info         = $node->field_dataset_add_info;
+          $dataset_site_ref         = $node->field_dataset_site_ref;
+          $dataset_beg_end_date     = $node->field_beg_end_date;
+          $dataset_purpose          = $node->field_dataset_purpose;
+          $dataset_maintenance      = $node->field_dataset_maintenance;
+          $dataset_contact_ref      = $node->field_dataset_contact_ref;
+          $dataset_instrumentation  = $node->field_instrumentation;
+          $dataset_methods          = $node->field_methods;
+          $dataset_quality          = $node->field_quality;
+          $dataset_id               = $node->field_dataset_id;
+          $dataset_related_links    = $node->field_dataset_related_links;
+
+          // take file, a result used here and in DataTable
+          $file_nid = $node->field_dataset_datafile_ref;
+          if ($file_nid) {
+            foreach ($file_nid as $key1 => $value1){
+              foreach ($value1 as $key2 => $value2){
+                $file_node = node_load($value2);
+                $file_node_arr[] = $file_node;
+                foreach($file_node->field_data_file as $file_data) {
+                  $file_data_arr[] = $file_data;
+                }
+              }
+            }
           }
-          print_tag_line("title", $node->title);    
+
+          if ($dataset_short_name[0][value]) {
+            print_value("shortName", $dataset_short_name);
+          }
+          print_tag_line("title", $dataset_title);    
           
           // person refs
-          print_person("owner", $node->field_dataset_owner_ref);
+          print_person("owner", $dataset_owner_ref);
           // TODO, hardcode the metadataProvider
           print_open_tag("metadataProvider");
             print_tag_line("givenName",             "");
@@ -241,12 +274,6 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("personid",              "");              
           print_close_tag("metadataProvider");
                                                
-          $dataset_datamanager_ref  = $node->field_dataset_datamanager_ref;
-          $dataset_fieldcrew_ref    = $node->field_dataset_fieldcrew_ref;
-          $dataset_labcrew_ref      = $node->field_dataset_labcrew_ref;  
-          // ??? no such field ?
-          $dataset_ext_assoc        = $node->field_dataset_ext_assoc;
-          
           if (($dataset_datamanager_ref[0][nid]) || ($dataset_fieldcrew_ref[0][nid]) || ($dataset_labcrew_ref[0][nid]) || ($dataset_ext_assoc[0][nid])) {                     
             // ??? empty tags, because all field_person are empty, but 
             // [title] => Hap Garritt
@@ -259,8 +286,8 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("associatedParty");
           }          
           
-          print_value("pubDate", $node->field_dataset_publication_date);
-          print_value("abstract", $node->field_dataset_abstract);         
+          print_value("pubDate", $dataset_publication_date);
+          print_value("abstract", $dataset_abstract);         
                      
           // TODO: add if, depend of structure
           print_open_tag("keywordSet");   
@@ -271,7 +298,7 @@ foreach ($themed_rows as $count => $row):
                   
           print_open_tag("additionalInfo");
             print_open_tag("para");
-               print_value("literalLayout", $node->field_dataset_add_info);
+               print_value("literalLayout", $dataset_add_info);
             print_close_tag("para");
           print_close_tag("additionalInfo");
           
@@ -285,20 +312,6 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("section");
           print_close_tag("intellectualRights");
                                                          
-          // take file, a result used here and in DataTable
-          $file_nid = $node->field_dataset_datafile_ref;
-          if ($file_nid) {
-            foreach ($file_nid as $key1 => $value1){
-              foreach ($value1 as $key2 => $value2){
-                $file_node = node_load($value2);
-                $file_node_arr[] = $file_node;
-                foreach($file_node->field_data_file as $file_data) {
-                  $file_data_arr[] = $file_data;
-                }
-              }
-            }
-          }
-
           print_open_tag("distribution");    
                     // ??? if there are several files from different dirs?
                     /*
@@ -348,31 +361,29 @@ foreach ($themed_rows as $count => $row):
                 print_tag_line("url", $urlBase.dirname($file_data_arr[0]["filepath"]));
           print_close_tag("distribution");  
                                   
-          $dataset_site_ref = $node->field_dataset_site_ref;
-          $beg_end_date     = $node->field_beg_end_date;
-          if ($dataset_site_ref[0][nid] || $beg_end_date[0][value]) {
+          if ($dataset_site_ref[0][nid] || $dataset_beg_end_date[0][value]) {
             print_open_tag("coverage");           
               print_geographic_coverage($dataset_site_ref);
-              print_temporal_coverage($beg_end_date);
+              print_temporal_coverage($dataset_beg_end_date);
               // taxonomicCoverage
             print_close_tag("coverage");        
           }
           
           print_open_tag("purpose");
              print_open_tag("para");
-                print_value("literalLayout", $node->field_dataset_purpose);
+                print_value("literalLayout", $dataset_purpose);
              print_close_tag("para");
           print_close_tag("purpose");
           
           print_open_tag("maintenance");
             print_open_tag("description");
                print_open_tag("para");
-                  print_value("literalLayout", $node->field_dataset_maintenance);
+                  print_value("literalLayout", $dataset_maintenance);
                print_close_tag("para");
             print_close_tag("description");
           print_close_tag("maintenance");
                                      
-          print_person("contact", $node->field_dataset_contact_ref);
+          print_person("contact", $dataset_contact_ref);
           
           // print_person_hardcode_publisher
           print_open_tag("publisher");
@@ -395,30 +406,27 @@ foreach ($themed_rows as $count => $row):
           $site_name = variable_get("site_name", NULL);
           print_tag_line("pubPlace", $site_name);
 
-          $instrumentation = $node->field_instrumentation;
-          $methods         = $node->field_methods;
-          $quality         = $node->field_quality;
-          if ($instrumentation[0][value] || $methods[0][value] || $quality[0][value]) {
+          if ($dataset_instrumentation[0][value] || $dataset_methods[0][value] || $dataset_quality[0][value]) {
             print_open_tag("methods");
-            if ($instrumentation[0][value] || $methods[0][value]) {
+            if ($dataset_instrumentation[0][value] || $dataset_methods[0][value]) {
               print_open_tag("methodStep");
-                print_value("instrumentation",  $instrumentation); 
-                print_value("description",      $methods);
+                print_value("instrumentation",  $dataset_instrumentation); 
+                print_value("description",      $dataset_methods);
               print_close_tag("methodStep");                    
             }
             
-            if ($quality[0][value]) {
+            if ($dataset_quality[0][value]) {
               print_open_tag("qualityControl");
-                print_value("description",      $quality);
+                print_value("description",      $dataset_quality);
               print_close_tag("qualityControl");
             }
             print_close_tag("methods");
           }
                                           
           // ??? are it and next one optional?
-          print_value("field_dataset_id", $node->field_dataset_id);     
+          print_value("field_dataset_id", $dataset_id);     
           
-          print_value("related_links",    $node->field_dataset_related_links);
+          print_value("related_links",    $dataset_related_links);
           
           
           // data_file
@@ -426,7 +434,7 @@ foreach ($themed_rows as $count => $row):
               print_open_tag("dataTable");
                 foreach ($file_node->field_data_file as $file_data) {
                   print_tag_line("entityName", $file_data["filename"]);
-                }
+                }                                           
                 print_value("entityDescription", $file_node->field_datafile_description);
                 print_open_tag("physical");   
                   foreach ($file_node->field_data_file as $file_data) {
@@ -511,7 +519,7 @@ foreach ($themed_rows as $count => $row):
                                                             
                         /* ??? measurementScale, datatime, ratio, nominal are obligate, but missing in prototype
                         ??? put if???
-                        for what else in "measurementScale"???
+                        for what else in "measurementScale"???     (all but "precision" is obligate)
                         */                                                        
 
                         print_open_tag("measurementScale");
@@ -533,6 +541,7 @@ foreach ($themed_rows as $count => $row):
                           print_open_tag("nominal");
                             print_open_tag("nonNumericDomain");
                               print_open_tag("enumeratedDomain");    
+                              // codeDefinition is obligate
                                 print_open_tag("codeDefinition");
                                   print_value("codeDefinition", $code_definition);
   // example???
@@ -556,6 +565,7 @@ foreach ($themed_rows as $count => $row):
                                   // )
                                   // </pre>
                                   # warning: preg_match() expects parameter 2 to be string, array given in /var/www/prototype/sites/all/modules/views_bonus/export/views-bonus-export-eml.tpl.php on line 556.
+                                  // move into foreach cycle:
                                   // preg_match('/(?<code>\w+)=(?<definition>\w+)/', $code_definition, $matches);
                                   // ???what if there're no matches?
                                   print_value("code", $matches["code"]);                     //                   code
