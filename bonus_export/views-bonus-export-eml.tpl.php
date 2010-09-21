@@ -99,8 +99,10 @@ function print_person($ref_field_arr, $person_tag)
           if (!in_array($person_role, $not_show_role)) {
             print_tag_line("role",          $person_role);
           }
-          foreach($person_node->field_person_email as $email) {
-            print_tag_line("electronicMailAddress", $email["email"]);
+          if (!empty($person_node)) {
+            foreach($person_node->field_person_email as $email) {
+              print_tag_line("electronicMailAddress", $email["email"]);
+            }
           }
           print_value("personid",           $owner_node->field_person_personid);              
       }
@@ -110,27 +112,29 @@ function print_person($ref_field_arr, $person_tag)
 } 
        
 function print_temporal_coverage($beg_end_date) {
-  print_open_tag("temporalCoverage");        
-  foreach($beg_end_date as $dataset_date) {         
-    $first_date  = $dataset_date["value"];
-    $second_date = $dataset_date["value2"];
-    if ($first_date== $second_date) {
-       print_open_tag("singleDateTime");
-         print_tag_line("calendarDate", $first_date);          
-       print_close_tag("singleDateTime");
-    } 
-    else {
-      print_open_tag("rangeOfDates");
-        print_open_tag("beginDate");
-          print_tag_line("calendarDate", $first_date);          
-        print_close_tag("beginDate");
-        print_open_tag("endDate");
-          print_tag_line("calendarDate", $second_date);          
-        print_close_tag("endDate");
-      print_close_tag("rangeOfDates");
+  if (!empty($beg_end_date)) {
+    print_open_tag("temporalCoverage");        
+    foreach($beg_end_date as $dataset_date) {         
+      $first_date  = $dataset_date["value"];
+      $second_date = $dataset_date["value2"];
+      if ($first_date== $second_date) {
+         print_open_tag("singleDateTime");
+           print_tag_line("calendarDate", $first_date);          
+         print_close_tag("singleDateTime");
+      } 
+      else {
+        print_open_tag("rangeOfDates");
+          print_open_tag("beginDate");
+            print_tag_line("calendarDate", $first_date);          
+          print_close_tag("beginDate");
+          print_open_tag("endDate");
+            print_tag_line("calendarDate", $second_date);          
+          print_close_tag("endDate");
+        print_close_tag("rangeOfDates");
+      }
     }
+    print_close_tag("temporalCoverage");
   }
-  print_close_tag("temporalCoverage");
 }       
 
 // take research_site as geographicCoverage
@@ -189,8 +193,11 @@ foreach ($themed_rows as $count => $row):
       print_open_tag("dataset");      
 
         foreach ($row as $field => $content):         
-          $node = node_load($content);             
-          print_value("shortName", $node->field_dataset_short_name);
+          $node = node_load($content);           
+          $short_name = $node->field_dataset_short_name;
+          if (!empty($short_name)) {
+            print_value("shortName", $short_name);
+          }
           print_tag_line("title", $node->title);    
           
           // person refs
