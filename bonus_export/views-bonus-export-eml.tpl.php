@@ -35,7 +35,7 @@ function print_close_tag($tag) {
   print '</'.$tag.'>';
 }
                                
-function print_value($tag, $content) {
+function print_value($tag, $content) {      
   if (isset($content) && !empty($content)) {
     foreach ($content as $in_arr) {
       // open when tree will be settled
@@ -74,14 +74,14 @@ function get_geo($label, $content, $comma_flag = 1) {
   return $geoDesc;
 }
 
-function print_person($ref_field_arr, $person_tag)
-{                                                         
+function print_person($person_tag, $ref_field_arr)
+{                          
   if (isset($ref_field_arr) && !empty($ref_field_arr)) {
     foreach ($ref_field_arr as $key1 => $value1){
       foreach ($value1 as $key2 => $value2){
-        $person_node = node_load($value2);      
+        $person_node = node_load($value2);       
         print_open_tag($person_tag);
-          print_value("givenName",          $person_node->field_person_first_name);
+          print_value("givenName",          $person_node->field_person_first_name); 
           print_value("surName",            $person_node->field_person_last_name);
           print_value("organization",       $person_node->field_person_organization);
           print_value("deliveryPoint",      $person_node->field_person_address);
@@ -139,34 +139,54 @@ function print_temporal_coverage($beg_end_date) {
 
 // take research_site as geographicCoverage
 // ??? what move into "coverage"? all that?:
-function print_geographic_coverage($research_site_nid) {
+function print_geographic_coverage($research_site_nid) {       
+
   // $research_site_nid = $node->field_dataset_site_ref;
   foreach ($research_site_nid as $key1 => $value1):
     foreach ($value1 as $key2 => $value2){
-      $research_site_node = node_load($value2);      
-      print_open_tag("geographicCoverage");      
-        $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
-        $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
-        $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
-        $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
-        $geoDesc .= get_geo("Vegetation", $research_site_node->field_research_site_vegetation);
-        $geoDesc .= get_geo("Climate",    $research_site_node->field_research_site_climate);
-        $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
-        $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
-        print_tag_line("geographicDescription", $geoDesc);
+      $research_site_node = node_load($value2);    
+      $research_site_landform   = $research_site_node->field_research_site_landform;
+      $research_site_geology    = $research_site_node->field_research_site_geology;
+      $research_site_soils      = $research_site_node->field_research_site_soils;
+      $research_site_hydrology  = $research_site_node->field_research_site_hydrology;
+      $research_site_vegetation = $research_site_node->field_research_site_vegetation;
+      $research_site_climate    = $research_site_node->field_research_site_climate;
+      $research_site_history    = $research_site_node->field_research_site_history;
+      $research_site_siteid     = $research_site_node->field_research_site_siteid;
+      $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
+      $research_site_elevation  = $research_site_node->field_research_site_elevation;        
+      if ($research_site_landform[0][value]   || $research_site_geology[0][value] || 
+          $research_site_soils[0][value]      || $research_site_hydrology[0][value] || 
+          $research_site_vegetation[0][value] || $research_site_climate[0][value] || 
+          $research_site_history[0][value]    || $research_site_siteid[0][value] || 
+          !empty($research_site_pt_coords)    || $research_site_elevation[0][value]) {
+        print_open_tag("geographicCoverage");      
+          $geoDesc  = get_geo("Landform",   $research_site_node->field_research_site_landform, 0);
+          $geoDesc .= get_geo("Geology",    $research_site_node->field_research_site_geology);
+          $geoDesc .= get_geo("Soils",      $research_site_node->field_research_site_soils);
+          $geoDesc .= get_geo("Hydrology",  $research_site_node->field_research_site_hydrology);
+          $geoDesc .= get_geo("Vegetation", $research_site_node->field_research_site_vegetation);
+          $geoDesc .= get_geo("Climate",    $research_site_node->field_research_site_climate);
+          $geoDesc .= get_geo("History",    $research_site_node->field_research_site_history);
+          $geoDesc .= get_geo("siteid",     $research_site_node->field_research_site_siteid);
+          print_tag_line("geographicDescription", $geoDesc);
 
-        //                 example!!!
-        print_open_tag("boundingCoordinates");
-          print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-          print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-          print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-          print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-          print_open_tag("boundingAltitudes"); //conditional on content
-            print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
-            print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
-          print_close_tag("boundingAltitudes");
-        print_close_tag("boundingCoordinates");
-      print_close_tag("geographicCoverage");
+          //                 example!!!                
+          if (!empty($research_site_pt_coords) || ($research_site_elevation[0][value])) {
+            print_open_tag("boundingCoordinates");
+              print_value("westBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("eastBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("northBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+              print_value("southBoundingCoordinate", $research_site_node->field_research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                                            
+              print_open_tag("boundingAltitudes"); //conditional on content
+                print_value("altitudeMinimum",  $research_site_node->field_research_site_elevation);   
+                print_value("altitudeMaximum",  $research_site_node->field_research_site_elevation);   
+              print_close_tag("boundingAltitudes");    
+            print_close_tag("boundingCoordinates");
+          }
+        print_close_tag("geographicCoverage");
+      }
     }
   endforeach; //research_site_nid
 }
@@ -201,7 +221,7 @@ foreach ($themed_rows as $count => $row):
           print_tag_line("title", $node->title);    
           
           // person refs
-          print_person($node->field_dataset_owner_ref,          "owner");
+          print_person("owner", $node->field_dataset_owner_ref);
           // TODO, hardcode the metadataProvider
           print_open_tag("metadataProvider");
             print_tag_line("givenName",             "");
@@ -218,17 +238,29 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("electronicMailAddress", "");
             print_tag_line("personid",              "");              
           print_close_tag("metadataProvider");
+                                               
+          $dataset_datamanager_ref  = $node->field_dataset_datamanager_ref;
+          $dataset_fieldcrew_ref    = $node->field_dataset_fieldcrew_ref;
+          $dataset_labcrew_ref      = $node->field_dataset_labcrew_ref;  
+          // ??? no such field ?
+          $dataset_ext_assoc        = $node->field_dataset_ext_assoc;
           
-          print_open_tag("associatedParty");
-            print_person($node->field_dataset_datamanager_ref,  "data_manager");
-            print_person($node->field_dataset_fieldcrew_ref,    "field_crew");
-            print_person($node->field_dataset_labcrew_ref,      "labcrew");
-            print_person($node->field_dataset_ext_assoc,        "ext_assoc");
-          print_close_tag("associatedParty");
+          if (($dataset_datamanager_ref[0][nid]) || ($dataset_fieldcrew_ref[0][nid]) || ($dataset_labcrew_ref[0][nid]) || ($dataset_ext_assoc[0][nid])) {                     
+            // ??? empty tags, because all field_person are empty, but 
+            // [title] => Hap Garritt
+            // [name] => admin
+            print_open_tag("associatedParty");
+              print_person("data_manager",  $dataset_datamanager_ref);
+              print_person("field_crew",    $dataset_fieldcrew_ref);
+              print_person("labcrew",       $dataset_labcrew_ref);
+              print_person("ext_assoc",     $dataset_ext_assoc);
+            print_close_tag("associatedParty");
+          }          
           
           print_value("pubDate", $node->field_dataset_publication_date);
           print_value("abstract", $node->field_dataset_abstract);         
-          
+                     
+          // TODO: add if, depend of structure
           print_open_tag("keywordSet");   
             // dpr($node->taxonomy);
             // print_value("keyword", node->taxonomy->term);
@@ -332,10 +364,10 @@ foreach ($themed_rows as $count => $row):
             print_close_tag("description");
           print_close_tag("maintenance");
                                      
-          print_person($node->field_dataset_contact_ref, "contact");
+          print_person("contact", $node->field_dataset_contact_ref);
           
-          // print_person_hardcode_publiser
-          print_open_tag("publiser");
+          // print_person_hardcode_publisher
+          print_open_tag("publisher");
             print_tag_line("givenName",             "");
             print_tag_line("surname",               "");
             print_tag_line("organization",          "");
@@ -349,7 +381,7 @@ foreach ($themed_rows as $count => $row):
             print_tag_line("role",                  "");
             print_tag_line("electronicMailAddress", "");
             print_tag_line("personid",              "");              
-          print_close_tag("publiser");
+          print_close_tag("publisher");
           
           // pubPlace here, harcoded??? to the site. <pubPLace> Plum Island Ecosystems LTER </pubPlace>
           $site_name = variable_get("site_name", NULL);
