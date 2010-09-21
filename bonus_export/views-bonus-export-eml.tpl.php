@@ -141,54 +141,56 @@ function print_temporal_coverage($beg_end_date) {
 // ??? what move into "coverage"? all that?:
 function print_geographic_coverage($research_site_nid) {       
 
-  // $research_site_nid = $node->field_dataset_site_ref;
-  foreach ($research_site_nid as $key1 => $value1):
-    foreach ($value1 as $key2 => $value2){
-      $research_site_node = node_load($value2);    
-      $research_site_landform   = $research_site_node->field_research_site_landform;
-      $research_site_geology    = $research_site_node->field_research_site_geology;
-      $research_site_soils      = $research_site_node->field_research_site_soils;
-      $research_site_hydrology  = $research_site_node->field_research_site_hydrology;
-      $research_site_vegetation = $research_site_node->field_research_site_vegetation;
-      $research_site_climate    = $research_site_node->field_research_site_climate;
-      $research_site_history    = $research_site_node->field_research_site_history;
-      $research_site_siteid     = $research_site_node->field_research_site_siteid;
-      $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
-      $research_site_elevation  = $research_site_node->field_research_site_elevation;        
-      if ($research_site_landform[0][value]   || $research_site_geology[0][value] || 
-          $research_site_soils[0][value]      || $research_site_hydrology[0][value] || 
-          $research_site_vegetation[0][value] || $research_site_climate[0][value] || 
-          $research_site_history[0][value]    || $research_site_siteid[0][value] || 
-          !empty($research_site_pt_coords)    || $research_site_elevation[0][value]) {
-        print_open_tag("geographicCoverage");      
-          $geoDesc  = get_geo("Landform",   $research_site_landform, 0);
-          $geoDesc .= get_geo("Geology",    $research_site_geology);
-          $geoDesc .= get_geo("Soils",      $research_site_soils);
-          $geoDesc .= get_geo("Hydrology",  $research_site_hydrology);
-          $geoDesc .= get_geo("Vegetation", $research_site_vegetation);
-          $geoDesc .= get_geo("Climate",    $research_site_climate);
-          $geoDesc .= get_geo("History",    $research_site_history);
-          $geoDesc .= get_geo("siteid",     $research_site_siteid);
-          print_tag_line("geographicDescription", $geoDesc);
+  if ($research_site_nid) { 
+    // $research_site_nid = $node->field_dataset_site_ref;
+    foreach ($research_site_nid as $key1 => $value1):
+      foreach ($value1 as $key2 => $value2){
+        $research_site_node = node_load($value2);    
+        $research_site_landform   = $research_site_node->field_research_site_landform;
+        $research_site_geology    = $research_site_node->field_research_site_geology;
+        $research_site_soils      = $research_site_node->field_research_site_soils;
+        $research_site_hydrology  = $research_site_node->field_research_site_hydrology;
+        $research_site_vegetation = $research_site_node->field_research_site_vegetation;
+        $research_site_climate    = $research_site_node->field_research_site_climate;
+        $research_site_history    = $research_site_node->field_research_site_history;
+        $research_site_siteid     = $research_site_node->field_research_site_siteid;
+        $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
+        $research_site_elevation  = $research_site_node->field_research_site_elevation;        
+        if ($research_site_landform[0][value]   || $research_site_geology[0][value] || 
+            $research_site_soils[0][value]      || $research_site_hydrology[0][value] || 
+            $research_site_vegetation[0][value] || $research_site_climate[0][value] || 
+            $research_site_history[0][value]    || $research_site_siteid[0][value] || 
+            !empty($research_site_pt_coords)    || $research_site_elevation[0][value]) {
+          print_open_tag("geographicCoverage");      
+            $geoDesc  = get_geo("Landform",   $research_site_landform, 0);
+            $geoDesc .= get_geo("Geology",    $research_site_geology);
+            $geoDesc .= get_geo("Soils",      $research_site_soils);
+            $geoDesc .= get_geo("Hydrology",  $research_site_hydrology);
+            $geoDesc .= get_geo("Vegetation", $research_site_vegetation);
+            $geoDesc .= get_geo("Climate",    $research_site_climate);
+            $geoDesc .= get_geo("History",    $research_site_history);
+            $geoDesc .= get_geo("siteid",     $research_site_siteid);
+            print_tag_line("geographicDescription", $geoDesc);
 
-          //                 example!!!                
-          if (!empty($research_site_pt_coords) || ($research_site_elevation[0][value])) {
-            print_open_tag("boundingCoordinates");
-              print_value("westBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("eastBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("northBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-              print_value("southBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+            //                 example!!!                
+            if (!empty($research_site_pt_coords) || ($research_site_elevation[0][value])) {
+              print_open_tag("boundingCoordinates");
+                print_value("westBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                print_value("eastBoundingCoordinate",   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                print_value("northBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                print_value("southBoundingCoordinate",  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
                                             
-              print_open_tag("boundingAltitudes"); //conditional on content
-                print_value("altitudeMinimum",  $research_site_elevation);   
-                print_value("altitudeMaximum",  $research_site_elevation);   
-              print_close_tag("boundingAltitudes");    
-            print_close_tag("boundingCoordinates");
-          }
-        print_close_tag("geographicCoverage");
+                print_open_tag("boundingAltitudes"); //conditional on content
+                  print_value("altitudeMinimum",  $research_site_elevation);   
+                  print_value("altitudeMaximum",  $research_site_elevation);   
+                print_close_tag("boundingAltitudes");    
+              print_close_tag("boundingCoordinates");
+            }
+          print_close_tag("geographicCoverage");
+        }
       }
-    }
-  endforeach; //research_site_nid
+    endforeach; //research_site_nid     
+  } 
 }
 
        
@@ -285,12 +287,14 @@ foreach ($themed_rows as $count => $row):
                                                          
           // take file, a result used here and in DataTable
           $file_nid = $node->field_dataset_datafile_ref;
-          foreach ($file_nid as $key1 => $value1){
-            foreach ($value1 as $key2 => $value2){
-              $file_node = node_load($value2);
-              $file_node_arr[] = $file_node;
-              foreach($file_node->field_data_file as $file_data) {
-                $file_data_arr[] = $file_data;
+          if ($file_nid) {
+            foreach ($file_nid as $key1 => $value1){
+              foreach ($value1 as $key2 => $value2){
+                $file_node = node_load($value2);
+                $file_node_arr[] = $file_node;
+                foreach($file_node->field_data_file as $file_data) {
+                  $file_data_arr[] = $file_data;
+                }
               }
             }
           }
@@ -465,10 +469,6 @@ foreach ($themed_rows as $count => $row):
                 $quality          = $file_node->field_quality;
                 
                 if ($instrumentation[0][value] || $methods[0][value] || $quality[0][value]) {
-                  dpr($instrumentation);
-                  dpr($methods);
-                  dpr($quality);
-
                   print_open_tag("method");
                   if ($instrumentation[0][value] || $methods[0][value]) {
                     print_open_tag("methodStep");
@@ -490,35 +490,51 @@ foreach ($themed_rows as $count => $row):
                   foreach ($var_nid as $key1 => $value1){
                     foreach ($value1 as $key2 => $value2){
                       $var_node = node_load($value2);
+                      
+                      $var_title              = $var_node->title;
+                      $attribute_label        = $var_node->field_attribute_label;
+                      $var_definition         = $var_node->field_var_definition;
+                      $attribute_formatstring = $var_node->field_attribute_formatstring;
+                      $attribute_maximum      = $var_node->field_attribute_maximum;
+                      $attribute_minimum      = $var_node->field_attribute_minimum;
+                      $attribute_precision    = $var_node->field_attribute_precision;
+                      $attribute_unit         = $var_node->field_attribute_unit;    
+                      $code_definition        = $var_node->field_code_definition;
+                      $var_missingvalues      = $var_node->field_var_missingvalues;
+                      
                       print_open_tag("attribute");      
-                        print_tag_line("attributeName", $var_node->title);
-                        print_value("attributeLabel", $var_node->field_attribute_label);
-                        print_value("attributeDefinition", $var_node->field_var_definition);       
-                        
+                        print_tag_line("attributeName",    $var_title);
+                        if ($attribute_label[0][value]) {
+                          print_value("attributeLabel",    $attribute_label);
+                        }
+                        print_value("attributeDefinition", $var_definition);       
+                                                            
+                        /* ??? measurementScale, datatime, ratio, nominal are obligate, but missing in prototype
+                        ??? put if???
+                        for what else in "measurementScale"???
+                        */                                                        
+
                         print_open_tag("measurementScale");
-                          // $a = $var_node->field_attribute_maximum;
-                          // dpr(!empty($a[0]['value']));
                           print_open_tag("datatime");
-                            print_value("formatstring", $var_node->field_attribute_formatstring);
+                            print_value("formatstring",   $attribute_formatstring);
                           print_close_tag("datatime");
                           print_open_tag("ratio");
                             print_open_tag("numericDomain");
                               print_open_tag("bounds");
-                                print_value("maximum", $var_node->field_attribute_maximum);
-                                print_value("minimum", $var_node->field_attribute_minimum);
+                                print_value("maximum",    $attribute_maximum);
+                                print_value("minimum",    $attribute_minimum);
                               print_close_tag("bounds");
                             print_close_tag("numericDomain");
-                            print_value("precision", $var_node->field_attribute_precision);
-                            print_open_tag("unit");
-                              print_value("standardUnit", $var_node->field_attribute_unit);
+                            print_value("precision",      $attribute_precision);
+                            print_open_tag("unit");        
+                              print_value("standardUnit", $attribute_unit);
                             print_close_tag("unit");
                           print_close_tag("ratio");
                           print_open_tag("nominal");
                             print_open_tag("nonNumericDomain");
                               print_open_tag("enumeratedDomain");    
                                 print_open_tag("codeDefinition");
-                                  print_value("codeDefinition", $var_node->field_code_definition);
-                                  $codeDef = $var_node->field_code_definition;     
+                                  print_value("codeDefinition", $code_definition);
   // example???
                                   // dpr($codeDef);
                                   // <codeDefinition>G=five-points grass core site</codeDefinition>
@@ -539,7 +555,8 @@ foreach ($themed_rows as $count => $row):
                                   // 
                                   // )
                                   // </pre>
-                                  preg_match('/(?<code>\w+)=(?<definition>\w+)/', $codeDef, $matches);
+                                  # warning: preg_match() expects parameter 2 to be string, array given in /var/www/prototype/sites/all/modules/views_bonus/export/views-bonus-export-eml.tpl.php on line 556.
+                                  // preg_match('/(?<code>\w+)=(?<definition>\w+)/', $code_definition, $matches);
                                   // ???what if there're no matches?
                                   print_value("code", $matches["code"]);                     //                   code
                                   print_value("definition", $matches["definition"]);         //                   definition
@@ -548,12 +565,14 @@ foreach ($themed_rows as $count => $row):
                             print_close_tag("nonNumericDomain");
                           print_close_tag("nominal");
                         print_close_tag("measurementScale");
-                        
-                        print_open_tag("missingValueCode");
-                          print_value("missingValues", $var_node->field_var_missingvalues);
-                        //           code
-                        //           value
-                        print_close_tag("missingValueCode");
+                                                 
+                        if ($var_missingvalues[0][value]) {
+                          print_open_tag("missingValueCode");
+                            print_value("missingValues", $var_missingvalues);
+                          //           code
+                          //           value
+                          print_close_tag("missingValueCode");
+                        }
                       print_close_tag("attribute");
                     }
                   }                
