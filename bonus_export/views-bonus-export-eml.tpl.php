@@ -459,16 +459,30 @@ foreach ($themed_rows as $count => $row):
                     // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
                   print_close_tag("coverage");
                 }
-          
-                print_open_tag("method");
-                  print_open_tag("methodStep");
-                    print_value("instrumentation", $file_node->field_instrumentation);
-                    print_value("description", $file_node->field_methods);
-                  print_close_tag("methodStep"); 
-                  print_open_tag("qualityControl");
-                    print_value("description", $file_node->field_quality);
-                  print_close_tag("qualityControl");
-                print_close_tag("method");
+                                                    
+                $instrumentation  = $file_node->field_instrumentation;
+                $methods          = $file_node->field_methods;
+                $quality          = $file_node->field_quality;
+                
+                if ($instrumentation[0][value] || $methods[0][value] || $quality[0][value]) {
+                  dpr($instrumentation);
+                  dpr($methods);
+                  dpr($quality);
+
+                  print_open_tag("method");
+                  if ($instrumentation[0][value] || $methods[0][value]) {
+                    print_open_tag("methodStep");
+                      print_value("instrumentation",  $file_node->field_instrumentation);
+                      print_value("description",      $file_node->field_methods);
+                    print_close_tag("methodStep"); 
+                  }
+                  if ($quality[0][value]) {
+                    print_open_tag("qualityControl");
+                      print_value("description",      $file_node->field_quality);
+                    print_close_tag("qualityControl");
+                  }
+                  print_close_tag("method");
+                }
           
                 print_open_tag("attributeList");
                   // take variables
