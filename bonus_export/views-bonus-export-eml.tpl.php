@@ -385,14 +385,16 @@ foreach ($themed_rows as $count => $row):
                print_close_tag("para");
             print_close_tag("purpose");
           }
-          
-          print_open_tag("maintenance");
-            print_open_tag("description");
-               print_open_tag("para");
-                  print_value("literalLayout", $dataset_maintenance);
-               print_close_tag("para");
-            print_close_tag("description");
-          print_close_tag("maintenance");
+                                               
+          if ($dataset_maintenance[0]['value']) {
+            print_open_tag("maintenance");
+              print_open_tag("description");
+                 print_open_tag("para");
+                    print_value("literalLayout", $dataset_maintenance);
+                 print_close_tag("para");
+              print_close_tag("description");
+            print_close_tag("maintenance");
+          }
                                      
           print_person("contact", $dataset_contact_ref);
           
