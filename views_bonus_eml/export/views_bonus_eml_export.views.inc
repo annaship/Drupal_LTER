@@ -22,7 +22,7 @@ function views_bonus_eml_export_views_plugins() {
       ),
       'views_eml' => array(
         'title' => t('EML file'),
-        'help' => t('Display the view as a txt file.'),
+        'help' => t('Display the view as a eml file.'),
         'path' => $path,
         'handler' => 'views_bonus_eml_plugin_style_export_eml',
         'parent' => 'views_bonus_eml_export',

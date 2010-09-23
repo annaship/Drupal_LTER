@@ -62,7 +62,7 @@ class views_bonus_eml_plugin_style_export extends views_plugin_style {
       '#type' => 'checkbox',
       '#title' => t('Provide as file'),
       '#default_value' => $this->options['provide_file'],
-      '#description' => t('By deselecting this, the xml file will be provided as a feed instead of a file for download.'),
+      '#description' => t('By deselecting this, the eml file will be provided as a feed instead of a file for download.'),
     );
     $form['filename'] = array(
       '#type' => 'textfield',

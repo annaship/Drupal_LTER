@@ -222,7 +222,7 @@ $package_id = "knb-lter-pie.3.6";
 foreach ($themed_rows as $row) { 
 /* dataset
 */
-//  def all vars as 0
+
   $node = array();
   print_open_tag("dataset");
 
