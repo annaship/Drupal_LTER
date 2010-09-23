@@ -2,11 +2,6 @@
 // $Id: views-bonus-eml-export-eml.tpl.php,v 1.2 2009/06/24 17:27:53 neclimdul Exp $
 /**
  * Template to display a view as an eml.
- * TODO: 
- * 1) add all tags
- * 2) parameters in tag <geographicCoverage id="GEO-13"> 
- *    as print '<'.$label.' '.$id_name.'="'.$id_value.'">'.$content.'</'.$label.'>';
- *
  */
 
 // put allowed HTML tags here
