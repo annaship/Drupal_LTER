@@ -1,6 +1,6 @@
 <?php
-// $Id: views-bonus-eml-export-eml.tpl.php,v 1.2 2009/06/24 17:27:53 neclimdul Exp $
-/**
+// $Id: views-bonus-eml-export-eml.tpl.php, v 1.0 9/23/10 11:29 AM ashipunova Exp $
+/*
  * Template to display a view as an eml.
  */
 
@@ -197,6 +197,9 @@ $urlBase="http://".$_SERVER['HTTP_HOST']."/";
   
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 
+// ??? where we can get that:
+$package_id = "knb-lter-pie.3.6";
+// should we do the same with "system"?
 ?>
 
 <eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.0.1"
@@ -210,11 +213,10 @@ print '<?xml version="1.0" encoding="UTF-8" ?>';
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd"
-         packageId="knb-lter-pie.3.6" system="knb">
+         packageId="<?php print($package_id)?>"
+         system="knb">
 
 <?php
-
-// ??? packageId="knb-lter-pie.3.6" above ???
 
 // $themed_rows comes from eml view
 foreach ($themed_rows as $row) { 
