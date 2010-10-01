@@ -244,8 +244,7 @@ foreach ($themed_rows as $row) {
       $dataset_datamanager_ref  = $node->field_dataset_datamanager_ref;
       $dataset_fieldcrew_ref    = $node->field_dataset_fieldcrew_ref;
       $dataset_labcrew_ref      = $node->field_dataset_labcrew_ref;
-      // ??? no such field ?
-      $dataset_ext_assoc        = $node->field_dataset_ext_assoc;
+      $dataset_ext_assoc_ref    = $node->field_dataset_ext_assoc_ref;
       $dataset_publication_date = $node->field_dataset_publication_date;
       $dataset_abstract         = $node->field_dataset_abstract;
       $dataset_add_info         = $node->field_dataset_add_info;
@@ -302,7 +301,7 @@ foreach ($themed_rows as $row) {
       views_bonus_eml_print_close_tag('metadataProvider');
 
       if ($dataset_datamanager_ref[0]['nid']  || $dataset_fieldcrew_ref[0]['nid'] ||
-          $dataset_labcrew_ref[0]['nid']      || $dataset_ext_assoc[0]['nid']) {
+          $dataset_labcrew_ref[0]['nid']      || $dataset_ext_assoc_ref[0]['nid']) {
         // ??? empty tags, because all field_person are empty, but
         // ['title'] => Hap Garritt
         // ['name'] => admin
@@ -311,7 +310,7 @@ foreach ($themed_rows as $row) {
           views_bonus_eml_print_person('data_manager',  $dataset_datamanager_ref);
           views_bonus_eml_print_person('field_crew',    $dataset_fieldcrew_ref);
           views_bonus_eml_print_person('labcrew',       $dataset_labcrew_ref);
-          views_bonus_eml_print_person('ext_assoc',     $dataset_ext_assoc);
+          views_bonus_eml_print_person('ext_assoc',     $dataset_ext_assoc_ref);
         views_bonus_eml_print_close_tag('associatedParty');
       }
 
@@ -320,7 +319,34 @@ foreach ($themed_rows as $row) {
 
       // TODO: add if, depending of structure
       views_bonus_eml_print_open_tag('keywordSet');
-        // dpr($node->taxonomy);
+//        dpr($node->field_dataset_keywords);
+//        $tax = $node->taxonomy;
+//        dpr($tax);
+//         [field_dataset_keywords] => array (
+//         [0] => array (
+//             [value] => []
+//         )
+//Array
+//(
+//)
+        // <keywordSet>
+//−
+//<pre>
+//Array
+//(
+//    [0] => Array
+//        (
+//            [value] =>
+//        )
+//
+//)
+//</pre>
+//<pre>Array
+//(
+//)
+//</pre>
+//</keywordSet>
+        //
         // views_bonus_eml_print_value('keyword', node->taxonomy->term);
         // views_bonus_eml_print_value('keywordThesaurus', node->taxonomy->vocabularyName);
       views_bonus_eml_print_close_tag('keywordSet');
@@ -554,7 +580,6 @@ foreach ($themed_rows as $row) {
               foreach ($var_nid as $value1) {
                 foreach ($value1 as $value2) {
                   $var_node = node_load($value2);
-
                   $var_title              = $var_node->title;
                   $attribute_label        = $var_node->field_attribute_label;
                   $var_definition         = $var_node->field_var_definition;
@@ -579,25 +604,42 @@ foreach ($themed_rows as $row) {
                       // since we can only choose one type (datetime OR ration OR nominal)
 
                     */
-
-                  if ($attribute_formatstring || $attribute_maximum || $attribute_minimum ||
-                     $attribute_precision || $attribute_unit) {
+                  if ($attribute_formatstring[0]['value'] || 
+                      $attribute_maximum[0]['value'] ||
+                      $attribute_minimum[0]['value'] ||
+                      $attribute_precision[0]['value'] ||
+                      $attribute_unit[0]['value']) {
                     views_bonus_eml_print_open_tag('measurementScale');
+                    if ($attribute_formatstring[0]['value']) {
                       views_bonus_eml_print_open_tag('datatime');
                         views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
                       views_bonus_eml_print_close_tag('datatime');
+                    }
+                    if ($attribute_maximum[0]['value'] ||
+                        $attribute_minimum[0]['value'] ||
+                        $attribute_precision[0]['value'] ||
+                        $attribute_unit[0]['value']) {
                       views_bonus_eml_print_open_tag('ratio');
+                      if ($attribute_maximum[0]['value'] ||
+                          $attribute_minimum[0]['value']) {
                         views_bonus_eml_print_open_tag('numericDomain');
                           views_bonus_eml_print_open_tag('bounds');
                             views_bonus_eml_print_value('maximum',    $attribute_maximum);
                             views_bonus_eml_print_value('minimum',    $attribute_minimum);
                           views_bonus_eml_print_close_tag('bounds');
                         views_bonus_eml_print_close_tag('numericDomain');
+                      }
+                      if ($attribute_precision[0]['value']) {
                         views_bonus_eml_print_value('precision',      $attribute_precision);
-                        views_bonus_eml_print_open_tag('unit');
+                      }
+                      if ($attribute_unit[0]['value']) {
+                      views_bonus_eml_print_open_tag('unit');
                           views_bonus_eml_print_value('standardUnit', $attribute_unit);
                         views_bonus_eml_print_close_tag('unit');
+                      }
                       views_bonus_eml_print_close_tag('ratio');
+                     }
+                     if ($code_definition[0]['value']) {
                       views_bonus_eml_print_open_tag('nominal');
                         views_bonus_eml_print_open_tag('nonNumericDomain');
                           views_bonus_eml_print_open_tag('enumeratedDomain');
@@ -639,6 +681,7 @@ foreach ($themed_rows as $row) {
                           views_bonus_eml_print_close_tag('enumeratedDomain');
                         views_bonus_eml_print_close_tag('nonNumericDomain');
                       views_bonus_eml_print_close_tag('nominal');
+                     }
                     views_bonus_eml_print_close_tag('measurementScale');
                   } // endif; if ($attribute_formatstring ||
                       //            $attribute_maximum || $attribute_minimum ||
