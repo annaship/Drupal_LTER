@@ -67,7 +67,8 @@ function views_bonus_eml_print_person($person_tag, $ref_field_arr) {
   if ($ref_field_arr[0]['nid']) {
     foreach ($ref_field_arr as $value1) {
       foreach ($value1 as $value2) {
-        $person_node          = node_load($value2);
+        $person_node = node_load($value2);
+        
         $person_first_name    = $person_node->field_person_first_name;
         $person_last_name     = $person_node->field_person_last_name;
         $person_organization  = $person_node->field_person_organization;
@@ -145,7 +146,8 @@ function views_bonus_eml_print_geographic_coverage($research_site_nid) {
   if ($research_site_nid[0]['nid']) {
     foreach ($research_site_nid as $value1) {
       foreach ($value1 as $value2) {
-        $research_site_node       = node_load($value2);
+        $research_site_node = node_load($value2);
+        
         $research_site_landform   = $research_site_node->field_research_site_landform;
         $research_site_geology    = $research_site_node->field_research_site_geology;
         $research_site_soils      = $research_site_node->field_research_site_soils;
@@ -155,20 +157,6 @@ function views_bonus_eml_print_geographic_coverage($research_site_nid) {
         $research_site_history    = $research_site_node->field_research_site_history;
         $research_site_siteid     = $research_site_node->field_research_site_siteid;
         $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
-
-//            [0] =&gt; Array
-//        (
-//            [geo] =&gt; ���������6@������&amp;@
-//            [gis type] =&gt; point
-//            [wkb] =&gt; ���������6@������&amp;@
-//        )
-//
-//)
-
-
-//        $a = $research_site_pt_coords[0]['wkb'];
-//        print('$research_site_pt_coords[0][wkb] = ');
-//        dpr($research_site_node);
 
         $research_site_elevation  = $research_site_node->field_research_site_elevation;
         if ($research_site_landform[0]['value']   || 
@@ -192,16 +180,16 @@ function views_bonus_eml_print_geographic_coverage($research_site_nid) {
             $geoDesc .= views_bonus_eml_get_geo('siteid',     $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
-            //                 example!!!
             if (!empty($research_site_pt_coords) ||
                 ($research_site_elevation[0]['value'])) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
-                views_bonus_eml_print_value('westBoundingCoordinate',   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                views_bonus_eml_print_value('eastBoundingCoordinate',   $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                views_bonus_eml_print_value('northBoundingCoordinate',  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
-                views_bonus_eml_print_value('southBoundingCoordinate',  $research_site_pt_coords);   //there is some parsing to do here, need the longitude only
+                //there is some parsing TODO here, need the longitude only
+                views_bonus_eml_print_value('westBoundingCoordinate',   $research_site_pt_coords);   
+                views_bonus_eml_print_value('eastBoundingCoordinate',   $research_site_pt_coords);
+                views_bonus_eml_print_value('northBoundingCoordinate',  $research_site_pt_coords);   
+                views_bonus_eml_print_value('southBoundingCoordinate',  $research_site_pt_coords);   
 
-                views_bonus_eml_print_open_tag('boundingAltitudes'); //conditional on content
+                views_bonus_eml_print_open_tag('boundingAltitudes'); 
                   views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
                   views_bonus_eml_print_value('altitudeMaximum',  $research_site_elevation);
                 views_bonus_eml_print_close_tag('boundingAltitudes');
@@ -214,19 +202,6 @@ function views_bonus_eml_print_geographic_coverage($research_site_nid) {
   } // endif; $research_site_nid[0]['nid']
 } // function views_bonus_eml_print_geographic_coverage
 
-function print_tags_array($tags_array, $data1) {
-  $my_size = sizeof($tags_array);
-
-  for($i = 0; $i < $my_size; ++$i)
-  {
-    print '<' . $tags_array[$i] . '>';
-  }
-  print(views_bonus_eml_my_strip_tags($data1[0]['value']));
-  for($j = $my_size-1; $j >= 0; --$j)
-  {
-    print '</' . $tags_array[$j] . '>';
-  }
-}
 
 // Url for datafile urls, using Drupal variable
 $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
@@ -235,27 +210,9 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
 
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 
-// ??? where we can get that:
+// TODO: move into config file
 $package_id = 'knb-lter-pie.3.6';
-// should we do the same with 'system'?
 
-//
-// <eml:eml xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd"
-// packageId="knb-lter-pie.3.6" system="knb">
-// [10/1/10 3:24:59 PM] inigo:
-// <eml:eml xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd"
-// packageId="knb-lter-$site_name.$dataset_id.$sum($vid)"  system="knb">
-// packageId=SCOPE.numericIdentifier.revision
-// Scope=knb-lter.SITEACRONYM
-// numericIdentifier HAS to be numeric
-//This is an identifier (usually numeric) for your data set.
-//It should be unique - that is - you cannot use a previously used identifier. Example : 1012009
-//[10/1/10 3:27:12 PM] inigo: dataset Id (field_dataset_datasetid)
-//one eml === one dataset
-// TODO: change view to show only one dataset
-//<eml:eml>  one dataset </eml:eml>  <eml:eml> second...</eml:eml>
-//[10/1/10 3:29:10 PM] inigo: packageId = SCOPE.numericIdentifier.revision
-//[10/1/10 3:29:24 PM] inigo: Revision = Sum of all the VIDs
 ?>
 
 <eml:eml xmlns:eml='eml://ecoinformatics.org/eml-2.0.1'
@@ -284,7 +241,6 @@ foreach ($themed_rows as $row) {
 
     foreach ($row as $content) {
       $node = node_load($content);
-//      dpr($node);
 
       // collect all dataset values here to use in a conditions
       $dataset_short_name       = $node->field_dataset_short_name;
@@ -309,14 +265,15 @@ foreach ($themed_rows as $row) {
       $dataset_related_links    = $node->field_dataset_related_links;
 
       // Take an attached file(s), a result used here and in DataTable
-      $file_nid                 = array();
-      $file_nid                 = $node->field_dataset_datafile_ref;
+      $file_nid      = array();  // remove previous one
+      $file_nid      = $node->field_dataset_datafile_ref;
       $file_node_arr = array();
       $file_data_arr = array();
+      // Check if there is one
       if ($file_nid[0]['nid']) {
         foreach ($file_nid as $value1) {
           foreach ($value1 as $value2) {
-            $file_node = node_load($value2);
+            $file_node       = node_load($value2);
             $file_node_arr[] = $file_node;
             // Used only for dataset distribution; collected here to avoid
             //    one more foreach
@@ -332,25 +289,10 @@ foreach ($themed_rows as $row) {
 
       // Person refs start
       views_bonus_eml_print_person('owner', $dataset_owner_ref);
-      // TODO, hardcode the metadataProvider, specific for every given site
-      // in README put a description, what should be changed
-//      <metadataProvider>
-//   <organizationName>Cedar Creek LTER</organizationName>
-//   <address>
-//    <deliveryPoint>Cedar Creek Natural History Area</deliveryPoint>
-//    <deliveryPoint>100 Ecology Building</deliveryPoint>
-//    <deliveryPoint>1987 Upper Buford Circle</deliveryPoint>
-//    <city>Saint Paul</city>
-//    <administrativeArea>MN</administrativeArea>
-//    <postalCode>55108</postalCode>
-//    <country>USA</country>
-//   </address>
-//   <phone phonetype="voice">612-625-5740</phone>
-//   <phone phonetype="fax">612-624-6777</phone>
-//   <electronicMailAddress>dman@lter.umn.edu</electronicMailAddress>
-//   <onlineUrl>http://www.cedarcreek.umn.edu/</onlineUrl>
-//  </metadataProvider>
-//      <organizationName>Plum Island Ecosystems LTER</organizationName>
+
+      // TODO: hardcode the metadataProvider, specific for every given site
+      // put it into config file,
+      // add a description, what should be changed
 
       views_bonus_eml_print_open_tag('metadataProvider');
         views_bonus_eml_print_tag_line('givenName',             '');
@@ -370,15 +312,9 @@ foreach ($themed_rows as $row) {
 
       if ($dataset_datamanager_ref[0]['nid']  || $dataset_fieldcrew_ref[0]['nid'] ||
           $dataset_labcrew_ref[0]['nid']      || $dataset_ext_assoc_ref[0]['nid']) {
-        // ??? empty tags, because all field_person are empty, but
-        // ['title'] => Hap Garritt
-        // ['name'] => admin
-        // Something with import?
-
         views_bonus_eml_print_open_tag('associatedParty');
           views_bonus_eml_print_person('data_manager',  $dataset_datamanager_ref);
         views_bonus_eml_print_close_tag('associatedParty');
-        // TODO see add file
         views_bonus_eml_print_person('field_crew',    $dataset_fieldcrew_ref);
           views_bonus_eml_print_person('labcrew',       $dataset_labcrew_ref);
           views_bonus_eml_print_person('ext_assoc',     $dataset_ext_assoc_ref);
@@ -387,163 +323,65 @@ foreach ($themed_rows as $row) {
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
       views_bonus_eml_print_value('abstract', $dataset_abstract);
 
-      // TODO: add if, depending of structure
-      views_bonus_eml_print_open_tag('keywordSet');
-//      <keywordSet>
-//   <keyword>vertebrates</keyword>
-//   <keyword>population</keyword>
-//   <keyword>circular plots</keyword>
-//   <keyword>birds</keyword>
-//   <keywordThesaurus>Assigned by Principal Investigator</keywordThesaurus>
-//  </keywordSet>
-//  <keywordSet>
-//   <keyword>population dynamics</keyword>
-//   <keywordThesaurus>LTER Core</keywordThesaurus>
-//  </keywordSet>
-//  <keywordSet>
-//   <keyword>Animal Population Dynamics</keyword>
-//   <keywordThesaurus>LEF LTER Data Categories</keywordThesaurus>
-//  </keywordSet>
-//
-//TODO: where it is?
-//        dpr($node->field_dataset_keywords);
-//        $tax = $node->taxonomy;
-//        dpr($tax);
-//         [field_dataset_keywords] => array (
-//         [0] => array (
-//             [value] => []
-//         )
-//Array
-//(
-//)
-        // <keywordSet>
-//−
-//<pre>
-//Array
-//(
-//    [0] => Array
-//        (
-//            [value] =>
-//        )
-//
-//)
-//</pre>
-//<pre>Array
-//(
-//)
-//</pre>
-//</keywordSet>
-        //
-        // views_bonus_eml_print_value('keyword', node->taxonomy->term);
-        // views_bonus_eml_print_value('keywordThesaurus', node->taxonomy->vocabularyName);
-      views_bonus_eml_print_close_tag('keywordSet');
-
-
       if ($dataset_add_info[0]['value']) {
-        $tags_array = array('additionalInfo', 'para', 'literalLayout');
-        print_tags_array($tags_array, $dataset_add_info);
+        views_bonus_eml_print_open_tag('additionalInfo');
+          views_bonus_eml_print_open_tag('para');
+             views_bonus_eml_print_value('literalLayout', $dataset_add_info);
+          views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('additionalInfo');
       }
 
-//      <intellectualRights>
-//   <section>
-//    <title>ADEQUATE ACKNOWLEDGEMENT</title>
-//    <para>
-//     <literalLayout>The scientists, the LEF-LTER Program, and the USDA International Institute of Tropical Forestry (IITF) must receive adequate acknowledgement for the use of data by other scientists, and the LEF LTER program must receive two copies of any publication using that data. One copy will be placed at the IITF library and one copy will stay with the LEF LTER Data Manager. A suggested format for this acknowledgement will be distributed along with the requested data.</literalLayout>
-//    </para>
-//    <section>
-//     <title>Acknowledgements for NSF Support.</title>
-//     <para>
-//      <literalLayout>The following paragraph should be included in the acknowledgements of all publications funded in any way by current and future LTER grants:</literalLayout>
-//      <literalLayout>This research was performed under grant #DEB-0218039 from the National Science Foundation to the Institute of Tropical Ecosystem Studies (IEET), University of Puerto Rico, and the International Institute of Tropical Forestry (IITFR) as part of the Long-Term Ecological Research Program in the Luquillo Experimental Forest. Additional support was provided by the Forest Service (U.S. Department of Agriculture) and the University of Puerto Rico.</literalLayout>
-//     </para>
-//    </section>
-//   </section>
-//  </intellectualRights>
+      // TODO: hardcode the intellectualRights, specific for every given site
+      // put it into config file,
+      // add a description, what should be changed
+
       views_bonus_eml_print_open_tag('intellectualRights');
         views_bonus_eml_print_open_tag('section');
-          views_bonus_eml_print_tag_line('title', 'Data Policies');
+        views_bonus_eml_print_tag_line('title', 'Data Policies');
           views_bonus_eml_print_open_tag('para');
-            // TODO: put in README $intellectual_rights
             views_bonus_eml_print_tag_line('literalLayout', $intellectual_rights);
           views_bonus_eml_print_close_tag('para');
         views_bonus_eml_print_close_tag('section');
       views_bonus_eml_print_close_tag('intellectualRights');
 
-      if ($file_data_arr[0]['filepath']) {
+      // if there is one and only one file take path from it
+      if ($file_data_arr[0]['filepath'] && !$file_data_arr[1]) {
         views_bonus_eml_print_open_tag('distribution');
-          // ??? if there are several files from different dirs?
-        // nothing!!!
-          /* ??? if there's none ???
-           *         // nothing!!!
-
-          <distribution>
-          −
-          <url>
-          http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
-          </url>
-          −
-          <url>
-          http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
-          </url>
-          </distribution>
-          */
-  // or
-          /*
-          <distribution>
-          −
-          <url>
-          http://127.0.0.1/sites/default/files/dataModelComparison.xlsx
-          </url>
-          </distribution>
-          −
-          <distribution>
-          −
-          <url>
-          http://127.0.0.1/sites/default/files/EST-PR-NUT.xml
-          </url>
-          </distribution>
-          */
-
-          /*
-          $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
-
-          echo $path_parts['dirname'], '\n';
-          echo $path_parts['basename'], '\n';
-          echo $path_parts['extension'], '\n';
-          echo $path_parts['filename'], '\n'; // since PHP 5.2.0
-          */
-
-          // foreach ($file_data_arr as $file_data) {
-          //   if (isset($file_data) && !empty($file_data['filepath'])) {
-          //       views_bonus_eml_print_tag_line('url', $urlBase . dirname($file_data['filepath']));
-          //   }
-          // }
-          // ??? what if dirname is different for dif. files?
           views_bonus_eml_print_tag_line('url', $urlBase . dirname($file_data_arr[0]['filepath']));
         views_bonus_eml_print_close_tag('distribution');
-      } // if ($file_data_arr[0]['filepath'])
+      }
 
       if ($dataset_site_ref[0]['nid'] || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
           views_bonus_eml_print_geographic_coverage($dataset_site_ref);
           views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
-          // taxonomicCoverage
+          // taxonomicCoverage here
         views_bonus_eml_print_close_tag('coverage');
       }
 
       if ($dataset_purpose[0]['value']) {
-        $tags_array = array('purpose', 'para', 'literalLayout');
-        print_tags_array($tags_array, $dataset_purpose);
+        views_bonus_eml_print_open_tag('purpose');
+           views_bonus_eml_print_open_tag('para');
+              views_bonus_eml_print_value('literalLayout', $dataset_purpose);
+           views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('purpose');
       }
 
       if ($dataset_maintenance[0]['value']) {
-        $tags_array = array('maintenance', 'description', 'para', 'literalLayout');
-        print_tags_array($tags_array, $dataset_maintenance);
+        views_bonus_eml_print_open_tag('maintenance');
+          views_bonus_eml_print_open_tag('description');
+             views_bonus_eml_print_open_tag('para');
+                views_bonus_eml_print_value('literalLayout', $dataset_maintenance);
+             views_bonus_eml_print_close_tag('para');
+          views_bonus_eml_print_close_tag('description');
+        views_bonus_eml_print_close_tag('maintenance');
       }
 
       views_bonus_eml_print_person('contact', $dataset_contact_ref);
 
-      // views_bonus_eml_print_person_hardcode_publisher
+      // TODO: hardcode the publisher, specific for every given site
+      // put it into config file,
+      // add a description, what should be changed
       views_bonus_eml_print_open_tag('publisher');
         views_bonus_eml_print_tag_line('givenName',             '');
         views_bonus_eml_print_tag_line('surname',               '');
@@ -560,7 +398,8 @@ foreach ($themed_rows as $row) {
         views_bonus_eml_print_tag_line('personid',              '');
       views_bonus_eml_print_close_tag('publisher');
 
-      // pubPlace here, harcoded??? to the site. <pubPLace> Plum Island Ecosystems LTER </pubPlace>
+      // TODO: hardcode the pubPlace, specific for every given site
+      // example: <pubPLace> Plum Island Ecosystems LTER </pubPlace>
       $views_bonus_eml_site_name = variable_get('site_name', NULL);
       views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
 
@@ -571,13 +410,6 @@ foreach ($themed_rows as $row) {
         if ($dataset_instrumentation[0]['value'] || $dataset_methods[0]['value']) {
           views_bonus_eml_print_open_tag('methodStep');
             views_bonus_eml_print_value('instrumentation',  $dataset_instrumentation);
-            /*TODO
-             *                  // foreach  $node->field_instrumentation
-                 print_value("instrumentation", $node->field_instrumentation);
-                 // example!!!
-
-             *
-             */
             views_bonus_eml_print_value('description',      $dataset_methods);
           views_bonus_eml_print_close_tag('methodStep');
         }
@@ -590,9 +422,7 @@ foreach ($themed_rows as $row) {
         views_bonus_eml_print_close_tag('methods');
       }
 
-      // mandatory TODO
       views_bonus_eml_print_value('field_dataset_id', $dataset_id);
-      // TODO: add 'if' and move into additionalInfo
       views_bonus_eml_print_value('related_links',    $dataset_related_links);
 
 
@@ -649,12 +479,12 @@ foreach ($themed_rows as $row) {
 
             if ($datafile_site_ref[0]['nid'] || $datafile_date[0]['nid']) {
               views_bonus_eml_print_open_tag('coverage');
-                // if several sites? see localhost
                 views_bonus_eml_print_geographic_coverage($datafile_site_ref);
                 views_bonus_eml_print_temporal_coverage($datafile_date);
-                // taxonomic coverage here, but for now ignore - we didnt address this in drupal yet.
+                // taxonomic coverage here
               views_bonus_eml_print_close_tag('coverage');
             }
+
 
             if ($file_instrumentation[0]['value'] || 
                 $file_methods[0]['value']         ||
@@ -699,61 +529,6 @@ foreach ($themed_rows as $row) {
                     views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                     views_bonus_eml_print_value('attributeDefinition', $var_definition);
 
-                    /* ??? measurementScale, datatime, ratio, nominal are obligate,
-                     *  but missing in prototype
-                     put if
-                    for what else in 'measurementScale     (all but 'precision' is obligate)
-                     remove if 
-                    *                         // in here is important the conditionals,
-                      // since we can only choose one type (datetime OR ration OR nominal)
-                      Basics,   Physical Measurent, Code-Codedefinitions, Dates
-                     * Physical Measurements, UNIT --> EML RATIO
-                     * <attribute>
-     <attributeName>White-winged Dove</attributeName>
-     <attributeLabel>WWDOV</attributeLabel>
-     <attributeDefinition>Number of White-winged Dove individuals seen or heard</attributeDefinition>
-     <measurementScale>
-      <ratio>
-       <unit>
-        <standardUnit>dimensionless</standardUnit>
-       </unit>
-       <numericDomain>
-        <numberType>real</numberType>
-       </numericDomain>
-      </ratio>
-     </measurementScale>
-    </attribute>
-                     * BASICs (Label, Title, Definition (or body))
-                     * <attribute>
-     <attributeName>Time begun</attributeName>
-     <attributeLabel>TIME</attributeLabel>
-     <attributeDefinition>Time of day first count begun - military time</attributeDefinition>
-     <measurementScale>
-      <nominal>
-       <nonNumericDomain>
-        <textDomain>
-         <definition>Time of day first count begun - military time</definition>
-        </textDomain>
-       </nonNumericDomain>
-      </nominal>
-     </measurementScale>
-    </attribute>
-                     * repeat title into label and defenition if it's skipped
-                     * <attribute>
-  <attributeName>Node Title</attributeName>
-  <attributeLabel>Label</attributeLabel>
-  <attributeDefinition>Definition OR title if there is no definition</attributeDefinition>
-  <measurementScale>
-   <nominal>
-    <nonNumericDomain>
-      <textDomain>
-            <definition>Definition OR title if there is no definition</definition>
-      </textDomain>
-    </nonNumericDomain>
-   </nominal>
-  </measurementScale>
-</attribute>
-                    */
                   if ($attribute_formatstring[0]['value'] || 
                       $attribute_maximum[0]['value'] ||
                       $attribute_minimum[0]['value'] ||
@@ -793,64 +568,19 @@ foreach ($themed_rows as $row) {
                       views_bonus_eml_print_open_tag('nominal');
                         views_bonus_eml_print_open_tag('nonNumericDomain');
                           views_bonus_eml_print_open_tag('enumeratedDomain');
-                          // codeDefinition is obligate
-                            views_bonus_eml_print_open_tag('codeDefinition');
                               views_bonus_eml_print_value('codeDefinition', $code_definition);
-                    // example???
-                    /*
-                     * <codeDefinition> <code> codeValue</code>
-                     * <definition>defintion value </defintion>
-                     * </codeDefinition>
-                     * codeValue=Codedefintion
-                     * <code>codeValue
-                     * <defenition>Codedefintion
-                     */
-                              // dpr($codeDef);
-                              // <codeDefinition>G=five-points grass core site</codeDefinition>
-                              // <codeDefinition>C=Rio Salado</codeDefinition>
-                              // −
-                              // <pre>
-                              // Array
-                              // (
-                              //     [0] => Array
-                              //         (
-                              //             ['value'] => G=five-points grass core site
-                              //         )
-                              //
-                              //     [1] => Array
-                              //         (
-                              //             ['value'] => C=Rio Salado
-                              //         )
-                              //
-                              // )
-                              // </pre>
-                              // # warning: preg_match() expects parameter 2 to be string,
-                              // array given in
-                              // /var/www/prototype/sites/all/modules/views_bonus_eml_eml/export/views-bonus-eml-export-eml.tpl.php
-                              // on line 556.
-                              // move into foreach cycle:
-                              $matches = array();
-                              // preg_match('/(?<code>\w+) = (?<definition>\w+)/',
-                              //    $code_definition, $matches);
-                              // ???what if there're no matches?
-                              views_bonus_eml_print_value('code', $matches['code']);                     //                   code
-                              views_bonus_eml_print_value('definition', $matches['definition']);         //                   definition
-                            views_bonus_eml_print_close_tag('codeDefinition');
                           views_bonus_eml_print_close_tag('enumeratedDomain');
                         views_bonus_eml_print_close_tag('nonNumericDomain');
                       views_bonus_eml_print_close_tag('nominal');
                      }
                     views_bonus_eml_print_close_tag('measurementScale');
                   } // endif; if ($attribute_formatstring ||
-                      //            $attribute_maximum || $attribute_minimum ||
-                      //            $attribute_precision || $attribute_unit)
+                    //            $attribute_maximum || $attribute_minimum ||
+                    //            $attribute_precision || $attribute_unit)
 
                   if ($var_missingvalues[0]['value']) {
                     views_bonus_eml_print_open_tag('missingValueCode');
                       views_bonus_eml_print_value('missingValues', $var_missingvalues);
-                    //           code
-                    //           value
-                      // =!!!
                     views_bonus_eml_print_close_tag('missingValueCode');
                   }
                   views_bonus_eml_print_close_tag('attribute');
@@ -866,5 +596,3 @@ foreach ($themed_rows as $row) {
 } // endforeach; ($themed_rows as $count => $row)
 views_bonus_eml_print_close_tag('eml:eml');
 ?>
-
- 
