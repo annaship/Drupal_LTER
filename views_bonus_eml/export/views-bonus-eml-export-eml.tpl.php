@@ -211,37 +211,38 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
 print '<?xml version="1.0" encoding="UTF-8" ?>';
 
 // TODO: move into config file
-$package_id = 'knb-lter-pie.3.6';
+// $package_id = 'knb-lter-pie.3.6';
 
-?>
-
-<eml:eml xmlns:eml='eml://ecoinformatics.org/eml-2.0.1'
-         xmlns:stmml='http://www.xml-cml.org/schema/stmml'
-         xmlns:sw='eml://ecoinformatics.org/software-2.0.1'
-         xmlns:cit='eml://ecoinformatics.org/literature-2.0.1'
-         xmlns:ds='eml://ecoinformatics.org/dataset-2.0.1'
-         xmlns:prot='eml://ecoinformatics.org/protocol-2.0.1'
-         xmlns:doc='eml://ecoinformatics.org/documentation-2.0.1'
-         xmlns:res='eml://ecoinformatics.org/resource-2.0.1'
-         xmlns:xs='http://www.w3.org/2001/XMLSchema'
-         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-         xsi:schemaLocation='eml://ecoinformatics.org/eml-2.0.1 eml.xsd'
-         packageId='<?php print($package_id)?>'
-         system='knb'>
-
-<?php
+include_once 'config_eml.php';
 
 // $themed_rows comes from eml view
-foreach ($themed_rows as $row) {
-
-  // dataset start
+  foreach ($themed_rows as $row) {
+/* dataset start
+*/
 
   $node = array();
   views_bonus_eml_print_open_tag('dataset');
 
+?>
+
+  <eml:eml xmlns:eml='eml://ecoinformatics.org/eml-2.0.1'
+           xmlns:stmml='http://www.xml-cml.org/schema/stmml'
+           xmlns:sw='eml://ecoinformatics.org/software-2.0.1'
+           xmlns:cit='eml://ecoinformatics.org/literature-2.0.1'
+           xmlns:ds='eml://ecoinformatics.org/dataset-2.0.1'
+           xmlns:prot='eml://ecoinformatics.org/protocol-2.0.1'
+           xmlns:doc='eml://ecoinformatics.org/documentation-2.0.1'
+           xmlns:res='eml://ecoinformatics.org/resource-2.0.1'
+           xmlns:xs='http://www.w3.org/2001/XMLSchema'
+           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+           xsi:schemaLocation='eml://ecoinformatics.org/eml-2.0.1 eml.xsd'
+           packageId='<?php print($package_id)?>'
+           system='knb'>
+
+<?php
+
     foreach ($row as $content) {
       $node = node_load($content);
-
       // collect all dataset values here to use in a conditions
       $dataset_short_name       = $node->field_dataset_short_name;
       $dataset_title            = $node->title;
@@ -274,6 +275,8 @@ foreach ($themed_rows as $row) {
         foreach ($file_nid as $value1) {
           foreach ($value1 as $value2) {
             $file_node       = node_load($value2);
+            dpr($file_node);
+            
             $file_node_arr[] = $file_node;
             // Used only for dataset distribution; collected here to avoid
             //    one more foreach
@@ -322,6 +325,13 @@ foreach ($themed_rows as $row) {
 
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
       views_bonus_eml_print_value('abstract', $dataset_abstract);
+
+      // TODO: add if, depend of structure
+      views_bonus_eml_print_open_tag('keywordSet');
+        // dpr($node->taxonomy);
+        // views_bonus_eml_print_value('keyword', node->taxonomy->term);
+        // views_bonus_eml_print_value('keywordThesaurus', node->taxonomy->vocabularyName);
+      views_bonus_eml_print_close_tag('keywordSet');
 
       if ($dataset_add_info[0]['value']) {
         views_bonus_eml_print_open_tag('additionalInfo');
@@ -592,7 +602,7 @@ foreach ($themed_rows as $row) {
         } // endforeach; ($file_node_arr as $file_node)
       } // endif; if ($file_node_arr)
     } // endforeach; ($row as $field => $content)
-  views_bonus_eml_print_close_tag('dataset');
+    views_bonus_eml_print_close_tag('eml:eml');
 } // endforeach; ($themed_rows as $count => $row)
-views_bonus_eml_print_close_tag('eml:eml');
+views_bonus_eml_print_close_tag('dataset');
 ?>
