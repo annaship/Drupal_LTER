@@ -3,7 +3,12 @@
  * Here goes an site specific information
  */
   $views_bonus_eml_site_name = variable_get('site_name', NULL);
-  $package_id = $views_bonus_eml_site_name.'.3.6';
+  $package_id = $views_bonus_eml_site_name . '.' . $ver_vid;
+
+  // put allowed HTML tags here
+  function views_bonus_eml_my_strip_tags($content) {
+    return strip_tags($content, '<p><h1><h2><h3><h4><h5><a><pre><para>');
+  }
 
   // Intellectual Rights
   $data_policies = '';
