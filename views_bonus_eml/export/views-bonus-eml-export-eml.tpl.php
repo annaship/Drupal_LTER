@@ -93,7 +93,115 @@ function views_bonus_eml_print_person($person_tag, $content) {
       views_bonus_eml_print_close_tag($person_tag);
     }
   }
-}
+} // end of function "views_bonus_eml_print_person"
+
+
+function views_bonus_eml_print_temporal_coverage($beg_end_date) {
+  if ($beg_end_date[0]['value']) {
+    views_bonus_eml_print_open_tag('temporalCoverage');
+    foreach($beg_end_date as $dataset_date) {
+      $first_date  = $dataset_date['value'];
+      $second_date = $dataset_date['value2'];
+      if ($first_date == $second_date) {
+         views_bonus_eml_print_open_tag('singleDateTime');
+           views_bonus_eml_print_tag_line('calendarDate', $first_date);
+         views_bonus_eml_print_close_tag('singleDateTime');
+      }
+      else {
+        views_bonus_eml_print_open_tag('rangeOfDates');
+          views_bonus_eml_print_open_tag('beginDate');
+            views_bonus_eml_print_tag_line('calendarDate', $first_date);
+          views_bonus_eml_print_close_tag('beginDate');
+          views_bonus_eml_print_open_tag('endDate');
+            views_bonus_eml_print_tag_line('calendarDate', $second_date);
+          views_bonus_eml_print_close_tag('endDate');
+        views_bonus_eml_print_close_tag('rangeOfDates');
+      }
+    }
+    views_bonus_eml_print_close_tag('temporalCoverage');
+  }
+} // end of function "views_bonus_eml_print_temporal_coverage"
+
+
+// Collect geo info into one string,
+// only for the first time make $comma_flag = 0, to skip comma
+function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
+  $geoDesc = '';
+  if ($content[0]['value']) {
+    foreach($content as $value) {
+      if ($comma_flag == 1) {
+        $geoDesc .= ', ' . $label . ': ' . $value['value'];
+      }
+      else {
+        $geoDesc .= $label . ': ' . $value['value'];
+      }
+    }
+  }
+  return $geoDesc;
+} // end of function views_bonus_eml_get_geo
+
+// take research_site as geographicCoverage
+function views_bonus_eml_print_geographic_coverage($content) {
+//  if ($content[0]->nid) {
+//    foreach ($content as $person_node) {
+//  dpr($research_site);
+  if ($content[0]->nid) {
+    foreach ($content as $research_site_node) {
+        $research_site_landform   = $research_site_node->field_research_site_landform;
+        $research_site_geology    = $research_site_node->field_research_site_geology;
+        $research_site_soils      = $research_site_node->field_research_site_soils;
+        $research_site_hydrology  = $research_site_node->field_research_site_hydrology;
+        $research_site_vegetation = $research_site_node->field_research_site_vegetation;
+        $research_site_climate    = $research_site_node->field_research_site_climate;
+        $research_site_history    = $research_site_node->field_research_site_history;
+        $research_site_siteid     = $research_site_node->field_research_site_siteid;
+        $research_site_pt_coords  = $research_site_node->field_research_site_pt_coords;
+
+        $research_site_elevation  = $research_site_node->field_research_site_elevation;
+        if ($research_site_landform[0]['value']   ||
+            $research_site_geology[0]['value']    ||
+            $research_site_soils[0]['value']      ||
+            $research_site_hydrology[0]['value']  ||
+            $research_site_vegetation[0]['value'] ||
+            $research_site_climate[0]['value']    ||
+            $research_site_history[0]['value']    ||
+            $research_site_siteid[0]['value']     ||
+            !empty($research_site_pt_coords)      ||
+            $research_site_elevation[0]['value']) {
+          views_bonus_eml_print_open_tag('geographicCoverage');
+            $geoDesc  = views_bonus_eml_get_geo('Landform',   $research_site_landform, 0);
+            $geoDesc .= views_bonus_eml_get_geo('Geology',    $research_site_geology);
+            $geoDesc .= views_bonus_eml_get_geo('Soils',      $research_site_soils);
+            $geoDesc .= views_bonus_eml_get_geo('Hydrology',  $research_site_hydrology);
+            $geoDesc .= views_bonus_eml_get_geo('Vegetation', $research_site_vegetation);
+            $geoDesc .= views_bonus_eml_get_geo('Climate',    $research_site_climate);
+            $geoDesc .= views_bonus_eml_get_geo('History',    $research_site_history);
+            $geoDesc .= views_bonus_eml_get_geo('siteid',     $research_site_siteid);
+            views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
+
+            if (!empty($research_site_pt_coords) ||
+                ($research_site_elevation[0]['value'])) {
+              views_bonus_eml_print_open_tag('boundingCoordinates');
+                //there is some parsing TODO here, need the longitude only
+                views_bonus_eml_print_value('westBoundingCoordinate',  $research_site_pt_coords);
+                views_bonus_eml_print_value('eastBoundingCoordinate',  $research_site_pt_coords);
+                views_bonus_eml_print_value('northBoundingCoordinate', $research_site_pt_coords);
+                views_bonus_eml_print_value('southBoundingCoordinate', $research_site_pt_coords);
+
+                views_bonus_eml_print_open_tag('boundingAltitudes');
+                  views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
+                  views_bonus_eml_print_value('altitudeMaximum',  $research_site_elevation);
+                views_bonus_eml_print_close_tag('boundingAltitudes');
+              views_bonus_eml_print_close_tag('boundingCoordinates');
+            }
+          views_bonus_eml_print_close_tag('geographicCoverage');
+        } // endif; check if values exist
+    } // endforeach; research_site_nid
+  } // endif; $research_site_nid[0]['nid']
+} // end of function views_bonus_eml_print_geographic_coverage
+
+
+
 //http://stackoverflow.com/questions/526556/how-to-flatten-a-multi-dimensional-array-to-simple-one-in-php
 
 function flatten_array($array, $preserve_keys = 0, &$out = array()) {
@@ -200,20 +308,24 @@ foreach ($row as $row_nid) {
      $dataset_node[dataset_labcrew] = $labcrew_nodes;
 
     $field_dataset_ext_assoc_ref_nid = $node->field_dataset_ext_assoc_ref;
-    foreach ($field_dataset_ext_assoc_ref_nid as $v) {
-      foreach ($v as $ext_assoc_nid) {
-        $ext_assoc_nodes[] = node_load($ext_assoc_nid);
-        }
-     }
-     $dataset_node[dataset_ext_assoc] = $ext_assoc_nodes;
+    if ($field_dataset_ext_assoc_ref_nid) {
+      foreach ($field_dataset_ext_assoc_ref_nid as $v) {
+        foreach ($v as $ext_assoc_nid) {
+          $ext_assoc_nodes[] = node_load($ext_assoc_nid);
+          }
+       }
+       $dataset_node[dataset_ext_assoc] = $ext_assoc_nodes;
+    }
 
-    $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
-    foreach ($field_dataset_site_ref_nid as $v) {
-      foreach ($v as $site_nid) {
-        $site_nodes[] = node_load($site_nid);
-        }
-     }
-     $dataset_node[dataset_site] = $site_nodes;
+    if ($node->field_dataset_site_ref) {
+      $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
+      foreach ($field_dataset_site_ref_nid as $v) {
+        foreach ($v as $site_nid) {
+          $site_nodes[] = node_load($site_nid);
+          }
+       }
+       $dataset_node[dataset_site] = $site_nodes;
+    }
 
 //  datafile
     $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
@@ -236,25 +348,17 @@ foreach ($row as $row_nid) {
 }
 
 /*
- * 1a) create variables here. In case field names will changes,
- * that would be easier to change them in fewer place
+ * 1a) create dataset variables here
  */
 
 $dataset_short_name       = $dataset_node[dataset]->field_dataset_short_name;
 $dataset_title            = $dataset_node[dataset]->title;
-// $dataset_owner_ref        = $dataset_node[dataset]->field_dataset_owner_ref;
-// $dataset_datamanager_ref  = $dataset_node[dataset]->field_dataset_datamanager_ref;
-// $dataset_fieldcrew_ref    = $dataset_node[dataset]->field_dataset_fieldcrew_ref;
-// $dataset_labcrew_ref      = $dataset_node[dataset]->field_dataset_labcrew_ref;
-// $dataset_ext_assoc_ref    = $dataset_node[dataset]->field_dataset_ext_assoc_ref;
 $dataset_publication_date = $dataset_node[dataset]->field_dataset_publication_date;
 $dataset_abstract         = $dataset_node[dataset]->field_dataset_abstract;
 $dataset_add_info         = $dataset_node[dataset]->field_dataset_add_info;
-//$dataset_site_ref         = $dataset_node[dataset]->field_dataset_site_ref;
 $dataset_beg_end_date     = $dataset_node[dataset]->field_beg_end_date;
 $dataset_purpose          = $dataset_node[dataset]->field_dataset_purpose;
 $dataset_maintenance      = $dataset_node[dataset]->field_dataset_maintenance;
-//$dataset_contact_ref      = $dataset_node[dataset]->field_dataset_contact_ref;
 $dataset_instrumentation  = $dataset_node[dataset]->field_instrumentation;
 $dataset_methods          = $dataset_node[dataset]->field_methods;
 $dataset_quality          = $dataset_node[dataset]->field_quality;
@@ -279,7 +383,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
   );
 
   foreach ($dataset_ref as $ref) {
-//    dpr($dataset_node[$ref][0]);
     if ($dataset_node[$ref][0]) {
       foreach ($dataset_node[$ref] as $person) {
         $ver_vid += $person->vid;
@@ -386,14 +489,39 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_close_tag('intellectualRights');
 
       // if there is one and only one file take path from it
-//      dpr($dataset_node[dataset_datafiles][1]);
       $dataset_datafile_path = $dataset_node[dataset_datafiles][0][0]->field_data_file[0]['filepath'];
       if ($dataset_datafile_path && !$dataset_node[dataset_datafiles][1]) {
         views_bonus_eml_print_open_tag('distribution');
           views_bonus_eml_print_tag_line('url', $urlBase . dirname($dataset_datafile_path));
         views_bonus_eml_print_close_tag('distribution');
       }
-      
+
+      if ($dataset_node[dataset_site][0]->nid || $dataset_beg_end_date[0]['value']) {
+        views_bonus_eml_print_open_tag('coverage');
+          views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
+          views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
+//          // taxonomicCoverage here
+        views_bonus_eml_print_close_tag('coverage');
+      }
+
+      if ($dataset_purpose[0]['value']) {
+        views_bonus_eml_print_open_tag('purpose');
+           views_bonus_eml_print_open_tag('para');
+              views_bonus_eml_print_value('literalLayout', $dataset_purpose);
+           views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('purpose');
+      }
+
+      if ($dataset_maintenance[0]['value']) {
+        views_bonus_eml_print_open_tag('maintenance');
+          views_bonus_eml_print_open_tag('description');
+             views_bonus_eml_print_open_tag('para');
+                views_bonus_eml_print_value('literalLayout', $dataset_maintenance);
+             views_bonus_eml_print_close_tag('para');
+          views_bonus_eml_print_close_tag('description');
+        views_bonus_eml_print_close_tag('maintenance');
+      }
+
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
 
