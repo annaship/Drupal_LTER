@@ -353,7 +353,46 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_person('field_crew', $dataset_node[dataset_fieldcrew]);
       views_bonus_eml_print_person('labcrew', $dataset_node[dataset_labcrew]);
       views_bonus_eml_print_person('ext_assoc', $dataset_node[dataset_ext_assoc]);
-      
+
+            views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
+      views_bonus_eml_print_value('abstract', $dataset_abstract);
+
+      // TODO: add if, depend of structure
+      views_bonus_eml_print_open_tag('keywordSet');
+        // dpr($node->taxonomy);
+        // views_bonus_eml_print_value('keyword', node->taxonomy->term);
+        // views_bonus_eml_print_value('keywordThesaurus', node->taxonomy->vocabularyName);
+      views_bonus_eml_print_close_tag('keywordSet');
+
+      if ($dataset_add_info[0]['value']) {
+        views_bonus_eml_print_open_tag('additionalInfo');
+          views_bonus_eml_print_open_tag('para');
+             views_bonus_eml_print_value('literalLayout', $dataset_add_info);
+          views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('additionalInfo');
+      }
+
+      // TODO: hardcode the intellectualRights, specific for every given site
+      // put it into config file,
+      // add a description, what should be changed
+
+      views_bonus_eml_print_open_tag('intellectualRights');
+        views_bonus_eml_print_open_tag('section');
+        views_bonus_eml_print_tag_line('title', 'Data Policies');
+          views_bonus_eml_print_open_tag('para');
+            views_bonus_eml_print_tag_line('literalLayout', $intellectual_rights);
+          views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('section');
+      views_bonus_eml_print_close_tag('intellectualRights');
+
+      // if there is one and only one file take path from it
+//      dpr($dataset_node[dataset_datafiles][1]);
+      $dataset_datafile_path = $dataset_node[dataset_datafiles][0][0]->field_data_file[0]['filepath'];
+      if ($dataset_datafile_path && !$dataset_node[dataset_datafiles][1]) {
+        views_bonus_eml_print_open_tag('distribution');
+          views_bonus_eml_print_tag_line('url', $urlBase . dirname($dataset_datafile_path));
+        views_bonus_eml_print_close_tag('distribution');
+      }
       
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
