@@ -46,51 +46,52 @@ function views_bonus_eml_get_uniq_value($content) {
 }
 
 function views_bonus_eml_print_person($person_tag, $content) {
+  if ($content[0]->nid) {
+    foreach ($content as $person_node) {
+      $person_first_name    = $person_node->field_person_first_name;
+      $person_last_name     = $person_node->field_person_last_name;
+      $person_organization  = $person_node->field_person_organization;
+      $person_address       = $person_node->field_person_address;
+      $person_city          = $person_node->field_person_city;
+      $person_state         = $person_node->field_person_state;
+      $person_zipcode       = $person_node->field_person_zipcode;
+      $person_country       = $person_node->field_person_country;
+      $person_phone         = $person_node->field_person_phone;
+      $person_fax           = $person_node->field_person_fax;
+      $person_email         = $person_node->field_person_email;
+      $person_personid      = $owner_node->field_person_personid;
+      $person_role_arr      = $person_node->field_person_role;
+      $person_role          = $person_role_arr[0]['value'];
+      $not_show_role        = array ('owner', 'creator', 'contact');
 
-  foreach ($content as $person_node) {
-    $person_first_name    = $person_node->field_person_first_name;
-    $person_last_name     = $person_node->field_person_last_name;
-    $person_organization  = $person_node->field_person_organization;
-    $person_address       = $person_node->field_person_address;
-    $person_city          = $person_node->field_person_city;
-    $person_state         = $person_node->field_person_state;
-    $person_zipcode       = $person_node->field_person_zipcode;
-    $person_country       = $person_node->field_person_country;
-    $person_phone         = $person_node->field_person_phone;
-    $person_fax           = $person_node->field_person_fax;
-    $person_email         = $person_node->field_person_email;
-    $person_personid      = $owner_node->field_person_personid;
-    $person_role_arr      = $person_node->field_person_role;
-    $person_role          = $person_role_arr[0]['value'];
-    $not_show_role        = array ('owner', 'creator', 'contact');
-
-    views_bonus_eml_print_open_tag($person_tag);
-      views_bonus_eml_print_open_tag('individualName');
-        views_bonus_eml_print_value('givenName',        $person_first_name);
-        views_bonus_eml_print_value('surName',          $person_last_name);
-      views_bonus_eml_print_close_tag('individualName');
-      views_bonus_eml_print_value('organization',       $person_organization);
-      views_bonus_eml_print_value('deliveryPoint',      $person_address);
-      views_bonus_eml_print_value('city',               $person_city);
-      views_bonus_eml_print_value('administrativeArea', $person_state);
-      views_bonus_eml_print_value('postalCode',         $person_zipcode);
-      views_bonus_eml_print_value('country',            $person_country);
-      views_bonus_eml_print_attr_line('phone',
-                      views_bonus_eml_get_uniq_value($person_phone),
-                      'phonetype', 'voice');
-      views_bonus_eml_print_attr_line('phone',
-                      views_bonus_eml_get_uniq_value($person_fax),
-                      'phonetype', 'fax');
-      if (!in_array($person_role, $not_show_role)) {
-        views_bonus_eml_print_tag_line('role', $person_role);
-      }
-      if ($person_email[0]['email']) {
-        foreach($person_email as $email) {
-          views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
+      views_bonus_eml_print_open_tag($person_tag);
+        views_bonus_eml_print_open_tag('individualName');
+          views_bonus_eml_print_value('givenName',        $person_first_name);
+          views_bonus_eml_print_value('surName',          $person_last_name);
+        views_bonus_eml_print_close_tag('individualName');
+        views_bonus_eml_print_value('organization',       $person_organization);
+        views_bonus_eml_print_value('deliveryPoint',      $person_address);
+        views_bonus_eml_print_value('city',               $person_city);
+        views_bonus_eml_print_value('administrativeArea', $person_state);
+        views_bonus_eml_print_value('postalCode',         $person_zipcode);
+        views_bonus_eml_print_value('country',            $person_country);
+        views_bonus_eml_print_attr_line('phone',
+                        views_bonus_eml_get_uniq_value($person_phone),
+                        'phonetype', 'voice');
+        views_bonus_eml_print_attr_line('phone',
+                        views_bonus_eml_get_uniq_value($person_fax),
+                        'phonetype', 'fax');
+        if (!in_array($person_role, $not_show_role)) {
+          views_bonus_eml_print_tag_line('role', $person_role);
         }
-      }
-    views_bonus_eml_print_value('personid', $person_personid);
-    views_bonus_eml_print_close_tag($person_tag);
+        if ($person_email[0]['email']) {
+          foreach($person_email as $email) {
+            views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
+          }
+        }
+      views_bonus_eml_print_value('personid', $person_personid);
+      views_bonus_eml_print_close_tag($person_tag);
+    }
   }
 }
 //http://stackoverflow.com/questions/526556/how-to-flatten-a-multi-dimensional-array-to-simple-one-in-php
@@ -236,7 +237,7 @@ foreach ($row as $row_nid) {
 
 /*
  * 1a) create variables here. In case field names will changes,
- * that would be easier to change them in one place
+ * that would be easier to change them in fewer place
  */
 
 $dataset_short_name       = $dataset_node[dataset]->field_dataset_short_name;
@@ -321,12 +322,39 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
 <?php
 
-//dpr($dataset_node[dataset]->field_dataset_short_name[0][value]);
       views_bonus_eml_print_value('shortName', $dataset_short_name);
       views_bonus_eml_print_tag_line('title', $dataset_title);
 
       // Person refs start
       views_bonus_eml_print_person('owner', $dataset_node[dataset_owners]);
+
+      views_bonus_eml_print_open_tag('metadataProvider');
+        views_bonus_eml_print_tag_line($metadata_provider_givenName,             '');
+        views_bonus_eml_print_tag_line($metadata_provider_surname,               '');
+        views_bonus_eml_print_tag_line($metadata_provider_organization,          '');
+        views_bonus_eml_print_tag_line($metadata_provider_deliveryPoint,         '');
+        views_bonus_eml_print_tag_line($metadata_provider_city,                  '');
+        views_bonus_eml_print_tag_line($metadata_provider_administrativeArea,    '');
+        views_bonus_eml_print_tag_line($metadata_provider_postalCode,            '');
+        views_bonus_eml_print_tag_line($metadata_provider_country,               '');
+        views_bonus_eml_print_tag_line($metadata_provider_phone,                 '');
+        views_bonus_eml_print_tag_line($metadata_provider_fax,                   '');
+        views_bonus_eml_print_tag_line($metadata_provider_role,                  '');
+        views_bonus_eml_print_tag_line($metadata_provider_electronicMailAddress, '');
+        views_bonus_eml_print_tag_line($metadata_provider_personid,              '');
+      views_bonus_eml_print_close_tag('metadataProvider');
+
+      if ($dataset_node[dataset_datamanagers][0]->nid) {
+        views_bonus_eml_print_open_tag('associatedParty');
+          views_bonus_eml_print_person('data_manager',  
+                                       $dataset_node[dataset_datamanagers]);
+        views_bonus_eml_print_close_tag('associatedParty');
+      }
+      views_bonus_eml_print_person('field_crew', $dataset_node[dataset_fieldcrew]);
+      views_bonus_eml_print_person('labcrew', $dataset_node[dataset_labcrew]);
+      views_bonus_eml_print_person('ext_assoc', $dataset_node[dataset_ext_assoc]);
+      
+      
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
 
