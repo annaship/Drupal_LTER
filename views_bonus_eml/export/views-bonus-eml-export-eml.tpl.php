@@ -325,20 +325,35 @@ foreach ($row as $row_nid) {
     foreach ($field_dataset_datafile_ref_nid as $v) {
       foreach ($v as $datafile_nid) {
         $variable_nodes = array();
+        $site_nodes     = array();
         $datafile_node  = node_load($datafile_nid);
+//      variables
         $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
         foreach ($field_datafile_variable_ref_nids as $value) {
           foreach ($value as $var_nid) {
             $variable_nodes[] = node_load($var_nid);
           }
         }
-        $datafile_nodes[] = array ($datafile_node, $variable_nodes);
+//      sites
+        $field_datafile_site_ref_nids = $datafile_node->field_datafile_site_ref;
+        if ($field_datafile_site_ref_nids) {
+          foreach ($field_datafile_site_ref_nids as $value) {
+            foreach ($value as $site_nid) {
+              $site_nodes[] = node_load($site_nid);
+            }
+          }
+        }
+        $datafile_nodes[] = array ('datafile'       => $datafile_node,
+                                   'variables'      => $variable_nodes,
+                                   'datafile_sites' => $site_nodes);
 //        see file-var_str.txt
      }
     }
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
 }
+
+//dpr($datafile_nodes);
 
 /*
  * 1a) create dataset variables here
@@ -482,7 +497,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_close_tag('intellectualRights');
 
       // if there is one and only one file take path from it
-      $dataset_datafile_path = $dataset_node[dataset_datafiles][0][0]->field_data_file[0]['filepath'];
+      $dataset_datafile_path = $dataset_node[dataset_datafiles][0][datafile]->field_data_file[0]['filepath'];
       if ($dataset_datafile_path && !$dataset_node[dataset_datafiles][1]) {
         views_bonus_eml_print_open_tag('distribution');
           views_bonus_eml_print_tag_line('url', $urlBase . dirname($dataset_datafile_path));
@@ -562,49 +577,22 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_value('related_links',    $dataset_related_links);
 
       // Data_file start
-//      $file_node_arr_nid = $dataset_node[dataset_datafiles][0][0];
-      if ($dataset_node[dataset_datafiles] && $dataset_node[dataset_datafiles][0][0]->nid) {
+      if ($dataset_node[dataset_datafiles] && $dataset_node[dataset_datafiles][0][datafile]->nid) {
         foreach ($dataset_node[dataset_datafiles] as $file_var_array) {
 
-/*
- Array
-(
-    [0] => stdClass Object
-    (    [nid] => 9
-        [type] => data_file
-    )
-    [1] => Array
-        (
-            [0] => stdClass Object
-                (
-                [nid] => 307
-                [type] => variable
-                )
-            [1] => stdClass Object
-                (
-                [nid] => 299
-                [type] => variable
-                )
-        )
-
-)
-
-*/
           // Collect all data_file values here to use in a conditions
-          $file_data_file         = $file_var_array[0]->field_data_file;
-          $datafile_description   = $file_var_array[0]->field_datafile_description;
-          $file_num_header_line   = $file_var_array[0]->field_num_header_line;
-          $file_num_footer_lines  = $file_var_array[0]->field_num_footer_lines;
-          $file_record_delimiter  = $file_var_array[0]->field_record_delimiter;
-          $file_orientation       = $file_var_array[0]->field_orientation;
-          $file_delimiter         = $file_var_array[0]->field_delimiter;
-          $file_quote_character   = $file_var_array[0]->field_quote_character;
-//          $datafile_site_ref      = $file_var_array[0]->field_datafile_site_ref;
-          $datafile_date          = $file_var_array[0]->field_datafile_date;
-          $file_instrumentation   = $file_var_array[0]->field_instrumentation;
-          $file_methods           = $file_var_array[0]->field_methods;
-          $file_quality           = $file_var_array[0]->field_quality;
-
+          $file_data_file         = $file_var_array[datafile]->field_data_file;
+          $datafile_description   = $file_var_array[datafile]->field_datafile_description;
+          $file_num_header_line   = $file_var_array[datafile]->field_num_header_line;
+          $file_num_footer_lines  = $file_var_array[datafile]->field_num_footer_lines;
+          $file_record_delimiter  = $file_var_array[datafile]->field_record_delimiter;
+          $file_orientation       = $file_var_array[datafile]->field_orientation;
+          $file_delimiter         = $file_var_array[datafile]->field_delimiter;
+          $file_quote_character   = $file_var_array[datafile]->field_quote_character;
+          $datafile_date          = $file_var_array[datafile]->field_beg_end_date;
+          $file_instrumentation   = $file_var_array[datafile]->field_instrumentation;
+          $file_methods           = $file_var_array[datafile]->field_methods;
+          $file_quality           = $file_var_array[datafile]->field_quality;
 
           views_bonus_eml_print_open_tag('dataTable');
             foreach ($file_data_file as $file_data) {
@@ -631,7 +619,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                  views_bonus_eml_print_close_tag('simpleDelimited');
                views_bonus_eml_print_close_tag('textFormat');
              views_bonus_eml_print_close_tag('dataFormat');
-             if ($file_data_file[0]['filepath']) {
+             if ($file_data_file && $file_data_file[0]['filepath']) {
                foreach ($file_data_file as $file_data) {
                    views_bonus_eml_print_open_tag('distribution');
                      views_bonus_eml_print_tag_line('url', $urlBase . $file_data['filepath']);
@@ -640,127 +628,115 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
              }
             views_bonus_eml_print_close_tag('physical');
 
-//            TODO: collect datafile_sites where we collect variables
+            if ($file_var_array[datafile_sites][0]->nid || $datafile_date[0]['value']) {
+               views_bonus_eml_print_open_tag('coverage');
+                 views_bonus_eml_print_geographic_coverage($file_var_array[datafile_sites]);
+                 views_bonus_eml_print_temporal_coverage($datafile_date);
+                 // taxonomic coverage here
+               views_bonus_eml_print_close_tag('coverage');
+            }
+
+           if ($file_instrumentation[0]['value'] ||
+               $file_methods[0]['value']         ||
+               $quality[0]['value']) {
+             views_bonus_eml_print_open_tag('method');
+             if ($file_instrumentation[0]['value'] ||
+                 $file_methods[0]['value']) {
+               views_bonus_eml_print_open_tag('methodStep');
+                 views_bonus_eml_print_value('instrumentation',  $file_instrumentation);
+                 views_bonus_eml_print_value('description',      $file_methods);
+               views_bonus_eml_print_close_tag('methodStep');
+             }
+             if ($file_quality[0]['value']) {
+               views_bonus_eml_print_open_tag('qualityControl');
+                 views_bonus_eml_print_value('description',      $file_quality);
+               views_bonus_eml_print_close_tag('qualityControl');
+             }
+             views_bonus_eml_print_close_tag('method');
+           }
+
+          // Variables start
+          // Take variables here to use in conditions
+          
+//          dpr($file_var_array[variables]);
+          foreach ($file_var_array[variables] as $var_node) {
+            if ($var_node->nid) {
+
+              $var_title              = $var_node->title;
+              $attribute_label        = $var_node->field_attribute_label;
+              $var_definition         = $var_node->field_var_definition;
+              $attribute_formatstring = $var_node->field_attribute_formatstring;
+              $attribute_maximum      = $var_node->field_attribute_maximum;
+              $attribute_minimum      = $var_node->field_attribute_minimum;
+              $attribute_precision    = $var_node->field_attribute_precision;
+              $attribute_unit         = $var_node->field_attribute_unit;
+              $code_definition        = $var_node->field_code_definition;
+              $var_missingvalues      = $var_node->field_var_missingvalues;
+
+              views_bonus_eml_print_open_tag('attributeList');
+                views_bonus_eml_print_open_tag('attribute');
+                  views_bonus_eml_print_value('attributeLabel',      $attribute_label);
+                  views_bonus_eml_print_tag_line('attributeName',    $var_title);
+                  views_bonus_eml_print_value('attributeDefinition', $var_definition);
 //
-//            [field_datafile_site_ref] => Array
-//                (
-//                    [0] => Array
-//                        (
-//                            [nid] => 535
-//                        )
-
-            dpr($file_var_array);
-
-            // if ($datafile_site_ref[0]['nid'] || $datafile_date[0]['nid']) {
-            //   views_bonus_eml_print_open_tag('coverage');
-            //     views_bonus_eml_print_geographic_coverage($datafile_site_ref);
-            //     views_bonus_eml_print_temporal_coverage($datafile_date);
-            //     // taxonomic coverage here
-            //   views_bonus_eml_print_close_tag('coverage');
-            // }
-
-
-            // if ($file_instrumentation[0]['value'] ||
-            //     $file_methods[0]['value']         ||
-            //     $quality[0]['value']) {
-            //   views_bonus_eml_print_open_tag('method');
-            //   if ($file_instrumentation[0]['value'] ||
-            //       $file_methods[0]['value']) {
-            //     views_bonus_eml_print_open_tag('methodStep');
-            //       views_bonus_eml_print_value('instrumentation',  $file_instrumentation);
-            //       views_bonus_eml_print_value('description',      $file_methods);
-            //     views_bonus_eml_print_close_tag('methodStep');
-            //   }
-            //   if ($file_quality[0]['value']) {
-            //     views_bonus_eml_print_open_tag('qualityControl');
-            //       views_bonus_eml_print_value('description',      $file_quality);
-            //     views_bonus_eml_print_close_tag('qualityControl');
-            //   }
-            //   views_bonus_eml_print_close_tag('method');
-            // }
-
-            // Variables start
-            // Take variables here to use in conditions
-          //  $var_nid = $file_node->field_datafile_variable_ref;
-            // if ($var_nid[0]['nid']) {
-            //   views_bonus_eml_print_open_tag('attributeList');
-            //   foreach ($var_nid as $value1) {
-            //     foreach ($value1 as $value2) {
-            //       $var_node = node_load($value2);
-            //       $var_title              = $var_node->title;
-            //       $attribute_label        = $var_node->field_attribute_label;
-            //       $var_definition         = $var_node->field_var_definition;
-            //       $attribute_formatstring = $var_node->field_attribute_formatstring;
-            //       $attribute_maximum      = $var_node->field_attribute_maximum;
-            //       $attribute_minimum      = $var_node->field_attribute_minimum;
-            //       $attribute_precision    = $var_node->field_attribute_precision;
-            //       $attribute_unit         = $var_node->field_attribute_unit;
-            //       $code_definition        = $var_node->field_code_definition;
-            //       $var_missingvalues      = $var_node->field_var_missingvalues;
-            //
-            //       views_bonus_eml_print_open_tag('attribute');
-            //         views_bonus_eml_print_tag_line('attributeName',    $var_title);
-            //         views_bonus_eml_print_value('attributeLabel',      $attribute_label);
-            //         views_bonus_eml_print_value('attributeDefinition', $var_definition);
-            //
-            //       if ($attribute_formatstring[0]['value'] ||
-            //           $attribute_maximum[0]['value'] ||
-            //           $attribute_minimum[0]['value'] ||
-            //           $attribute_precision[0]['value'] ||
-            //           $attribute_unit[0]['value']) {
-            //         views_bonus_eml_print_open_tag('measurementScale');
-            //         if ($attribute_formatstring[0]['value']) {
-            //           views_bonus_eml_print_open_tag('datatime');
-            //             views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
-            //           views_bonus_eml_print_close_tag('datatime');
-            //         }
-            //         if ($attribute_maximum[0]['value'] ||
-            //             $attribute_minimum[0]['value'] ||
-            //             $attribute_precision[0]['value'] ||
-            //             $attribute_unit[0]['value']) {
-            //           views_bonus_eml_print_open_tag('ratio');
-            //           if ($attribute_maximum[0]['value'] ||
-            //               $attribute_minimum[0]['value']) {
-            //             views_bonus_eml_print_open_tag('numericDomain');
-            //               views_bonus_eml_print_open_tag('bounds');
-            //                 views_bonus_eml_print_value('maximum',    $attribute_maximum);
-            //                 views_bonus_eml_print_value('minimum',    $attribute_minimum);
-            //               views_bonus_eml_print_close_tag('bounds');
-            //             views_bonus_eml_print_close_tag('numericDomain');
-            //           }
-            //           if ($attribute_precision[0]['value']) {
-            //             views_bonus_eml_print_value('precision',      $attribute_precision);
-            //           }
-            //           if ($attribute_unit[0]['value']) {
-            //           views_bonus_eml_print_open_tag('unit');
-            //               views_bonus_eml_print_value('standardUnit', $attribute_unit);
-            //             views_bonus_eml_print_close_tag('unit');
-            //           }
-            //           views_bonus_eml_print_close_tag('ratio');
-            //          }
-            //          if ($code_definition[0]['value']) {
-            //           views_bonus_eml_print_open_tag('nominal');
-            //             views_bonus_eml_print_open_tag('nonNumericDomain');
-            //               views_bonus_eml_print_open_tag('enumeratedDomain');
-            //                   views_bonus_eml_print_value('codeDefinition', $code_definition);
-            //               views_bonus_eml_print_close_tag('enumeratedDomain');
-            //             views_bonus_eml_print_close_tag('nonNumericDomain');
-            //           views_bonus_eml_print_close_tag('nominal');
-            //          }
-            //         views_bonus_eml_print_close_tag('measurementScale');
-            //       } // endif; if ($attribute_formatstring ||
-            //         //            $attribute_maximum || $attribute_minimum ||
-            //         //            $attribute_precision || $attribute_unit)
-            //
-            //       if ($var_missingvalues[0]['value']) {
-            //         views_bonus_eml_print_open_tag('missingValueCode');
-            //           views_bonus_eml_print_value('missingValues', $var_missingvalues);
-            //         views_bonus_eml_print_close_tag('missingValueCode');
-            //       }
-            //       views_bonus_eml_print_close_tag('attribute');
-            //     } // endforeach; inner cycle by $value1
-            //   } // endforeach;  ($var_nid as $value1)
-            //   views_bonus_eml_print_close_tag('attributeList');
+       if ($attribute_formatstring[0]['value'] ||
+           $attribute_maximum[0]['value'] ||
+           $attribute_minimum[0]['value'] ||
+           $attribute_precision[0]['value'] ||
+           $attribute_unit[0]['value']) {
+         views_bonus_eml_print_open_tag('measurementScale');
+         if ($attribute_formatstring[0]['value']) {
+           views_bonus_eml_print_open_tag('datatime');
+             views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
+           views_bonus_eml_print_close_tag('datatime');
+         }
+         if ($attribute_maximum[0]['value'] ||
+             $attribute_minimum[0]['value'] ||
+             $attribute_precision[0]['value'] ||
+             $attribute_unit[0]['value']) {
+           views_bonus_eml_print_open_tag('ratio');
+           if ($attribute_maximum[0]['value'] ||
+               $attribute_minimum[0]['value']) {
+             views_bonus_eml_print_open_tag('numericDomain');
+               views_bonus_eml_print_open_tag('bounds');
+                 views_bonus_eml_print_value('maximum',    $attribute_maximum);
+                 views_bonus_eml_print_value('minimum',    $attribute_minimum);
+               views_bonus_eml_print_close_tag('bounds');
+             views_bonus_eml_print_close_tag('numericDomain');
+           }
+           if ($attribute_precision[0]['value']) {
+             views_bonus_eml_print_value('precision',      $attribute_precision);
+           }
+           if ($attribute_unit[0]['value']) {
+             views_bonus_eml_print_open_tag('unit');
+               views_bonus_eml_print_value('standardUnit', $attribute_unit);
+             views_bonus_eml_print_close_tag('unit');
+           }
+           views_bonus_eml_print_close_tag('ratio');
+          }
+          if ($code_definition[0]['value']) {
+           views_bonus_eml_print_open_tag('nominal');
+             views_bonus_eml_print_open_tag('nonNumericDomain');
+               views_bonus_eml_print_open_tag('enumeratedDomain');
+                   views_bonus_eml_print_value('codeDefinition', $code_definition);
+               views_bonus_eml_print_close_tag('enumeratedDomain');
+             views_bonus_eml_print_close_tag('nonNumericDomain');
+           views_bonus_eml_print_close_tag('nominal');
+          }
+         views_bonus_eml_print_close_tag('measurementScale');
+       } // endif; if ($attribute_formatstring ||
+         //            $attribute_maximum || $attribute_minimum ||
+         //            $attribute_precision || $attribute_unit)
+//
+//       if ($var_missingvalues[0]['value']) {
+//         views_bonus_eml_print_open_tag('missingValueCode');
+//           views_bonus_eml_print_value('missingValues', $var_missingvalues);
+//         views_bonus_eml_print_close_tag('missingValueCode');
+//       }
+       views_bonus_eml_print_close_tag('attribute');
+   views_bonus_eml_print_close_tag('attributeList');
+            }
+          }
             // } // endif; ($var_nid[0]['nid'])
           views_bonus_eml_print_close_tag('dataTable');
         }
