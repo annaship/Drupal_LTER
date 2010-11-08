@@ -658,10 +658,8 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
           // Variables start
           // Take variables here to use in conditions
           
-//          dpr($file_var_array[variables]);
           foreach ($file_var_array[variables] as $var_node) {
             if ($var_node->nid) {
-
               $var_title              = $var_node->title;
               $attribute_label        = $var_node->field_attribute_label;
               $var_definition         = $var_node->field_var_definition;
@@ -717,7 +715,23 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                    views_bonus_eml_print_open_tag('nominal');
                      views_bonus_eml_print_open_tag('nonNumericDomain');
                        views_bonus_eml_print_open_tag('enumeratedDomain');
-                           views_bonus_eml_print_value('codeDefinition', $code_definition);
+//                           views_bonus_eml_print_value('codeDefinition', $code_definition);
+                           // get host name from URL
+//                            preg_match('@^(?:http://)?([^/]+)@i',
+//                                "http://www.php.net/index.html", $matches);
+//                           if (preg_match("/(.+)=(.+)/", $code_definition[0][value], $matches)) {
+//                                echo "A match was found = ";
+//                                print_r($matches);
+//                                A match was found = Array
+//                                  (
+//                                      [0] => L=Larvae
+//                                      [1] => L
+//                                      [2] => Larvae
+//                                  )
+//
+//                            } else {
+//                                echo "A match was not found.";
+//                            }
                        views_bonus_eml_print_close_tag('enumeratedDomain');
                      views_bonus_eml_print_close_tag('nonNumericDomain');
                    views_bonus_eml_print_close_tag('nominal');
