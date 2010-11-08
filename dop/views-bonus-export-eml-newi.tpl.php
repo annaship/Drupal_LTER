@@ -78,7 +78,7 @@ foreach ($themed_rows as $count => $row):
 
           // person refs
           print_person($node->field_dataset_owner_ref,          "owner");
-???          // HERE we need to hardcode the metadataProvider -- it has the structure of a "person"
+!!!          // HERE we need to hardcode the metadataProvider -- it has the structure of a "person"
           // but it is the same for any given LTER site.
           //
           print_open_tag("associatedParty");
@@ -94,10 +94,10 @@ foreach ($themed_rows as $count => $row):
           //  here we would need to print the keywords from the taxonomies associated with the "Data Set" CCT
           //  hopefully, only ONE vocabulary for a given Data Set CCT
           print_open_tag("keywordSet");
-???need an example???            foreach (term): // obviously, needs work
+!!!need an example???            foreach (term): // obviously, needs work
               print_value("keyword", node->taxonomy->term);
             }
-???            print_value("keywordThesaurus", node->taxonomy->vocabularyName); // needs work :)
+!!!            print_value("keywordThesaurus", node->taxonomy->vocabularyName); // needs work :)
           print_close_tag("keywordSet");
           
           //  i added additional info block in here.
@@ -112,7 +112,7 @@ foreach ($themed_rows as $count => $row):
           //  <intellectualRights>
           //     <section>  (repeatable)
           //        <title> Data Policies </title>
-???          //        <para>  <literalLayout> blablahblahblab </literalLayout> </para>
+!!!          //        <para>  <literalLayout> blablahblahblab </literalLayout> </para>
           //     </section>
           //  </intellectualRights>
  
@@ -131,7 +131,7 @@ foreach ($themed_rows as $count => $row):
           // "coverage" repeated in data_file, TODO: move to function  -ISG i concur, read notes at geoCov..below
           print_open_tag("coverage");           
           //  geographicCoverage, temporalCoverage and taxonomicCoverage
-???          //  i would move here geocov from below, BUT i wont:  just waiting for the function call rather. (if any)
+!!!          //  i would move here geocov from below, BUT i wont:  just waiting for the function call rather. (if any)
           
             print_open_tag("temporalCoverage");  /
                                               // we could tweak it to see whether beginDate==endDate, 
@@ -158,7 +158,7 @@ foreach ($themed_rows as $count => $row):
             
           print_close_tag("coverage");
     
-???put allowed tags into strip_tag above //some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
+!!!put allowed tags into strip_tag above //some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
           
           print_open_tag("purpose");
              print_open_tag("para");
@@ -166,7 +166,7 @@ foreach ($themed_rows as $count => $row):
              print_close_tag("para");
           print_clsose_tag("purpose");
           
-???put allowed tags into strip_tag above          // some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
+!!!put allowed tags into strip_tag above          // some tweaks -- it is a textType block -- meaning it has this section/para/markup structure... 
           
           print_open_tag("maintenance");
             print_open_tag("description");
@@ -260,7 +260,7 @@ foreach ($themed_rows as $count => $row):
 
                 print_open_tag("method");
                   print_open_tag("methodStep");
-???example                    print_value("description", $file_node->field_methods);// may be multiple values, see the methods instance upstream
+!!!example                    print_value("description", $file_node->field_methods);// may be multiple values, see the methods instance upstream
                     print_value("instrumentation", $file_node->field_instrumentation);
                   print_close_tag("methodStep"); 
                   print_open_tag("qualityControl");
@@ -281,7 +281,7 @@ foreach ($themed_rows as $count => $row):
                         
                         print_open_tag("measurementScale"); 
                         
-??? example                        // in here is important the conditionals, 
+!!! example                        // in here is important the conditionals, 
                           // since we can only choose one type (datetime OR ration OR nominal)
                           //
                           print_open_tag("datatime");
@@ -304,10 +304,11 @@ foreach ($themed_rows as $count => $row):
                           print_open_tag("nominal");
                             print_open_tag("nonNumericDomain");
                               print_open_tag("enumeratedDomain");
-???example                                // foreach.. cycle over multiple field_code_definition values.. there may be many
+                              // DONE
+!!!example                                // foreach.. cycle over multiple field_code_definition values.. there may be many
                                 print_open_tag("codeDefinition");
                                      $codeDef=$var_node->field_code_definition);
-example???
+example!!!
                                      // dpr($codeDef);
                                      // <codeDefinition>G=five-points grass core site</codeDefinition>
                                      // <codeDefinition>C=Rio Salado</codeDefinition>
@@ -341,6 +342,7 @@ example???
                         
                         print_open_tag("missingValueCode");
                           print_value("missingValues", $var_node->field_var_missingvalues);
+                          // DONE
                         // similar as in codeDefinition -- but we can also tackle this at the CCT level...as we would rely on the data entry.       code
                         //           value
                         print_close_tag("missingValueCode");

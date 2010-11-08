@@ -668,7 +668,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
               $attribute_minimum      = $var_node->field_attribute_minimum;
               $attribute_precision    = $var_node->field_attribute_precision;
               $attribute_unit         = $var_node->field_attribute_unit;
-              $code_definition        = $var_node->field_code_definition;
+              $code_definitions       = $var_node->field_code_definition;
               $var_missingvalues      = $var_node->field_var_missingvalues;
 
               views_bonus_eml_print_open_tag('attributeList');
@@ -711,10 +711,17 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                    }
                    views_bonus_eml_print_close_tag('ratio');
                   }
-                  if ($code_definition[0]['value']) {
+                  if ($code_definitions[0]['value']) {
                    views_bonus_eml_print_open_tag('nominal');
                      views_bonus_eml_print_open_tag('nonNumericDomain');
-                       views_bonus_eml_print_open_tag('enumeratedDomain');
+                       foreach ($code_definitions as $code_definition) {
+                         views_bonus_eml_print_open_tag('enumeratedDomain');
+                           if (preg_match("/(.+)=(.+)/", $code_definition[value], $matches)) {
+                             views_bonus_eml_print_tag_line('code',       $matches[1]);
+                             views_bonus_eml_print_tag_line('definition', $matches[2]);
+                            }
+                         views_bonus_eml_print_close_tag('enumeratedDomain');
+                       }
 //                           views_bonus_eml_print_value('codeDefinition', $code_definition);
                            // get host name from URL
 //                            preg_match('@^(?:http://)?([^/]+)@i',
@@ -732,7 +739,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 //                            } else {
 //                                echo "A match was not found.";
 //                            }
-                       views_bonus_eml_print_close_tag('enumeratedDomain');
                      views_bonus_eml_print_close_tag('nonNumericDomain');
                    views_bonus_eml_print_close_tag('nominal');
                   }
@@ -743,7 +749,12 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
                if ($var_missingvalues[0]['value']) {
                  views_bonus_eml_print_open_tag('missingValueCode');
-                   views_bonus_eml_print_value('missingValues', $var_missingvalues);
+                    if (preg_match("/(.+)=(.+)/", $var_missingvalues[0][value], $matches)) {
+                      views_bonus_eml_print_tag_line('code',       $matches[1]);
+                      views_bonus_eml_print_tag_line('definition', $matches[2]);
+                    }
+
+//                   views_bonus_eml_print_value('missingValues', $var_missingvalues);
                  views_bonus_eml_print_close_tag('missingValueCode');
                }
                views_bonus_eml_print_close_tag('attribute');
