@@ -2,6 +2,11 @@
 /* 
  * Here goes an site specific information
  */
+
+  // TODO: hardcode the pubPlace, specific for every given site
+  // example: <pubPLace> Plum Island Ecosystems LTER </pubPlace>
+  // for now taking automatically: variable_get('site_name', NULL);
+
   $views_bonus_eml_site_name = variable_get('site_name', NULL);
   $package_id = $views_bonus_eml_site_name . '.' . $ver_vid;
 

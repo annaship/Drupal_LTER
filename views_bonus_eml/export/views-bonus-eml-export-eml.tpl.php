@@ -522,6 +522,30 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
         views_bonus_eml_print_close_tag('maintenance');
       }
 
+      views_bonus_eml_print_person('contact', $dataset_node[dataset_contacts]);
+
+      // TODO: hardcode the publisher, specific for every given site
+      // put it into config file,
+      // add a description, what should be changed
+      views_bonus_eml_print_open_tag('publisher');
+        views_bonus_eml_print_tag_line($publisher_givenName,             '');
+        views_bonus_eml_print_tag_line($publisher_surname,               '');
+        views_bonus_eml_print_tag_line($publisher_organization,          '');
+        views_bonus_eml_print_tag_line($publisher_deliveryPoint,         '');
+        views_bonus_eml_print_tag_line($publisher_city,                  '');
+        views_bonus_eml_print_tag_line($publisher_administrativeArea,    '');
+        views_bonus_eml_print_tag_line($publisher_postalCode,            '');
+        views_bonus_eml_print_tag_line($publisher_country,               '');
+        views_bonus_eml_print_tag_line($publisher_phone,                 '');
+        views_bonus_eml_print_tag_line($publisher_fax,                   '');
+        views_bonus_eml_print_tag_line($publisher_role,                  '');
+        views_bonus_eml_print_tag_line($publisher_electronicMailAddress, '');
+        views_bonus_eml_print_tag_line($publisher_personid,              '');
+      views_bonus_eml_print_close_tag('publisher');
+
+      // see config_eml.php
+      views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
+
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
 
