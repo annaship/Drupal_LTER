@@ -678,72 +678,67 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                   views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                   views_bonus_eml_print_tag_line('attributeName',    $var_title);
                   views_bonus_eml_print_value('attributeDefinition', $var_definition);
-//
-       if ($attribute_formatstring[0]['value'] ||
-           $attribute_maximum[0]['value'] ||
-           $attribute_minimum[0]['value'] ||
-           $attribute_precision[0]['value'] ||
-           $attribute_unit[0]['value']) {
-         views_bonus_eml_print_open_tag('measurementScale');
-         if ($attribute_formatstring[0]['value']) {
-           views_bonus_eml_print_open_tag('datatime');
-             views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
-           views_bonus_eml_print_close_tag('datatime');
-         }
-         if ($attribute_maximum[0]['value'] ||
-             $attribute_minimum[0]['value'] ||
-             $attribute_precision[0]['value'] ||
-             $attribute_unit[0]['value']) {
-           views_bonus_eml_print_open_tag('ratio');
-           if ($attribute_maximum[0]['value'] ||
-               $attribute_minimum[0]['value']) {
-             views_bonus_eml_print_open_tag('numericDomain');
-               views_bonus_eml_print_open_tag('bounds');
-                 views_bonus_eml_print_value('maximum',    $attribute_maximum);
-                 views_bonus_eml_print_value('minimum',    $attribute_minimum);
-               views_bonus_eml_print_close_tag('bounds');
-             views_bonus_eml_print_close_tag('numericDomain');
-           }
-           if ($attribute_precision[0]['value']) {
-             views_bonus_eml_print_value('precision',      $attribute_precision);
-           }
-           if ($attribute_unit[0]['value']) {
-             views_bonus_eml_print_open_tag('unit');
-               views_bonus_eml_print_value('standardUnit', $attribute_unit);
-             views_bonus_eml_print_close_tag('unit');
-           }
-           views_bonus_eml_print_close_tag('ratio');
-          }
-          if ($code_definition[0]['value']) {
-           views_bonus_eml_print_open_tag('nominal');
-             views_bonus_eml_print_open_tag('nonNumericDomain');
-               views_bonus_eml_print_open_tag('enumeratedDomain');
-                   views_bonus_eml_print_value('codeDefinition', $code_definition);
-               views_bonus_eml_print_close_tag('enumeratedDomain');
-             views_bonus_eml_print_close_tag('nonNumericDomain');
-           views_bonus_eml_print_close_tag('nominal');
-          }
-         views_bonus_eml_print_close_tag('measurementScale');
-       } // endif; if ($attribute_formatstring ||
-         //            $attribute_maximum || $attribute_minimum ||
-         //            $attribute_precision || $attribute_unit)
-//
-//       if ($var_missingvalues[0]['value']) {
-//         views_bonus_eml_print_open_tag('missingValueCode');
-//           views_bonus_eml_print_value('missingValues', $var_missingvalues);
-//         views_bonus_eml_print_close_tag('missingValueCode');
-//       }
-       views_bonus_eml_print_close_tag('attribute');
-   views_bonus_eml_print_close_tag('attributeList');
+               if ($attribute_formatstring[0]['value'] ||
+                   $attribute_maximum[0]['value'] ||
+                   $attribute_minimum[0]['value'] ||
+                   $attribute_precision[0]['value'] ||
+                   $attribute_unit[0]['value']) {
+                 views_bonus_eml_print_open_tag('measurementScale');
+                 if ($attribute_formatstring[0]['value']) {
+                   views_bonus_eml_print_open_tag('datatime');
+                     views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
+                   views_bonus_eml_print_close_tag('datatime');
+                 }
+                 if ($attribute_maximum[0]['value'] ||
+                     $attribute_minimum[0]['value'] ||
+                     $attribute_precision[0]['value'] ||
+                     $attribute_unit[0]['value']) {
+                   views_bonus_eml_print_open_tag('ratio');
+                   if ($attribute_maximum[0]['value'] ||
+                       $attribute_minimum[0]['value']) {
+                     views_bonus_eml_print_open_tag('numericDomain');
+                       views_bonus_eml_print_open_tag('bounds');
+                         views_bonus_eml_print_value('maximum',    $attribute_maximum);
+                         views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                       views_bonus_eml_print_close_tag('bounds');
+                     views_bonus_eml_print_close_tag('numericDomain');
+                   }
+                   if ($attribute_precision[0]['value']) {
+                     views_bonus_eml_print_value('precision',      $attribute_precision);
+                   }
+                   if ($attribute_unit[0]['value']) {
+                     views_bonus_eml_print_open_tag('unit');
+                       views_bonus_eml_print_value('standardUnit', $attribute_unit);
+                     views_bonus_eml_print_close_tag('unit');
+                   }
+                   views_bonus_eml_print_close_tag('ratio');
+                  }
+                  if ($code_definition[0]['value']) {
+                   views_bonus_eml_print_open_tag('nominal');
+                     views_bonus_eml_print_open_tag('nonNumericDomain');
+                       views_bonus_eml_print_open_tag('enumeratedDomain');
+                           views_bonus_eml_print_value('codeDefinition', $code_definition);
+                       views_bonus_eml_print_close_tag('enumeratedDomain');
+                     views_bonus_eml_print_close_tag('nonNumericDomain');
+                   views_bonus_eml_print_close_tag('nominal');
+                  }
+                 views_bonus_eml_print_close_tag('measurementScale');
+               } // endif; if ($attribute_formatstring ||
+                 //            $attribute_maximum || $attribute_minimum ||
+                 //            $attribute_precision || $attribute_unit)
+
+               if ($var_missingvalues[0]['value']) {
+                 views_bonus_eml_print_open_tag('missingValueCode');
+                   views_bonus_eml_print_value('missingValues', $var_missingvalues);
+                 views_bonus_eml_print_close_tag('missingValueCode');
+               }
+               views_bonus_eml_print_close_tag('attribute');
+           views_bonus_eml_print_close_tag('attributeList');
             }
           }
-            // } // endif; ($var_nid[0]['nid'])
           views_bonus_eml_print_close_tag('dataTable');
         }
       }
-
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
-
-
 ?>
