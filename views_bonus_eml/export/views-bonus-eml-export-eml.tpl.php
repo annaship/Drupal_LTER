@@ -179,6 +179,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $geoDesc .= views_bonus_eml_get_geo('siteid',     $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
+//            dpr($research_site_pt_coords);
             if (!empty($research_site_pt_coords) ||
                 ($research_site_elevation[0]['value'])) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
@@ -233,6 +234,8 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
  * 3) create a template
  * 4) populate data into the template
  */
+//  unset ($dataset_node);
+//  unset ($node);
   
   foreach ($themed_rows as $row) {
 /*
@@ -250,7 +253,6 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
   $ext_assoc_nodes    = Array();
   $site_nodes         = Array();
   $datafile_nodes     = Array();
-
 
 //   * 1) take all from db as an Obect?/Array?
 foreach ($row as $row_nid) {
@@ -351,7 +353,6 @@ foreach ($row as $row_nid) {
     }
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
-}
 
 //dpr($datafile_nodes);
 
@@ -377,6 +378,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
    * 2) calculate vid version
    * ---------------------
    */
+  $ver_vid += $dataset_node[dataset]->vid;
 
 //  persons and sites vid
   
@@ -400,14 +402,17 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
 // vid of datafiles + variables
  $flatten_files = flatten_array($dataset_node[dataset_datafiles]);
- foreach ($flatten_files as $object_value) {
-   $ver_vid += $object_value->vid;
+ if ($flatten_files) {
+   foreach ($flatten_files as $object_value) {
+     $ver_vid += $object_value->vid;
+   }
  }
 //  print "\$ver_vid = ".$ver_vid."\n";
 
   /*
    * 3) create a template
    */
+
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
@@ -504,6 +509,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
         views_bonus_eml_print_close_tag('distribution');
       }
 
+//      dpr($dataset_node[dataset_site]);
       if ($dataset_node[dataset_site][0]->nid || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
           views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
@@ -720,6 +726,9 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                              views_bonus_eml_print_tag_line('code',       $matches[1]);
                              views_bonus_eml_print_tag_line('definition', $matches[2]);
                             }
+                            else {
+                              views_bonus_eml_print_value('codeDefinition', $code_definition[value]);
+                            }
                          views_bonus_eml_print_close_tag('enumeratedDomain');
                        }
 //                           views_bonus_eml_print_value('codeDefinition', $code_definition);
@@ -766,4 +775,5 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       }
     views_bonus_eml_print_close_tag('eml:eml');
   views_bonus_eml_print_close_tag('dataset');
+  }
 ?>
