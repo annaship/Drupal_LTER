@@ -1,5 +1,5 @@
 <?php
-// $Id: views-bonus-eml-export-eml.tpl.php, v 1.0 9/23/10 11:29 AM ashipunova Exp $
+// $Id: views-bonus-eml-export-eml.tpl.php, v 2.0 11/09/10 ashipunova Exp $
 /*
  * Template to display a view as an eml.
  */

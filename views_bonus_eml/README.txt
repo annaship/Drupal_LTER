@@ -1,4 +1,6 @@
-// $Id: README.txt,v 1.15 2009/05/08 23:57:52 neclimdul Exp $
+// $Id: README.txt, v 2.0 2010/11/09 ashipunova Exp $
+
+from: README.txt,v 1.15 2009/05/08 23:57:52 neclimdul Exp $
 
 This group of modules contains plugins, default views and other code that
 builds on top of views but might not fit anywhere else.
