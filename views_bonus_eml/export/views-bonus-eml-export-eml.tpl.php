@@ -178,7 +178,11 @@ function views_bonus_eml_print_geographic_coverage($content) {
 //        if we'll need POINT go to views_bonus_eml_get_lon_geo_point and change it as needed,
 //        then call:
 //        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
-        
+
+//        <coordinates>
+//[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
+//[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
+
         if ($research_site_landform[0]['value']   ||
             $research_site_geology[0]['value']    ||
             $research_site_soils[0]['value']      ||
@@ -231,28 +235,28 @@ function get_geo($site_nid) {
                          WHERE nid = '$site_nid')");
   $result = mysql_query($db_query) or die(mysql_error());
   $geo_lon_lat_point = mysql_fetch_array($result);
-//  print "HERE start\n<br/>";
-//  print_r($geo_lon_lat_point);
-//  print "HERE\n<br/>";
+  print "HERE start\n<br/>";
+  print_r($geo_lon_lat_point);
+  print "HERE\n<br/>";
   return $geo_lon_lat_point;
 }
 
-function get_site_information($content) {
-  foreach ($content as $value) {
-    foreach ($value as $site_nid) {
-      $site_node = node_load($site_nid);
-      $dataset_geo_lon_lat_point = get_geo($site_nid);
-      $site_nodes[] = array('site_node' => $site_node,
-                            'longitude' => $dataset_geo_lon_lat_point[longitude],
-                            'latitude'  => $dataset_geo_lon_lat_point[latitude],
-                            'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
+  function get_site_information($content) {
+    foreach ($content as $value) {
+      foreach ($value as $site_nid) {
+        $site_node = node_load($site_nid);
+        $dataset_geo_lon_lat_point = get_geo($site_nid);
+        $site_nodes[] = array('site_node' => $site_node,
+                              'longitude' => $dataset_geo_lon_lat_point[longitude],
+                              'latitude'  => $dataset_geo_lon_lat_point[latitude],
+                              'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
+      }
     }
+    print "\n<br/>START\n<br/>";
+    print_r($site_nodes);
+    print "\n<br/>END\n<br/>";
+
   }
-//    print "\n<br/>START\n<br/>";
-//    print_r($site_nodes);
-//    print "\n<br/>END\n<br/>";
-  return $site_nodes;
-}
 
 //http://stackoverflow.com/questions/526556/how-to-flatten-a-multi-dimensional-array-to-simple-one-in-php
 
@@ -363,10 +367,10 @@ foreach ($row as $row_nid) {
     if ($node->field_dataset_site_ref[0][nid]) {
       $site_nodes = get_site_information($node->field_dataset_site_ref);
       $dataset_node[dataset_site] = $site_nodes;
+
     }
     print "HERE is dataset site<br/>\n";
     print_r($site_nodes);
-
 
   if ($node->field_dataset_site_ref) {
       $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
@@ -404,10 +408,6 @@ foreach ($row as $row_nid) {
         if ($datafile_node->field_datafile_site_ref[0][nid]) {
           $site_nodes = get_site_information($datafile_node->field_datafile_site_ref);
         }
-    print "HERE is file site<br/>\n";
-    print_r($site_nodes);
-
-
 //      all file related data
         $datafile_nodes[] = array ('datafile'       => $datafile_node,
                                    'variables'      => $variable_nodes,
