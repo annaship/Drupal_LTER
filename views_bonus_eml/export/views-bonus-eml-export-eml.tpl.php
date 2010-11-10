@@ -142,6 +142,7 @@ function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
 
 //take geo point from research site
 function views_bonus_eml_get_lon_geo_point($content) {
+  dpr($content);
   unset($matches);
   print "\n";
   print "URRRRA";
@@ -159,6 +160,7 @@ function views_bonus_eml_get_lon_geo_point($content) {
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
+  unset($research_site_node);
   if ($content[0][site_node]->nid) {
     foreach ($content as $research_site_node) {
         $research_site_landform   = $research_site_node[site_node]->field_research_site_landform;
@@ -267,7 +269,7 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
   $site_nodes         = Array();
   $datafile_nodes     = Array();
 
-//   1) take all from db as an Obect?/Array?
+//   1) take all from db as an Array
 foreach ($row as $row_nid) {
     $node = node_load($row_nid);
     $dataset_node[dataset] = $node;
@@ -330,8 +332,38 @@ foreach ($row as $row_nid) {
       foreach ($field_dataset_site_ref_nid as $v) {
         foreach ($v as $site_nid) {
           $site_node = node_load($site_nid);
-          $geo_res = db_result(@db_query("select  AsText(field_research_site_pt_coords_geo) from content_type_research_site WHERE nid = '$site_nid'"));
+
+//          SELECT * FROM `student` WHERE mark=(select max(mark) from student)
+//          $query = "SELECT type, MAX(price) FROM products GROUP BY type";
+//
+//          $result = mysql_query($query) or die(mysql_error());
+//
+//          // Print out result
+//          while($row = mysql_fetch_array($result)){
+//            echo "The most expensive  ". $row['type']. " is $" .$row['MAX(price)'];
+//            echo "<br />";
+//        }
+        $query = "SELECT  nid, vid, AsText(field_research_site_pt_coords_geo)
+                  FROM content_type_research_site
+                  where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')";
+        $result = mysql_query($query) or die(mysql_error());
+        // Print out result
+        while($row = mysql_fetch_array($result)){
+          echo "Result = ";
+          print_r($row);
+          echo "\n";
+        }
+
+//        print "\$result = " . $result . "\n";
+
+//          $query = "select  AsText(field_research_site_pt_coords_geo) from content_type_research_site WHERE nid = '$site_nid'";
+//          $geo_res = db_result(@db_query("select  AsText(field_research_site_pt_coords_geo) from content_type_research_site WHERE nid = '$site_nid'"));
+          $geo_res = db_result(@db_query("SELECT AsText(field_research_site_pt_coords_geo)
+                  FROM content_type_research_site
+                  WHERE vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
           $site_nodes[] = array('site_node' => $site_node, 'geo_res' => $geo_res);
+          print_r($geo_res);
+          print "\n";
           }
        }       
        $dataset_node[dataset_site] = $site_nodes;
