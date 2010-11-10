@@ -142,24 +142,18 @@ function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
 
 //take geo point from research site
 function views_bonus_eml_get_lon_geo_point($content) {
-//  print_r($content);
-
-  unset($matches);
+  $matches = Array();
   if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
-  $dataset_site_lon = $matches[1];
-  $dataset_site_lat = $matches[2];
-    print "<br/> matches = ";
-    print_r($matches);
-// matches = Array
+    $dataset_site_lon = $matches[1];
+    $dataset_site_lat = $matches[2];
+//     matches = Array
 //(
 //    [0] => (65.75 18.31466667)
 //    [1] => 65.75
 //    [2] => 18.31466667
 //)
   }
-  else {
-    print "\nELSEEE\n";
-  }
+
   return $dataset_site_lon;
 }
 
@@ -176,15 +170,14 @@ function views_bonus_eml_print_geographic_coverage($content) {
         $research_site_climate    = $research_site_node[site_node]->field_research_site_climate;
         $research_site_history    = $research_site_node[site_node]->field_research_site_history;
         $research_site_siteid     = $research_site_node[site_node]->field_research_site_siteid;
-//        $research_site_pt_coords  = $research_site_node[site_node]->field_research_site_pt_coords;
         $research_site_elevation  = $research_site_node[site_node]->field_research_site_elevation;
         $research_site_longitude  = $research_site_node[longitude];
-        print "<br/>long = $research_site_longitude\n<br/>";
-        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
-//        print "\ngeo = ";
-//        print_r($research_site_node[geo_point]);
-//        print "\nHERE\n";
-
+//      not used for now:
+//        $research_site_latitude   = $research_site_node[latitude];
+//        $research_site_node[geo_point] returns "POINT(55.71 19.31466668)"
+//        if we'll need POINT go to views_bonus_eml_get_lon_geo_point and change it as needed,
+//        then call:
+//        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
         
         if ($research_site_landform[0]['value']   ||
             $research_site_geology[0]['value']    ||
@@ -341,16 +334,30 @@ foreach ($row as $row_nid) {
       foreach ($field_dataset_site_ref_nid as $v) {
         foreach ($v as $site_nid) {
           $site_node = node_load($site_nid);
+          $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
+          Y(field_research_site_pt_coords_geo) as latitude,
+          AsText(field_research_site_pt_coords_geo) as geo_point
+          FROM content_type_research_site
+          WHERE vid=(SELECT max(vid)
+                     FROM content_type_research_site
+                     WHERE nid = '$site_nid')");
+          $result = mysql_query($db_query) or die(mysql_error());
+
+          $geo_lon_lat_point = mysql_fetch_array($result);
+          print "<br/>\n all = ";
+          print_r($geo_lon_lat_point);
+          print($geo_lon_lat_point[geo_point]);
+          print "<br/>\n";
           $longitude = db_result(@db_query("SELECT X(field_research_site_pt_coords_geo) as longitude
-                                         FROM content_type_research_site
-                                         where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
-          $geo_res = db_result(@db_query("SELECT AsText(field_research_site_pt_coords_geo)
                                          FROM content_type_research_site
                                          where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
 //          To take longitude use Y(field_research_site_pt_coords_geo)
 //          and for both use AsText(field_research_site_pt_coords_geo), with result as POINT(65.75 18.31466667),
 //          in that case views_bonus_eml_get_lon_geo_point chould be changed/used
-          $site_nodes[] = array('site_node' => $site_node, 'longitude' => $longitude, 'geo_point' => $geo_res);
+          $site_nodes[] = array('site_node' => $site_node,
+                                'longitude' => $geo_lon_lat_point[longitude],
+                                'latitude'  => $geo_lon_lat_point[latitude],
+                                'geo_point' => $geo_lon_lat_point[geo_point]);
           }
        }       
           $dataset_node[dataset_site] = $site_nodes;
