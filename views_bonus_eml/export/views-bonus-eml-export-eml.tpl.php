@@ -332,13 +332,39 @@ foreach ($row as $row_nid) {
       foreach ($field_dataset_site_ref_nid as $v) {
         foreach ($v as $site_nid) {
           $site_node = node_load($site_nid);
-          $geo_res = db_result(@db_query("SELECT AsText(field_research_site_pt_coords_geo)
-                                          FROM content_type_research_site
-                                          WHERE vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
-          $site_nodes[] = array('site_node' => $site_node, 'geo_res' => $geo_res);
+          $geo_res = db_result(@db_query("SELECT X(field_research_site_pt_coords_geo) as longitude
+                                         FROM content_type_research_site
+                                         where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
+          $site_nodes[] = array('site_node' => $site_node, 'longitude' => $geo_res);
           }
        }       
-       $dataset_node[dataset_site] = $site_nodes;
+          print "\n\$site_nodes = ";
+          print_r($site_nodes);
+          print "\n";
+//          $site_nodes = Array
+//(
+//    [0] => Array
+//        (
+//            [site_node] => stdClass Object
+//              (
+//              [nid] => 2875
+//              [type] => research_site
+//              )
+//            [longitude] => 65.75
+//        )
+//
+//    [1] => Array
+//        (
+//            [site_node] => stdClass Object
+//              (
+//              [nid] => 2876
+//              [type] => research_site
+//              )
+//            [longitude] => 55.71
+//        )
+//
+//)
+          $dataset_node[dataset_site] = $site_nodes;
     }
 
 //  datafile
