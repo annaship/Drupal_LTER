@@ -142,14 +142,13 @@ function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
 
 //take geo point from research site
 function views_bonus_eml_get_lon_geo_point($content) {
-  dpr($content);
-  unset($matches);
-  print "\n";
-  print "URRRRA";
-  if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
-  $dataset_site_lat = $matches[1];
-  $dataset_site_lon = $matches[2];
+//  print_r($content);
 
+  unset($matches);
+  if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
+  $dataset_site_lon = $matches[1];
+  $dataset_site_lat = $matches[2];
+    print "<br/> matches = ";
     print_r($matches);
   }
   else {
@@ -173,8 +172,11 @@ function views_bonus_eml_print_geographic_coverage($content) {
         $research_site_siteid     = $research_site_node[site_node]->field_research_site_siteid;
 //        $research_site_pt_coords  = $research_site_node[site_node]->field_research_site_pt_coords;
         $research_site_elevation  = $research_site_node[site_node]->field_research_site_elevation;
-        $research_site_longitude  = views_bonus_eml_get_lon_geo_point($research_site_node[geo_res]);
-        dpr($research_site_longitude);
+        $research_site_longitude  = $research_site_node[longitude];
+        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
+//        print "\ngeo = ";
+//        print_r($research_site_node[geo_point]);
+//        print "\nHERE\n";
 
         
         if ($research_site_landform[0]['value']   ||
@@ -332,38 +334,18 @@ foreach ($row as $row_nid) {
       foreach ($field_dataset_site_ref_nid as $v) {
         foreach ($v as $site_nid) {
           $site_node = node_load($site_nid);
-          $geo_res = db_result(@db_query("SELECT X(field_research_site_pt_coords_geo) as longitude
+          $longitude = db_result(@db_query("SELECT X(field_research_site_pt_coords_geo) as longitude
                                          FROM content_type_research_site
                                          where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
-          $site_nodes[] = array('site_node' => $site_node, 'longitude' => $geo_res);
+          $geo_res = db_result(@db_query("SELECT AsText(field_research_site_pt_coords_geo)
+                                         FROM content_type_research_site
+                                         where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
+//          To take longitude use Y(field_research_site_pt_coords_geo)
+//          and for both use AsText(field_research_site_pt_coords_geo), with result as POINT(65.75 18.31466667),
+//          in that case views_bonus_eml_get_lon_geo_point chould be changed/used
+          $site_nodes[] = array('site_node' => $site_node, 'longitude' => $longitude, 'geo_point' => $geo_res);
           }
        }       
-          print "\n\$site_nodes = ";
-          print_r($site_nodes);
-          print "\n";
-//          $site_nodes = Array
-//(
-//    [0] => Array
-//        (
-//            [site_node] => stdClass Object
-//              (
-//              [nid] => 2875
-//              [type] => research_site
-//              )
-//            [longitude] => 65.75
-//        )
-//
-//    [1] => Array
-//        (
-//            [site_node] => stdClass Object
-//              (
-//              [nid] => 2876
-//              [type] => research_site
-//              )
-//            [longitude] => 55.71
-//        )
-//
-//)
           $dataset_node[dataset_site] = $site_nodes;
     }
 
