@@ -150,6 +150,12 @@ function views_bonus_eml_get_lon_geo_point($content) {
   $dataset_site_lat = $matches[2];
     print "<br/> matches = ";
     print_r($matches);
+// matches = Array
+//(
+//    [0] => (65.75 18.31466667)
+//    [1] => 65.75
+//    [2] => 18.31466667
+//)
   }
   else {
     print "\nELSEEE\n";
@@ -173,6 +179,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
 //        $research_site_pt_coords  = $research_site_node[site_node]->field_research_site_pt_coords;
         $research_site_elevation  = $research_site_node[site_node]->field_research_site_elevation;
         $research_site_longitude  = $research_site_node[longitude];
+        print "<br/>long = $research_site_longitude\n<br/>";
         views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
 //        print "\ngeo = ";
 //        print_r($research_site_node[geo_point]);
