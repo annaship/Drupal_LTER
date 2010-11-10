@@ -343,7 +343,7 @@ foreach ($row as $row_nid) {
 //            echo "The most expensive  ". $row['type']. " is $" .$row['MAX(price)'];
 //            echo "<br />";
 //        }
-        $query = "SELECT  nid, vid, AsText(field_research_site_pt_coords_geo)
+        $query = "SELECT AsText(field_research_site_pt_coords_geo)
                   FROM content_type_research_site
                   where vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')";
         $result = mysql_query($query) or die(mysql_error());
@@ -351,6 +351,8 @@ foreach ($row as $row_nid) {
         while($row = mysql_fetch_array($result)){
           echo "Result = ";
           print_r($row);
+          print "HERE";
+          print "\$row[AsText(field_research_site_pt_coords_geo)] = " . $row[0];
           echo "\n";
         }
 
@@ -359,8 +361,8 @@ foreach ($row as $row_nid) {
 //          $query = "select  AsText(field_research_site_pt_coords_geo) from content_type_research_site WHERE nid = '$site_nid'";
 //          $geo_res = db_result(@db_query("select  AsText(field_research_site_pt_coords_geo) from content_type_research_site WHERE nid = '$site_nid'"));
           $geo_res = db_result(@db_query("SELECT AsText(field_research_site_pt_coords_geo)
-                  FROM content_type_research_site
-                  WHERE vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
+                                          FROM content_type_research_site
+                                          WHERE vid=(SELECT max(vid) FROM content_type_research_site WHERE nid = '$site_nid')"));
           $site_nodes[] = array('site_node' => $site_node, 'geo_res' => $geo_res);
           print_r($geo_res);
           print "\n";
