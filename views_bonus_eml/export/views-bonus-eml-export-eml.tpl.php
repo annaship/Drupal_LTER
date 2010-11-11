@@ -475,14 +475,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
- /*
- * dataset start
- */
-
-
-  views_bonus_eml_print_open_tag('dataset');
-
-  ?>
+?>
 
   <eml:eml xmlns:eml='eml://ecoinformatics.org/eml-2.0.1'
            xmlns:stmml='http://www.xml-cml.org/schema/stmml'
@@ -500,6 +493,12 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
 <?php
 
+  /*
+   * dataset start
+   */
+
+
+    views_bonus_eml_print_open_tag('dataset');
       views_bonus_eml_print_value('shortName', $dataset_short_name);
       views_bonus_eml_print_tag_line('title', $dataset_title);
 
@@ -793,7 +792,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
           views_bonus_eml_print_close_tag('dataTable');
         }
       }
-    views_bonus_eml_print_close_tag('eml:eml');
-  views_bonus_eml_print_close_tag('dataset');
+    views_bonus_eml_print_close_tag('dataset');
+  views_bonus_eml_print_close_tag('eml:eml');
   }
 ?>
