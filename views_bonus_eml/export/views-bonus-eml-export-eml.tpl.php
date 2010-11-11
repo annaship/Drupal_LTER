@@ -60,16 +60,12 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_phone         = $person_node->field_person_phone;
       $person_fax           = $person_node->field_person_fax;
       $person_email         = $person_node->field_person_email;
-      $person_personid      = $owner_node->field_person_personid;
+      $person_personid      = $person_node->field_person_personid;
       $person_role_arr      = $person_node->field_person_role;
       $person_role          = $person_role_arr[0]['value'];
       $not_show_role        = array ('owner', 'creator', 'contact');
 
       views_bonus_eml_print_open_tag($person_tag);
-        if (!in_array($person_role, $not_show_role)) {
-          views_bonus_eml_print_tag_line('role', $person_role);
-        }
-
         if($person_last_name[0][value]){
           views_bonus_eml_print_open_tag('individualName');
             views_bonus_eml_print_value('givenName',        $person_first_name);
@@ -103,7 +99,12 @@ function views_bonus_eml_print_person($person_tag, $content) {
             views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
           }
         }
-      views_bonus_eml_print_value('personid', $person_personid);
+
+      views_bonus_eml_print_value('userId', $person_personid);
+      if (!in_array($person_role, $not_show_role)) {
+        views_bonus_eml_print_tag_line('role', $person_role);
+      }
+
       views_bonus_eml_print_close_tag($person_tag);
     }
   }
