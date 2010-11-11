@@ -23,31 +23,31 @@
   //publisher
   $publisher_givenName              = '';
   $publisher_surname                = '';
-  $publisher_organization           = '';
-  $publisher_deliveryPoint          = '';
-  $publisher_city                   = '';
-  $publisher_administrativeArea     = '';
-  $publisher_postalCode             = '';
-  $publisher_country                = '';
+  $publisher_organization           = 'Sevilleta LTER';
+  $publisher_deliveryPoint          = 'Department of Biology, University of New Mexico, MSC30 2020 ';
+  $publisher_city                   = 'Albuquerque';
+  $publisher_administrativeArea     = 'New Mexico';
+  $publisher_postalCode             = '87131';
+  $publisher_country                = 'USA';
   $publisher_phone                  = '';
   $publisher_fax                    = '';
   $publisher_role                   = 'publisher';
-  $publisher_electronicMailAddress 	= '';
+  $publisher_electronicMailAddress 	= 'data-use@sevilleta.unm.edu';
   $publisher_personid               = '';
 
   //metadataProvider
   $metadata_provider_givenName              = '';
   $metadata_provider_surname                = '';
-  $metadata_provider_organization           = '';
-  $metadata_provider_deliveryPoint          = '';
-  $metadata_provider_city                   = '';
-  $metadata_provider_administrativeArea     = '';
-  $metadata_provider_postalCode             = '';
-  $metadata_provider_country                = '';
+  $metadata_provider_organization           = 'Sevilleta LTER';
+  $metadata_provider_deliveryPoint          = 'Department of Biology, University of New Mexico, MSC30 2020 ';
+  $metadata_provider_city                   = 'Albuquerque';
+  $metadata_provider_administrativeArea     = 'new Mexico';
+  $metadata_provider_postalCode             = '87131';
+  $metadata_provider_country                = 'USA';
   $metadata_provider_phone                  = '';
   $metadata_provider_fax                    = '';
   $metadata_provider_role                   = 'metadataProvider';
-  $metadata_provider_electronicMailAddress 	= '';
+  $metadata_provider_electronicMailAddress 	= 'data-use@sevilleta.unm.edu';
   $metadata_provider_personid               = '';
 
 ?>
