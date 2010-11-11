@@ -244,13 +244,33 @@ function views_bonus_eml_print_geographic_coverage($content) {
 
 function views_bonus_eml_get_geo($site_nid) {
   unset($geo_lon_lat_point);
+  $db_url = parse_url($GLOBALS[db_url]);
+//  print_r($db_url);
+  if (preg_match("/\/(.+)/", $db_url[path], $matches)) {
+    $db_name = $matches[1];
+  }
+  
+  $server   = $db_url[host];
+  $username = $db_url[user];
+  $password = $db_url[pass];
+  $database = $db_name;
+
+  $con = mysql_connect($server, $username, $password);
+
+  if (!$con) {
+    die($errDbConn . mysql_error() . " :: " . mysql_errno());
+  }
+
+  $db_selected = mysql_select_db($database, $con);
+
   $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
               Y(field_research_site_pt_coords_geo) as latitude,
               AsText(field_research_site_pt_coords_geo) as geo_point
-              FROM content_type_research_site
+              FROM $db_name.content_type_research_site
               WHERE vid=(SELECT max(vid)
-                         FROM content_type_research_site
+                         FROM $db_name.content_type_research_site
                          WHERE nid = '$site_nid')");
+
   $result = mysql_query($db_query) or die(mysql_error());
 
   $geo_lon_lat_point = mysql_fetch_array($result);
@@ -513,12 +533,14 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         'associate_researcher' => 'dataset_ext_assoc',
       );
 
+      if ($associated_party_arr) {
       foreach ($associated_party_arr as $key => $value) {
         if ($dataset_node[$value][0]->nid) {
           views_bonus_eml_print_open_tag('associatedParty');
             views_bonus_eml_print_person($key, $dataset_node[$value]);
           views_bonus_eml_print_close_tag('associatedParty');
         }
+      }
       }
       //pubDate
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
