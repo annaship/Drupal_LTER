@@ -159,9 +159,6 @@ function views_bonus_eml_get_lon_geo_point($content) {
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
-//    print "\n<br/>START\n<br/>";
-//    print_r($content);
-//    print "\n<br/>END\n<br/>";
   if ($content[0][site_node]->nid) {
     foreach ($content as $research_site_node) {
         $research_site_landform   = $research_site_node[site_node]->field_research_site_landform;
@@ -312,7 +309,6 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
   $labcrew_nodes      = Array();
   $ext_assoc_nodes    = Array();
   $site_nodes         = Array();
-  $datafile_nodes     = Array();
 
 //   1) take all from db as an Array
 foreach ($row as $row_nid) {
@@ -377,13 +373,15 @@ foreach ($row as $row_nid) {
       $dataset_node[dataset_site] = $site_nodes;
     }
 
+    $datafile_node  = Array();
+
 //  datafile
     $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
     foreach ($field_dataset_datafile_ref_nid as $v) {
       foreach ($v as $datafile_nid) {
-        $variable_nodes = array();
-        $site_nodes     = array();
-        $datafile_node  = node_load($datafile_nid);
+        $variable_nodes       = Array();
+        $datafile_site_nodes  = Array();
+        $datafile_node        = node_load($datafile_nid);
 //      variables
         $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
         if ($field_datafile_variable_ref_nids) {
@@ -407,8 +405,7 @@ foreach ($row as $row_nid) {
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
 
-
-//dpr($datafile_nodes);
+//print_r($datafile_nodes);
 
 /*
  * 1a) create dataset variables here
@@ -569,10 +566,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
       if ($dataset_node[dataset_site][0][site_node]->nid || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
-            print "\n<br/>call from dataset START\n<br/>";
           views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
-//    print_r($content);
-    print "\n<br/>call from dataset  END\n<br/>";
           views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
 //          // taxonomicCoverage here
         views_bonus_eml_print_close_tag('coverage');
@@ -698,18 +692,12 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                }
              }
             views_bonus_eml_print_close_tag('physical');
-//          print "<br/>\nHERE URRA<br/>\n";
-//    print_r($dataset_node[dataset_datafiles]);
 
-//    print_r($file_var_array[datafile_sites]);
             if ($file_var_array[datafile_sites][0]->nid || $datafile_date[0]['value']) {
                views_bonus_eml_print_open_tag('coverage');
 //                          print "<br/>\nHERE URRA<br/>\n";
 //           print_r($file_var_array[datafile_sites]);
-//                           print "\n<br/>call from file START\n<br/>";
                  views_bonus_eml_print_geographic_coverage($file_var_array[datafile_sites]);
-//    print_r($content);
-//    print "\n<br/>call from file  END\n<br/>";
                  views_bonus_eml_print_temporal_coverage($datafile_date);
                  // taxonomic coverage here
                views_bonus_eml_print_close_tag('coverage');
@@ -736,6 +724,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
           // Variables start
           // Take variables here to use in conditions
+          views_bonus_eml_print_open_tag('attributeList');
           
           foreach ($file_var_array[variables] as $var_node) {
             if ($var_node->nid) {
@@ -750,7 +739,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
               $code_definitions       = $var_node->field_code_definition;
               $var_missingvalues      = $var_node->field_var_missingvalues;
 
-              views_bonus_eml_print_open_tag('attributeList');
                 views_bonus_eml_print_open_tag('attribute');
                   views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                   views_bonus_eml_print_tag_line('attributeName',    $var_title);
@@ -840,9 +828,9 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                  views_bonus_eml_print_close_tag('missingValueCode');
                }
                views_bonus_eml_print_close_tag('attribute');
-           views_bonus_eml_print_close_tag('attributeList');
             }
           }
+           views_bonus_eml_print_close_tag('attributeList');
           views_bonus_eml_print_close_tag('dataTable');
         }
       }
