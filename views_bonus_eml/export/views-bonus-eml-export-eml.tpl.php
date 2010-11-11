@@ -72,12 +72,22 @@ function views_bonus_eml_print_person($person_tag, $content) {
             views_bonus_eml_print_value('surName',          $person_last_name);
           views_bonus_eml_print_close_tag('individualName');
         }
-        views_bonus_eml_print_value('organization',       $person_organization);
-        views_bonus_eml_print_value('deliveryPoint',      $person_address);
-        views_bonus_eml_print_value('city',               $person_city);
-        views_bonus_eml_print_value('administrativeArea', $person_state);
-        views_bonus_eml_print_value('postalCode',         $person_zipcode);
-        views_bonus_eml_print_value('country',            $person_country);
+        views_bonus_eml_print_value('organization',         $person_organization);
+//        print "\nURRA\n";
+//        print_r($person_address[0][value]);
+//        print "\nSTOPPP\n";
+//
+        if ($person_address[0][value] || 
+            $person_city[0][value]    ||
+            $person_country[0][value]) {
+          views_bonus_eml_print_open_tag('address');
+            views_bonus_eml_print_value('deliveryPoint',      $person_address);
+            views_bonus_eml_print_value('city',               $person_city);
+            views_bonus_eml_print_value('administrativeArea', $person_state);
+            views_bonus_eml_print_value('postalCode',         $person_zipcode);
+            views_bonus_eml_print_value('country',            $person_country);
+          views_bonus_eml_print_open_tag('address');
+        }
         views_bonus_eml_print_attr_line('phone',
                         views_bonus_eml_get_uniq_value($person_phone),
                         'phonetype', 'voice');
