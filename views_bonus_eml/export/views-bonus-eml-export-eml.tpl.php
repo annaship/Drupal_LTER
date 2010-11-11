@@ -413,9 +413,6 @@ $dataset_quality          = $dataset_node[dataset]->field_quality;
 $dataset_id               = $dataset_node[dataset]->field_dataset_id;
 $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
-$views_bonus_eml_site_name = variable_get('site_name', NULL);
-$package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
-
   /* -----------------
    * 2) calculate vid version
    * ---------------------
@@ -454,6 +451,8 @@ $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . 
    * 3) create and populate a template
    */
 
+  $views_bonus_eml_site_name = variable_get('site_name', NULL);
+  $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
@@ -487,6 +486,7 @@ $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . 
 
       // Person refs start
       views_bonus_eml_print_person('owner', $dataset_node[dataset_owners]);
+      // metadataProvider from config_eml.php
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
       if ($dataset_node[dataset_datamanagers][0]->nid) {
