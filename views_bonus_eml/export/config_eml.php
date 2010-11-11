@@ -8,7 +8,6 @@
   // for now taking automatically: variable_get('site_name', NULL);
 
   $views_bonus_eml_site_name = variable_get('site_name', NULL);
-  $package_id = $views_bonus_eml_site_name . '.' . $ver_vid;
 
   // put allowed HTML tags here
   function views_bonus_eml_my_strip_tags($content) {

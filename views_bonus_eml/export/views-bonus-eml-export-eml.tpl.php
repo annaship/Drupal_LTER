@@ -396,6 +396,8 @@ foreach ($row as $row_nid) {
  * 1a) create dataset variables here
  */
 
+include_once 'config_eml.php';
+
 $dataset_short_name       = $dataset_node[dataset]->field_dataset_short_name;
 $dataset_title            = $dataset_node[dataset]->title;
 $dataset_publication_date = $dataset_node[dataset]->field_dataset_publication_date;
@@ -409,6 +411,9 @@ $dataset_methods          = $dataset_node[dataset]->field_methods;
 $dataset_quality          = $dataset_node[dataset]->field_quality;
 $dataset_id               = $dataset_node[dataset]->field_dataset_id;
 $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
+
+$views_bonus_eml_site_name = variable_get('site_name', NULL);
+$package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   /* -----------------
    * 2) calculate vid version
@@ -451,8 +456,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
-  include_once 'config_eml.php';
-
  /*
  * dataset start
  */
