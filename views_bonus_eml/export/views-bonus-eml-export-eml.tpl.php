@@ -503,7 +503,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_tag_line('title', $dataset_title);
 
       // Person refs start
-      views_bonus_eml_print_person('owner', $dataset_node[dataset_owners]);
+      views_bonus_eml_print_person('creator', $dataset_node[dataset_owners]);
       // metadataProvider from config_eml.php
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
