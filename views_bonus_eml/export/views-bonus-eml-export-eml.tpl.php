@@ -245,7 +245,6 @@ function views_bonus_eml_print_geographic_coverage($content) {
 function views_bonus_eml_get_geo($site_nid) {
   unset($geo_lon_lat_point);
   $db_url = parse_url($GLOBALS[db_url]);
-//  print_r($db_url);
   if (preg_match("/\/(.+)/", $db_url[path], $matches)) {
     $db_name = $matches[1];
   }
