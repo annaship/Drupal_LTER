@@ -66,7 +66,7 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $not_show_role        = array ('owner', 'creator', 'contact');
 
       views_bonus_eml_print_open_tag($person_tag);
-        if($person_last_name){
+        if($person_last_name[0][value]){
           views_bonus_eml_print_open_tag('individualName');
             views_bonus_eml_print_value('givenName',        $person_first_name);
             views_bonus_eml_print_value('surName',          $person_last_name);
@@ -487,22 +487,7 @@ $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . 
 
       // Person refs start
       views_bonus_eml_print_person('owner', $dataset_node[dataset_owners]);
-
-      views_bonus_eml_print_open_tag('metadataProvider');
-        views_bonus_eml_print_tag_line('givenName',             $metadata_provider_givenName);
-        views_bonus_eml_print_tag_line('surname',               $metadata_provider_surname);
-        views_bonus_eml_print_tag_line('organization',          $metadata_provider_organization);
-        views_bonus_eml_print_tag_line('deliveryPoint',         $metadata_provider_deliveryPoint);
-        views_bonus_eml_print_tag_line('city',                  $metadata_provider_city);
-        views_bonus_eml_print_tag_line('administrativeArea',    $metadata_provider_administrativeArea);
-        views_bonus_eml_print_tag_line('postalCode',            $metadata_provider_postalCode);
-        views_bonus_eml_print_tag_line('country',               $metadata_provider_country);
-        views_bonus_eml_print_tag_line('phone',                 $metadata_provider_phone);
-        views_bonus_eml_print_tag_line('fax',                   $metadata_provider_fax);
-        views_bonus_eml_print_tag_line('role',                  $metadata_provider_role);
-        views_bonus_eml_print_tag_line('electronicMailAddress', $metadata_provider_electronicMailAddress);
-        views_bonus_eml_print_tag_line('personid',              $metadata_provider_personid);
-      views_bonus_eml_print_close_tag('metadataProvider');
+      views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
       if ($dataset_node[dataset_datamanagers][0]->nid) {
         views_bonus_eml_print_open_tag('associatedParty');
@@ -577,23 +562,8 @@ $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . 
       }
 
       views_bonus_eml_print_person('contact', $dataset_node[dataset_contacts]);
-
       // publisher from config file
-      views_bonus_eml_print_open_tag('publisher');
-        views_bonus_eml_print_tag_line('givenName',             $publisher_givenName);
-        views_bonus_eml_print_tag_line('surname',               $publisher_surname);
-        views_bonus_eml_print_tag_line('organization',          $publisher_organization);
-        views_bonus_eml_print_tag_line('deliveryPoint',         $publisher_deliveryPoint);
-        views_bonus_eml_print_tag_line('city',                  $publisher_city);
-        views_bonus_eml_print_tag_line('administrativeArea',    $publisher_administrativeArea);
-        views_bonus_eml_print_tag_line('postalCode',            $publisher_postalCode);
-        views_bonus_eml_print_tag_line('country',               $publisher_country);
-        views_bonus_eml_print_tag_line('phone',                 $publisher_phone);
-        views_bonus_eml_print_tag_line('fax',                   $publisher_fax);
-        views_bonus_eml_print_tag_line('role',                  $publisher_role);
-        views_bonus_eml_print_tag_line('electronicMailAddress', $publisher_electronicMailAddress);
-        views_bonus_eml_print_tag_line('personid',              $publisher_personid);
-      views_bonus_eml_print_close_tag('publisher');
+      views_bonus_eml_print_person('publisher', $publisher_arr);
 
       // see config_eml.php
       views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);

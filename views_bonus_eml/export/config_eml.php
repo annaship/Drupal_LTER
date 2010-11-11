@@ -18,36 +18,50 @@
   $data_policies = '';
   $intellectual_rights = '';
 
-  //Plum Island Ecosystems LTER
+  // TODO: create metadataProvider and publisher as a regular nodes
+  // via dataset CCT form / eml2drupal script
 
-  //publisher
-  $publisher_givenName              = '';
-  $publisher_surname                = '';
-  $publisher_organization           = 'Sevilleta LTER';
-  $publisher_deliveryPoint          = 'Department of Biology, University of New Mexico, MSC30 2020 ';
-  $publisher_city                   = 'Albuquerque';
-  $publisher_administrativeArea     = 'New Mexico';
-  $publisher_postalCode             = '87131';
-  $publisher_country                = 'USA';
-  $publisher_phone                  = '';
-  $publisher_fax                    = '';
-  $publisher_role                   = 'publisher';
-  $publisher_electronicMailAddress 	= 'data-use@sevilleta.unm.edu';
-  $publisher_personid               = '';
+  // metadataProvider
+$metadata_provider_obj = (object) array(
+  'nid'                       => 'fake_nid',
+  'field_person_first_name'   => array ( array ('value' => '')),
+  'field_person_last_name'    => array ( array ('value' => '')),
+  'field_person_organization' => array ( array ('value' => 'Sevilleta LTER')),
+  'field_person_address'      => array ( array ('value' => 'Department of Biology, University of New Mexico, MSC30 2020 ')),
+  'field_person_city'         => array ( array ('value' => 'Albuquerque')),
+  'field_person_state'        => array ( array ('value' => 'new Mexico')),
+  'field_person_zipcode'      => array ( array ('value' => '87131')),
+  'field_person_country'      => array ( array ('value' => 'USA')),
+  'field_person_phone'        => array ( array ('value' => '')),
+  'field_person_fax'          => array ( array ('value' => '')),
+  'field_person_role'         => array ( array ('value' => 'metadataProvider')),
+  'field_person_email' 	      => array ( array ('value' => 'data-use@sevilleta.unm.edu')),
+  'field_person_address'      => array ( array ('value' => 'Department of Biology, University of New Mexico, MSC30 2020 ')),
+  'field_person_personid'     => array ( array ('value' => '')),
+);
 
-  //metadataProvider
-  $metadata_provider_givenName              = '';
-  $metadata_provider_surname                = '';
-  $metadata_provider_organization           = 'Sevilleta LTER';
-  $metadata_provider_deliveryPoint          = 'Department of Biology, University of New Mexico, MSC30 2020 ';
-  $metadata_provider_city                   = 'Albuquerque';
-  $metadata_provider_administrativeArea     = 'new Mexico';
-  $metadata_provider_postalCode             = '87131';
-  $metadata_provider_country                = 'USA';
-  $metadata_provider_phone                  = '';
-  $metadata_provider_fax                    = '';
-  $metadata_provider_role                   = 'metadataProvider';
-  $metadata_provider_electronicMailAddress 	= 'data-use@sevilleta.unm.edu';
-  $metadata_provider_personid               = '';
+
+  // publisher
+$publisher_obj = (object) array(
+  'nid'                       => 'fake_nid',
+  'field_person_first_name'   => array ( array ('value' => '')),
+  'field_person_last_name'    => array ( array ('value' => '')),
+  'field_person_organization' => array ( array ('value' => 'Sevilleta LTER')),
+  'field_person_address'      => array ( array ('value' => 'Department of Biology, University of New Mexico, MSC30 2020 ')),
+  'field_person_city'         => array ( array ('value' => 'Albuquerque')),
+  'field_person_state'        => array ( array ('value' => 'new Mexico')),
+  'field_person_zipcode'      => array ( array ('value' => '87131')),
+  'field_person_country'      => array ( array ('value' => 'USA')),
+  'field_person_phone'        => array ( array ('value' => '')),
+  'field_person_fax'          => array ( array ('value' => '')),
+  'field_person_role'         => array ( array ('value' => 'metadataProvider')),
+  'field_person_email' 	      => array ( array ('value' => 'data-use@sevilleta.unm.edu')),
+  'field_person_address'      => array ( array ('value' => 'Department of Biology, University of New Mexico, MSC30 2020 ')),
+  'field_person_personid'     => array ( array ('value' => '')),
+);
+
+
+$metadata_provider_arr = array ($metadata_provider_obj);
+$publisher_arr         = array ($publisher_obj);
 
 ?>
