@@ -66,6 +66,10 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $not_show_role        = array ('owner', 'creator', 'contact');
 
       views_bonus_eml_print_open_tag($person_tag);
+        if (!in_array($person_role, $not_show_role)) {
+          views_bonus_eml_print_tag_line('role', $person_role);
+        }
+
         if($person_last_name[0][value]){
           views_bonus_eml_print_open_tag('individualName');
             views_bonus_eml_print_value('givenName',        $person_first_name);
@@ -86,7 +90,7 @@ function views_bonus_eml_print_person($person_tag, $content) {
             views_bonus_eml_print_value('administrativeArea', $person_state);
             views_bonus_eml_print_value('postalCode',         $person_zipcode);
             views_bonus_eml_print_value('country',            $person_country);
-          views_bonus_eml_print_open_tag('address');
+          views_bonus_eml_print_close_tag('address');
         }
         views_bonus_eml_print_attr_line('phone',
                         views_bonus_eml_get_uniq_value($person_phone),
@@ -94,9 +98,6 @@ function views_bonus_eml_print_person($person_tag, $content) {
         views_bonus_eml_print_attr_line('phone',
                         views_bonus_eml_get_uniq_value($person_fax),
                         'phonetype', 'fax');
-        if (!in_array($person_role, $not_show_role)) {
-          views_bonus_eml_print_tag_line('role', $person_role);
-        }
         if ($person_email[0]['email']) {
           foreach($person_email as $email) {
             views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
