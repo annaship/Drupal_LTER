@@ -14,6 +14,9 @@
     return strip_tags($content, '<p><h1><h2><h3><h4><h5><a><pre><para>');
   }
 
+  //language
+  $language = 'english';
+
   // Intellectual Rights
   $data_policies = '';
   $intellectual_rights = '';
