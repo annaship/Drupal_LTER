@@ -786,13 +786,16 @@ $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . 
 
                if ($var_missingvalues[0]['value']) {
                  views_bonus_eml_print_open_tag('missingValueCode');
-                    if (preg_match("/(.+)=(.+)/", $var_missingvalues[0][value], $matches)) {
+                 foreach ($var_missingvalues as $var_missingvalue) {
+//                    print_r($var_missingvalue[value]);
+                    if (preg_match("/(.+)=(.+)/", $var_missingvalue[value], $matches)) {
                       views_bonus_eml_print_tag_line('code',       $matches[1]);
                       views_bonus_eml_print_tag_line('definition', $matches[2]);
                     }
                     else {
-                      views_bonus_eml_print_value('missingValues', $var_missingvalues);
+                      views_bonus_eml_print_tag_line('missingValues', $var_missingvalue[value]);
                     }
+                 }
                  views_bonus_eml_print_close_tag('missingValueCode');
                }
                views_bonus_eml_print_close_tag('attribute');

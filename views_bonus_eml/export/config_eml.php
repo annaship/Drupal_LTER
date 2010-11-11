@@ -10,7 +10,7 @@
   $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
   // put allowed HTML tags here
-  function views_bonus_eml_my_strip_tags($content) {
+  function views_bonus_eml_my_strip_tags($content = '') {
     return strip_tags($content, '<p><h1><h2><h3><h4><h5><a><pre><para>');
   }
 
