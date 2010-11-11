@@ -74,10 +74,6 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_close_tag('individualName');
         }
         views_bonus_eml_print_value('organization',         $person_organization);
-//        print "\nURRA\n";
-//        print_r($person_address[0][value]);
-//        print "\nSTOPPP\n";
-//
         if ($person_address[0][value] || 
             $person_city[0][value]    ||
             $person_country[0][value]) {
@@ -528,7 +524,21 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       //language -- <language>english</language>
       views_bonus_eml_print_tag_line('language', $language);
 
-      views_bonus_eml_print_value('abstract', $dataset_abstract);
+//        print "\nURRA\n";
+//        print_r($dataset_abstract[0][value]);
+//        print "\nSTOPPP\n";
+
+      
+      if ($dataset_abstract[0]['value']) {
+        views_bonus_eml_print_open_tag('abstract');
+         views_bonus_eml_print_open_tag('para');
+          views_bonus_eml_print_value('literalLayout', $dataset_abstract);
+         views_bonus_eml_print_close_tag('para');
+        views_bonus_eml_print_close_tag('abstract');
+      }
+
+
+//      views_bonus_eml_print_value('abstract', $dataset_abstract);
 
       // TODO: add if, depend of structure
       views_bonus_eml_print_open_tag('keywordSet');
