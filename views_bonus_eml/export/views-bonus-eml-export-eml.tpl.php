@@ -159,7 +159,6 @@ function views_bonus_eml_get_lon_geo_point($content) {
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
-  unset($research_site_node);
   if ($content[0][site_node]->nid) {
     foreach ($content as $research_site_node) {
         $research_site_landform   = $research_site_node[site_node]->field_research_site_landform;
@@ -172,6 +171,10 @@ function views_bonus_eml_print_geographic_coverage($content) {
         $research_site_siteid     = $research_site_node[site_node]->field_research_site_siteid;
         $research_site_elevation  = $research_site_node[site_node]->field_research_site_elevation;
         $research_site_longitude  = $research_site_node[longitude];
+        $research_site_latitude   = $research_site_node[latitude];
+
+//                    print "\n<br/>HERE URRA\n<br/>";
+//              print_r($research_site_node);
 //      not used for now:
 //        $research_site_latitude   = $research_site_node[latitude];
 //        $research_site_node[geo_point] returns "POINT(55.71 19.31466668)"
@@ -191,7 +194,8 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $research_site_climate[0]['value']    ||
             $research_site_history[0]['value']    ||
             $research_site_siteid[0]['value']     ||
-            !empty($research_site_pt_coords)      ||
+            $research_site_longitude              ||
+            $research_site_latitude               ||
             $research_site_elevation[0]['value']) {
           views_bonus_eml_print_open_tag('geographicCoverage');
             $geoDesc  = views_bonus_eml_get_geo('Landform',   $research_site_landform, 0);
@@ -204,14 +208,15 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $geoDesc .= views_bonus_eml_get_geo('siteid',     $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
-            if (!empty($research_site_pt_coords) ||
+            if ($research_site_longitude || $research_site_latitude ||
                 ($research_site_elevation[0]['value'])) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
-                //there is some parsing TODO here, need the longitude only
-                views_bonus_eml_print_value('westBoundingCoordinate',  $research_site_pt_coords);
-                views_bonus_eml_print_value('eastBoundingCoordinate',  $research_site_pt_coords);
-                views_bonus_eml_print_value('northBoundingCoordinate', $research_site_pt_coords);
-                views_bonus_eml_print_value('southBoundingCoordinate', $research_site_pt_coords);
+                views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
+                views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
+                views_bonus_eml_print_tag_line('westBoundingCoordinate',  $research_site_longitude);
+                views_bonus_eml_print_tag_line('eastBoundingCoordinate',  $research_site_longitude);
+//[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
+//[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
 
                 views_bonus_eml_print_open_tag('boundingAltitudes');
                   views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
@@ -226,6 +231,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
 } // end of function views_bonus_eml_print_geographic_coverage
 
 function get_geo($site_nid) {
+
   $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
               Y(field_research_site_pt_coords_geo) as latitude,
               AsText(field_research_site_pt_coords_geo) as geo_point
@@ -234,10 +240,11 @@ function get_geo($site_nid) {
                          FROM content_type_research_site
                          WHERE nid = '$site_nid')");
   $result = mysql_query($db_query) or die(mysql_error());
+
   $geo_lon_lat_point = mysql_fetch_array($result);
-  print "HERE start\n<br/>";
-  print_r($geo_lon_lat_point);
-  print "HERE\n<br/>";
+//  print "HERE start\n<br/>";
+//  print_r($geo_lon_lat_point);
+//  print "HERE\n<br/>";
   return $geo_lon_lat_point;
 }
 
@@ -252,10 +259,10 @@ function get_geo($site_nid) {
                               'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
       }
     }
-    print "\n<br/>START\n<br/>";
-    print_r($site_nodes);
-    print "\n<br/>END\n<br/>";
-
+//    print "\n<br/>START\n<br/>";
+//    print_r($site_nodes);
+//    print "\n<br/>END\n<br/>";
+    return $site_nodes;
   }
 
 //http://stackoverflow.com/questions/526556/how-to-flatten-a-multi-dimensional-array-to-simple-one-in-php
@@ -367,26 +374,27 @@ foreach ($row as $row_nid) {
     if ($node->field_dataset_site_ref[0][nid]) {
       $site_nodes = get_site_information($node->field_dataset_site_ref);
       $dataset_node[dataset_site] = $site_nodes;
-
+//      print "\n<br/>HERE URRA\n<br/>";
+//      print_r($site_nodes);
     }
-    print "HERE is dataset site<br/>\n";
-    print_r($site_nodes);
+//    print "HERE is dataset site<br/>\n";
+//    print_r($site_nodes);
 
-  if ($node->field_dataset_site_ref) {
-      $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
-      foreach ($field_dataset_site_ref_nid as $v) {
-        foreach ($v as $site_nid) {
-          $site_node = node_load($site_nid);
-          $dataset_geo_lon_lat_point = get_geo($site_nid);
-          $site_nodes[] = array('site_node' => $site_node,
-                                'longitude' => $dataset_geo_lon_lat_point[longitude],
-                                'latitude'  => $dataset_geo_lon_lat_point[latitude],
-                                'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
-          }
-       }       
-          $dataset_node[dataset_site] = $site_nodes;
-//          print_r($site_nodes);
-    }
+//  if ($node->field_dataset_site_ref) {
+//      $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
+//      foreach ($field_dataset_site_ref_nid as $v) {
+//        foreach ($v as $site_nid) {
+//          $site_node = node_load($site_nid);
+//          $dataset_geo_lon_lat_point = get_geo($site_nid);
+//          $site_nodes[] = array('site_node' => $site_node,
+//                                'longitude' => $dataset_geo_lon_lat_point[longitude],
+//                                'latitude'  => $dataset_geo_lon_lat_point[latitude],
+//                                'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
+//          }
+//       }
+//          $dataset_node[dataset_site] = $site_nodes;
+////          print_r($site_nodes);
+//    }
 
 //  datafile
     $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
