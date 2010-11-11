@@ -430,6 +430,8 @@ $dataset_quality          = $dataset_node[dataset]->field_quality;
 $dataset_id               = $dataset_node[dataset]->field_dataset_id;
 $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
+$views_bonus_eml_site_name = variable_get('site_name', NULL);
+
   /* -----------------
    * 2) calculate vid version
    * ---------------------
@@ -467,8 +469,8 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
    * 3) create and populate a template
    */
 
-  $views_bonus_eml_site_name = variable_get('site_name', NULL);
-  $package_id = $views_bonus_eml_site_name . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
+  // $acr from config
+  $package_id = $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
@@ -589,6 +591,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
         views_bonus_eml_print_close_tag('purpose');
       }
 
+      // maintenance log
       if ($dataset_maintenance[0]['value']) {
         views_bonus_eml_print_open_tag('maintenance');
           views_bonus_eml_print_open_tag('description');
@@ -600,10 +603,8 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       }
 
       views_bonus_eml_print_person('contact', $dataset_node[dataset_contacts]);
-      // publisher from config file
+      //publisher, specific for every given site from config file,
       views_bonus_eml_print_person('publisher', $publisher_arr);
-
-      // see config_eml.php
       views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
 
       if ($dataset_instrumentation[0]['value'] ||

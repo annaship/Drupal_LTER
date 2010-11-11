@@ -7,7 +7,17 @@
   // example: <pubPLace> Plum Island Ecosystems LTER </pubPlace>
   // for now taking automatically: variable_get('site_name', NULL);
 
-  $views_bonus_eml_site_name = variable_get('site_name', NULL);
+  // package_id is scope.identifier.version
+  // for LTER, scope is "knb-lter-ACR" where ACR is the three leter site acronym
+  // Non-lTER sites may not have a convention for the scope
+  // Identifier is a unique identifier -- usually from the "data set ID".
+  // Version is the $ver_id, a composites of Drupal VIDs for the related NIDs.
+  $acr='sev'; // Sevilleta acronym
+  // $id = content_type_data_set.content_field_dataset_id ;
+  $scope='knb-lter-'.$acr;
+  $package_id = $acr . '.' .$id.'.'. $ver_vid;
+
+
 
   // put allowed HTML tags here
   function views_bonus_eml_my_strip_tags($content = '') {
@@ -20,6 +30,20 @@
   // Intellectual Rights
   $intellectual_rights = '';
   $data_policies = '';
+  
+  //Access group  -- need for the stupid metacat --
+  //
+  //<access scope="document" order="allowFirst" authSystem="knb">
+  //    <allow>
+  //		<principal>uid=ACR,o=lter,dc=ecoinformatics,dc=org</principal>
+  //		<permission>all</permission>
+  //	</allow>
+  //	<allow>
+  //		<principal>public</principal>
+  //		<permission>read</permission>
+  //	</allow>
+  //</access>
+  //
 
   $intellectual_rights = 'Any Sevilleta LTER data set and accompanying metadata can be used for academic, research, and other professional purposes. Permission to use the data is granted to the Data User subject to the following terms: Data User will: 1) notify the designated contact (e.g., Principle Investigator or Data Set Contact) when any derivative work based on or derived from the data and documentation is distributed; 2) notify users that such derivative work is a modified version and not the original data and documentation distributed by the Sevilleta LTER; 3) not redistribute original data and documentation; 4) acknowledge the support of the Sevilleta LTER and appropriate NSF Grant numbers in any publications using these data and documentation. (e.g. Data sets were provided by the Sevilleta LTER Data Bank. Funding for these data was provided by the National Science Foundation Long-Term Ecological Research program (NSF Grant numbers BSR 88-11906, DEB9411976, DEB0080529, DEB0217774); and 5) send two reprints of any publications resulting from use of the data and documentation to the following address: Sevilleta LTER Program Attn: Information Manager, Department of Biology, MSC03 2020, University of New Mexico, Albuquerque, NM 87131';
 
