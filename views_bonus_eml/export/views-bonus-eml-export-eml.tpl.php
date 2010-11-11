@@ -225,10 +225,10 @@ function views_bonus_eml_print_geographic_coverage($content) {
 
             if ($research_site_longitude || $research_site_latitude) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
-                views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
-                views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
                 views_bonus_eml_print_tag_line('westBoundingCoordinate',  $research_site_longitude);
                 views_bonus_eml_print_tag_line('eastBoundingCoordinate',  $research_site_longitude);
+                views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
+                views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
               views_bonus_eml_print_close_tag('boundingCoordinates');
             }
 //[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
