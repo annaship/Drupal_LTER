@@ -47,6 +47,7 @@ function views_bonus_eml_get_uniq_value($content) {
 }
 
 function views_bonus_eml_print_person($person_tag, $content) {
+
   if ($content[0]->nid) {
     foreach ($content as $person_node) {
       $person_first_name    = $person_node->field_person_first_name;
@@ -507,17 +508,26 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       // metadataProvider from config_eml.php
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
-      if ($dataset_node[dataset_datamanagers][0]->nid) {
-        views_bonus_eml_print_open_tag('associatedParty');
-          views_bonus_eml_print_person('data_manager',  
-                                       $dataset_node[dataset_datamanagers]);
-        views_bonus_eml_print_close_tag('associatedParty');
-      }
-      views_bonus_eml_print_person('field_crew', $dataset_node[dataset_fieldcrew]);
-      views_bonus_eml_print_person('labcrew', $dataset_node[dataset_labcrew]);
-      views_bonus_eml_print_person('ext_assoc', $dataset_node[dataset_ext_assoc]);
+      $associated_party_arr = array (
+        'data_manager'         => 'dataset_datamanagers',
+        'field_crew'           => 'dataset_fieldcrew',
+        'labcrew'              => 'dataset_labcrew',
+        'associate_researcher' => 'dataset_ext_assoc',
+      );
 
-            views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
+      foreach ($associated_party_arr as $key => $value) {
+        if ($dataset_node[$value][0]->nid) {
+          views_bonus_eml_print_open_tag('associatedParty');
+            views_bonus_eml_print_person($key, $dataset_node[$value]);
+          views_bonus_eml_print_close_tag('associatedParty');
+        }
+      }
+      //pubDate
+      views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
+
+      //language -- <language>english</language>
+      views_bonus_eml_print_tag_line('language', $language);
+
       views_bonus_eml_print_value('abstract', $dataset_abstract);
 
       // TODO: add if, depend of structure
