@@ -143,7 +143,6 @@ function views_bonus_eml_collect_geographic_description($label, $content, $comma
   return $geoDesc;
 } // end of function views_bonus_eml_collect_geographic_description
 
-//take geo point from research site
 function views_bonus_eml_get_lon_geo_point($content) {
   $matches = Array();
   if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
@@ -194,14 +193,22 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $research_site_latitude               ||
             $research_site_elevation[0]['value']) {
           views_bonus_eml_print_open_tag('geographicCoverage');
-            $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',   $research_site_landform, 0);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',    $research_site_geology);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',      $research_site_soils);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',  $research_site_hydrology);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation', $research_site_vegetation);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',    $research_site_climate);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('History',    $research_site_history);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',     $research_site_siteid);
+            $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',
+                                                    $research_site_landform, 0);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',
+                                                    $research_site_geology);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',
+                                                    $research_site_soils);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',
+                                                    $research_site_hydrology);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation',
+                                                    $research_site_vegetation);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',
+                                                    $research_site_climate);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('History',
+                                                    $research_site_history);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',
+                                                    $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
             if ($research_site_longitude || $research_site_latitude) {
@@ -272,8 +279,9 @@ function flatten_array($array, $preserve_keys = 0, &$out = array()) {
               $out[$key] = $child;
           else
               $out[] = $child;
-      return $out;
+//      return $out;
     }
+  return $out;
 }
 
 // Url for datafile urls, using Drupal variable
@@ -419,8 +427,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
    */
   $ver_vid = $dataset_node[dataset]->vid;
 
-//  persons and sites vid
-  
+//  persons and sites vid  
   $dataset_ref = array(
     'dataset_owners',
     'dataset_contacts',
@@ -757,7 +764,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                if ($var_missingvalues[0]['value']) {
                  views_bonus_eml_print_open_tag('missingValueCode');
                  foreach ($var_missingvalues as $var_missingvalue) {
-//                    print_r($var_missingvalue[value]);
                     if (preg_match("/(.+)=(.+)/", $var_missingvalue[value], $matches)) {
                       views_bonus_eml_print_tag_line('code',       $matches[1]);
                       views_bonus_eml_print_tag_line('definition', $matches[2]);
