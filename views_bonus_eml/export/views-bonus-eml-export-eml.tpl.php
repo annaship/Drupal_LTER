@@ -125,7 +125,7 @@ function views_bonus_eml_print_temporal_coverage($beg_end_date) {
 
 // Collect geo info into one string,
 // only for the first time make $comma_flag = 0, to skip comma
-function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
+function views_bonus_eml_collect_geographic_description($label, $content, $comma_flag = 1) {
   $geoDesc = '';
   if ($content[0]['value']) {
     foreach($content as $value) {
@@ -138,7 +138,7 @@ function views_bonus_eml_get_geo($label, $content, $comma_flag = 1) {
     }
   }
   return $geoDesc;
-} // end of function views_bonus_eml_get_geo
+} // end of function views_bonus_eml_collect_geographic_description
 
 //take geo point from research site
 function views_bonus_eml_get_lon_geo_point($content) {
@@ -154,11 +154,14 @@ function views_bonus_eml_get_lon_geo_point($content) {
 //)
   }
 
-  return $dataset_site_lon;
+//  return $dataset_site_lon;
 }
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
+//    print "\n<br/>START\n<br/>";
+//    print_r($content);
+//    print "\n<br/>END\n<br/>";
   if ($content[0][site_node]->nid) {
     foreach ($content as $research_site_node) {
         $research_site_landform   = $research_site_node[site_node]->field_research_site_landform;
@@ -173,10 +176,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
         $research_site_longitude  = $research_site_node[longitude];
         $research_site_latitude   = $research_site_node[latitude];
 
-//                    print "\n<br/>HERE URRA\n<br/>";
-//              print_r($research_site_node);
 //      not used for now:
-//        $research_site_latitude   = $research_site_node[latitude];
 //        $research_site_node[geo_point] returns "POINT(55.71 19.31466668)"
 //        if we'll need POINT go to views_bonus_eml_get_lon_geo_point and change it as needed,
 //        then call:
@@ -198,31 +198,31 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $research_site_latitude               ||
             $research_site_elevation[0]['value']) {
           views_bonus_eml_print_open_tag('geographicCoverage');
-            $geoDesc  = views_bonus_eml_get_geo('Landform',   $research_site_landform, 0);
-            $geoDesc .= views_bonus_eml_get_geo('Geology',    $research_site_geology);
-            $geoDesc .= views_bonus_eml_get_geo('Soils',      $research_site_soils);
-            $geoDesc .= views_bonus_eml_get_geo('Hydrology',  $research_site_hydrology);
-            $geoDesc .= views_bonus_eml_get_geo('Vegetation', $research_site_vegetation);
-            $geoDesc .= views_bonus_eml_get_geo('Climate',    $research_site_climate);
-            $geoDesc .= views_bonus_eml_get_geo('History',    $research_site_history);
-            $geoDesc .= views_bonus_eml_get_geo('siteid',     $research_site_siteid);
+            $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',   $research_site_landform, 0);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',    $research_site_geology);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',      $research_site_soils);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',  $research_site_hydrology);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation', $research_site_vegetation);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',    $research_site_climate);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('History',    $research_site_history);
+            $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',     $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
-            if ($research_site_longitude || $research_site_latitude ||
-                ($research_site_elevation[0]['value'])) {
+            if ($research_site_longitude || $research_site_latitude) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
                 views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
                 views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
                 views_bonus_eml_print_tag_line('westBoundingCoordinate',  $research_site_longitude);
                 views_bonus_eml_print_tag_line('eastBoundingCoordinate',  $research_site_longitude);
+              views_bonus_eml_print_close_tag('boundingCoordinates');
+            }
 //[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
 //[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
-
+            if ($research_site_elevation[0]['value']) {
                 views_bonus_eml_print_open_tag('boundingAltitudes');
                   views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
                   views_bonus_eml_print_value('altitudeMaximum',  $research_site_elevation);
                 views_bonus_eml_print_close_tag('boundingAltitudes');
-              views_bonus_eml_print_close_tag('boundingCoordinates');
             }
           views_bonus_eml_print_close_tag('geographicCoverage');
         } // endif; check if values exist
@@ -230,8 +230,8 @@ function views_bonus_eml_print_geographic_coverage($content) {
   } // endif; $research_site_nid[0]['nid']
 } // end of function views_bonus_eml_print_geographic_coverage
 
-function get_geo($site_nid) {
-
+function views_bonus_eml_get_geo($site_nid) {
+  unset($geo_lon_lat_point);
   $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
               Y(field_research_site_pt_coords_geo) as latitude,
               AsText(field_research_site_pt_coords_geo) as geo_point
@@ -248,11 +248,12 @@ function get_geo($site_nid) {
   return $geo_lon_lat_point;
 }
 
-  function get_site_information($content) {
+  function views_bonus_eml_get_site_information($content) {
+    unset($site_nodes);
     foreach ($content as $value) {
       foreach ($value as $site_nid) {
         $site_node = node_load($site_nid);
-        $dataset_geo_lon_lat_point = get_geo($site_nid);
+        $dataset_geo_lon_lat_point = views_bonus_eml_get_geo($site_nid);
         $site_nodes[] = array('site_node' => $site_node,
                               'longitude' => $dataset_geo_lon_lat_point[longitude],
                               'latitude'  => $dataset_geo_lon_lat_point[latitude],
@@ -372,29 +373,9 @@ foreach ($row as $row_nid) {
     }
 
     if ($node->field_dataset_site_ref[0][nid]) {
-      $site_nodes = get_site_information($node->field_dataset_site_ref);
+      $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
       $dataset_node[dataset_site] = $site_nodes;
-//      print "\n<br/>HERE URRA\n<br/>";
-//      print_r($site_nodes);
     }
-//    print "HERE is dataset site<br/>\n";
-//    print_r($site_nodes);
-
-//  if ($node->field_dataset_site_ref) {
-//      $field_dataset_site_ref_nid = $node->field_dataset_site_ref;
-//      foreach ($field_dataset_site_ref_nid as $v) {
-//        foreach ($v as $site_nid) {
-//          $site_node = node_load($site_nid);
-//          $dataset_geo_lon_lat_point = get_geo($site_nid);
-//          $site_nodes[] = array('site_node' => $site_node,
-//                                'longitude' => $dataset_geo_lon_lat_point[longitude],
-//                                'latitude'  => $dataset_geo_lon_lat_point[latitude],
-//                                'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
-//          }
-//       }
-//          $dataset_node[dataset_site] = $site_nodes;
-////          print_r($site_nodes);
-//    }
 
 //  datafile
     $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
@@ -414,17 +395,18 @@ foreach ($row as $row_nid) {
         }
 //      sites
         if ($datafile_node->field_datafile_site_ref[0][nid]) {
-          $site_nodes = get_site_information($datafile_node->field_datafile_site_ref);
+          $datafile_site_nodes = views_bonus_eml_get_site_information($datafile_node->field_datafile_site_ref);
         }
 //      all file related data
         $datafile_nodes[] = array ('datafile'       => $datafile_node,
                                    'variables'      => $variable_nodes,
-                                   'datafile_sites' => $site_nodes);
+                                   'datafile_sites' => $datafile_site_nodes);
 //        see file-var_str.txt
      }
     }
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
+
 
 //dpr($datafile_nodes);
 
@@ -450,7 +432,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
    * 2) calculate vid version
    * ---------------------
    */
-  $ver_vid += $dataset_node[dataset]->vid;
+  $ver_vid = $dataset_node[dataset]->vid;
 
 //  persons and sites vid
   
@@ -466,20 +448,19 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
   foreach ($dataset_ref as $ref) {
     if ($dataset_node[$ref][0]) {
-      foreach ($dataset_node[$ref] as $person) {
-        $ver_vid += $person->vid;
+      foreach ($dataset_node[$ref] as $person_site) {
+        $ver_vid += $person_site->vid;
       }
     }
   }
 
-// vid of datafiles + variables
+// vid of datafiles + variables + datafile_sites
  $flatten_files = flatten_array($dataset_node[dataset_datafiles]);
  if ($flatten_files) {
    foreach ($flatten_files as $object_value) {
      $ver_vid += $object_value->vid;
    }
  }
-//  print "\$ver_vid = ".$ver_vid."\n";
 
   /*
    * 3) create and populate a template
@@ -588,7 +569,10 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
       if ($dataset_node[dataset_site][0][site_node]->nid || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
+            print "\n<br/>call from dataset START\n<br/>";
           views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
+//    print_r($content);
+    print "\n<br/>call from dataset  END\n<br/>";
           views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
 //          // taxonomicCoverage here
         views_bonus_eml_print_close_tag('coverage');
@@ -677,6 +661,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
           $file_quality           = $file_var_array[datafile]->field_quality;
 
           views_bonus_eml_print_open_tag('dataTable');
+
           if ($file_data_file) {
             foreach ($file_data_file as $file_data) {
               views_bonus_eml_print_tag_line('entityName', $file_data['filename']);
@@ -713,10 +698,18 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                }
              }
             views_bonus_eml_print_close_tag('physical');
+//          print "<br/>\nHERE URRA<br/>\n";
+//    print_r($dataset_node[dataset_datafiles]);
 
+//    print_r($file_var_array[datafile_sites]);
             if ($file_var_array[datafile_sites][0]->nid || $datafile_date[0]['value']) {
                views_bonus_eml_print_open_tag('coverage');
+//                          print "<br/>\nHERE URRA<br/>\n";
+//           print_r($file_var_array[datafile_sites]);
+//                           print "\n<br/>call from file START\n<br/>";
                  views_bonus_eml_print_geographic_coverage($file_var_array[datafile_sites]);
+//    print_r($content);
+//    print "\n<br/>call from file  END\n<br/>";
                  views_bonus_eml_print_temporal_coverage($datafile_date);
                  // taxonomic coverage here
                views_bonus_eml_print_close_tag('coverage');
