@@ -179,10 +179,6 @@ function views_bonus_eml_print_geographic_coverage($content) {
 //        then call:
 //        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
 
-//        <coordinates>
-//[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
-//[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
-
         if ($research_site_landform[0]['value']   ||
             $research_site_geology[0]['value']    ||
             $research_site_soils[0]['value']      ||
@@ -239,9 +235,6 @@ function views_bonus_eml_get_geo($site_nid) {
   $result = mysql_query($db_query) or die(mysql_error());
 
   $geo_lon_lat_point = mysql_fetch_array($result);
-//  print "HERE start\n<br/>";
-//  print_r($geo_lon_lat_point);
-//  print "HERE\n<br/>";
   return $geo_lon_lat_point;
 }
 
@@ -257,9 +250,6 @@ function views_bonus_eml_get_geo($site_nid) {
                               'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
       }
     }
-//    print "\n<br/>START\n<br/>";
-//    print_r($site_nodes);
-//    print "\n<br/>END\n<br/>";
     return $site_nodes;
   }
 
@@ -294,8 +284,6 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
  * 3) create a template
  * 4) populate data into the template
  */
-//  unset ($dataset_node);
-//  unset ($node);
   
   foreach ($themed_rows as $row) {
 
@@ -399,13 +387,10 @@ foreach ($row as $row_nid) {
         $datafile_nodes[] = array ('datafile'       => $datafile_node,
                                    'variables'      => $variable_nodes,
                                    'datafile_sites' => $datafile_site_nodes);
-//        see file-var_str.txt
      }
     }
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
-
-//print_r($datafile_nodes);
 
 /*
  * 1a) create dataset variables here
@@ -543,10 +528,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
         views_bonus_eml_print_close_tag('additionalInfo');
       }
 
-      // TODO: hardcode the intellectualRights, specific for every given site
-      // put it into config file,
-      // add a description, what should be changed
-
+      // $intellectual_rights from config file
       views_bonus_eml_print_open_tag('intellectualRights');
         views_bonus_eml_print_open_tag('section');
         views_bonus_eml_print_tag_line('title', 'Data Policies');
@@ -566,9 +548,10 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
       if ($dataset_node[dataset_site][0][site_node]->nid || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
+        print "<br/>HERE";
           views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
           views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
-//          // taxonomicCoverage here
+          // taxonomicCoverage here
         views_bonus_eml_print_close_tag('coverage');
       }
 
@@ -592,9 +575,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
       views_bonus_eml_print_person('contact', $dataset_node[dataset_contacts]);
 
-      // TODO: hardcode the publisher, specific for every given site
-      // put it into config file,
-      // add a description, what should be changed
+      // publisher from config file
       views_bonus_eml_print_open_tag('publisher');
         views_bonus_eml_print_tag_line($publisher_givenName,             '');
         views_bonus_eml_print_tag_line($publisher_surname,               '');
@@ -637,6 +618,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
       views_bonus_eml_print_value('related_links',    $dataset_related_links);
 
       // Data_file start
+      $file_var_array = Array();
       if ($dataset_node[dataset_datafiles] && $dataset_node[dataset_datafiles][0][datafile]->nid) {
         foreach ($dataset_node[dataset_datafiles] as $file_var_array) {
 
@@ -653,6 +635,7 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
           $file_instrumentation   = $file_var_array[datafile]->field_instrumentation;
           $file_methods           = $file_var_array[datafile]->field_methods;
           $file_quality           = $file_var_array[datafile]->field_quality;
+
 
           views_bonus_eml_print_open_tag('dataTable');
 
@@ -693,10 +676,8 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
              }
             views_bonus_eml_print_close_tag('physical');
 
-            if ($file_var_array[datafile_sites][0]->nid || $datafile_date[0]['value']) {
+            if ($file_var_array[datafile_sites][0][site_node]->nid || $datafile_date[0]['value']) {
                views_bonus_eml_print_open_tag('coverage');
-//                          print "<br/>\nHERE URRA<br/>\n";
-//           print_r($file_var_array[datafile_sites]);
                  views_bonus_eml_print_geographic_coverage($file_var_array[datafile_sites]);
                  views_bonus_eml_print_temporal_coverage($datafile_date);
                  // taxonomic coverage here
@@ -792,23 +773,6 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                             }
                          views_bonus_eml_print_close_tag('enumeratedDomain');
                        }
-//                           views_bonus_eml_print_value('codeDefinition', $code_definition);
-                           // get host name from URL
-//                            preg_match('@^(?:http://)?([^/]+)@i',
-//                                "http://www.php.net/index.html", $matches);
-//                           if (preg_match("/(.+)=(.+)/", $code_definition[0][value], $matches)) {
-//                                echo "A match was found = ";
-//                                print_r($matches);
-//                                A match was found = Array
-//                                  (
-//                                      [0] => L=Larvae
-//                                      [1] => L
-//                                      [2] => Larvae
-//                                  )
-//
-//                            } else {
-//                                echo "A match was not found.";
-//                            }
                      views_bonus_eml_print_close_tag('nonNumericDomain');
                    views_bonus_eml_print_close_tag('nominal');
                   }
@@ -823,8 +787,9 @@ $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
                       views_bonus_eml_print_tag_line('code',       $matches[1]);
                       views_bonus_eml_print_tag_line('definition', $matches[2]);
                     }
-
-//                   views_bonus_eml_print_value('missingValues', $var_missingvalues);
+                    else {
+                      views_bonus_eml_print_value('missingValues', $var_missingvalues);
+                    }
                  views_bonus_eml_print_close_tag('missingValueCode');
                }
                views_bonus_eml_print_close_tag('attribute');
