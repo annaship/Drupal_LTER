@@ -65,10 +65,10 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_role_arr      = $person_node->field_person_role;
       $person_role          = $person_role_arr[0]['value'];
       $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
-      $print_role           = array ('metadataProvider', 'publisher');
+//      $print_role           = array ('metadataProvider', 'publisher');
 
 
-      if (in_array($person_role, $print_role)) {
+      if (in_array($person_role, $not_show_role)) {
         views_bonus_eml_print_open_tag($person_role);
       } else {
         views_bonus_eml_print_open_tag('associatedParty');
@@ -108,8 +108,9 @@ function views_bonus_eml_print_person($person_tag, $content) {
       views_bonus_eml_print_value('userId', $person_personid);
       if (!in_array($person_tag, $not_show_role)) {
         views_bonus_eml_print_tag_line('role', $person_tag);
+        views_bonus_eml_print_close_tag('associatedParty');
       }
-      if (in_array($person_role, $print_role)) {
+      if (in_array($person_role, $not_show_role)) {
         views_bonus_eml_print_close_tag($person_role);
       } else {
         views_bonus_eml_print_close_tag('associatedParty');
