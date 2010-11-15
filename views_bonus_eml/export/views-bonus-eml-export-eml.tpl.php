@@ -533,13 +533,13 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       );
 
       if ($associated_party_arr) {
-      foreach ($associated_party_arr as $key => $value) {
-        if ($dataset_node[$value][0]->nid) {
-          views_bonus_eml_print_open_tag('associatedParty');
-            views_bonus_eml_print_person($key, $dataset_node[$value]);
-          views_bonus_eml_print_close_tag('associatedParty');
+        foreach ($associated_party_arr as $key => $value) {
+          if ($dataset_node[$value][0]->nid) {
+            views_bonus_eml_print_open_tag('associatedParty');
+              views_bonus_eml_print_person($key, $dataset_node[$value]);
+            views_bonus_eml_print_close_tag('associatedParty');
+          }
         }
-      }
       }
       //pubDate
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
@@ -574,6 +574,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         views_bonus_eml_print_open_tag('additionalInfo');
           views_bonus_eml_print_open_tag('para');
              views_bonus_eml_print_value('literalLayout', $dataset_add_info);
+             views_bonus_eml_print_value('related_links', $dataset_related_links);
           views_bonus_eml_print_close_tag('para');
         views_bonus_eml_print_close_tag('additionalInfo');
       }
@@ -628,28 +629,72 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       views_bonus_eml_print_person('publisher', $publisher_arr);
       views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
 
-      if ($dataset_instrumentation[0]['value'] ||
-          $dataset_methods[0]['value']         ||
-          $dataset_quality[0]['value']) {
-        views_bonus_eml_print_open_tag('methods');
-        if ($dataset_instrumentation[0]['value'] || $dataset_methods[0]['value']) {
-          views_bonus_eml_print_open_tag('methodStep');
-            views_bonus_eml_print_value('instrumentation',  $dataset_instrumentation);
-            views_bonus_eml_print_value('description',      $dataset_methods);
-          views_bonus_eml_print_close_tag('methodStep');
-        }
+//      if ($dataset_instrumentation[0]['value'] ||
+//          $dataset_methods[0]['value']         ||
+//          $dataset_quality[0]['value']) {
+//        views_bonus_eml_print_open_tag('methods');
+//        if ($dataset_instrumentation[0]['value'] || $dataset_methods[0]['value']) {
+//          views_bonus_eml_print_open_tag('methodStep');
+//            views_bonus_eml_print_value('instrumentation',  $dataset_instrumentation);
+//            views_bonus_eml_print_value('description',      $dataset_methods);
+//          views_bonus_eml_print_close_tag('methodStep');
+//        }
+//
+//        if ($dataset_quality[0]['value']) {
+//          views_bonus_eml_print_open_tag('qualityControl');
+//            views_bonus_eml_print_value('description',      $dataset_quality);
+//          views_bonus_eml_print_close_tag('qualityControl');
+//        }
+//        views_bonus_eml_print_close_tag('methods');
+//      }
 
-        if ($dataset_quality[0]['value']) {
-          views_bonus_eml_print_open_tag('qualityControl');
-            views_bonus_eml_print_value('description',      $dataset_quality);
-          views_bonus_eml_print_close_tag('qualityControl');
-        }
+      // methods section  !!! ISG comment added  1st, methods can be opened if this is true $dataset_methods[0]['value']
+      // if we have instruments, but not a description, we need to ignore it all together: changed conditional.
+      if ($dataset_methods[0]['value']) {
+        views_bonus_eml_print_open_tag('methods');
+          views_bonus_eml_print_open_tag('methodStep');
+            views_bonus_eml_print_open_tag('description');  // !!! ISG added more tags to the description (section/para/literalLayout)
+               views_bonus_eml_print_open_tag('section');
+                 views_bonus_eml_print_open_tag('para');    // !!! ISG in the future, we may need to parse HTML (like h1,h2,h3, and translate it to EML markup)
+                                                            //!!! if we could detect paragraphs, and translate them into <para>s, better...
+                    views_bonus_eml_print_value('literalLayout', $dataset_methods);
+                 views_bonus_eml_print_close_tag('para');
+               views_bonus_eml_print_close_tag('section');
+            views_bonus_eml_print_close_tag('description');
+            if ($dataset_instrumentation[0]['value']) {
+              views_bonus_eml_print_value('instrumentation', $dataset_instrumentation);
+            }
+          views_bonus_eml_print_close_tag('methodStep');
+          if ($dataset_quality[0]['value']) {
+             views_bonus_eml_print_open_tag('qualityControl');
+                views_bonus_eml_print_open_tag('description');
+                   views_bonus_eml_print_open_tag('para');  //!!!ISG added structure
+                       views_bonus_eml_print_value('literalLayout', $dataset_quality);
+                   views_bonus_eml_print_close_tag('para');
+                views_bonus_eml_print_close_tag('description');
+             views_bonus_eml_print_close_tag('qualityControl');
+          }
         views_bonus_eml_print_close_tag('methods');
       }
 
-      views_bonus_eml_print_value('field_dataset_id', $dataset_id);
-      views_bonus_eml_print_value('related_links',    $dataset_related_links);
-
+?>
+<access scope="document" order="allowFirst" authSystem="knb">
+  <?php
+   if ($acr) {
+     views_bonus_eml_print_open_tag('allow');
+        $access_string = "uid=$acr, o=lter, dc=ecoinformatics, dc=org";
+        views_bonus_eml_print_tag_line('principal',  $access_string);
+        $access_string = 'all';
+        views_bonus_eml_print_tag_line('permission', $access_string);
+     views_bonus_eml_print_close_tag('allow');
+    }
+  ?>
+  <allow>
+    <principal>public</principal>
+    <permission>read</permission>
+  </allow>
+</access>
+<?php  
       // Data_file start
       $file_var_array = Array();
       if ($dataset_node[dataset_datafiles] && $dataset_node[dataset_datafiles][0][datafile]->nid) {
@@ -676,13 +721,18 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
             foreach ($file_data_file as $file_data) {
               views_bonus_eml_print_tag_line('entityName', $file_data['filename']);
             }
+          } else {
+          //!!! ISG to rescue EML validity -- IM not sure how.. we can always make the field mandatory.
+            views_bonus_eml_print_tag_line('entityName', $file_data['filepath']);
           }
+// really filepath? sites/default/files/filefield_2TxaYA_13.txt ?
+//          print_r($file_data['filepath']); ???
+          
             views_bonus_eml_print_value('entityDescription', $datafile_description);
 
             views_bonus_eml_print_open_tag('physical');
             if ($file_data_file) {
               foreach ($file_data_file as $file_data) {
-//                ??? the same as for entityName?
                 views_bonus_eml_print_tag_line('objectName', $file_data['filename']);
              }
             }
@@ -695,7 +745,13 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
                  views_bonus_eml_print_value('recordDelimiter',      $file_record_delimiter);
                  views_bonus_eml_print_value('attributeOrientation', $file_orientation);
                  views_bonus_eml_print_open_tag('simpleDelimited');
+                 if ($file_delimiter[0][value]) {
                    views_bonus_eml_print_value('fieldDelimiter',     $file_delimiter);
+                 }
+                 else {
+                   $file_delimiter = ',';
+                   views_bonus_eml_print_tag_line('fieldDelimiter',  $file_delimiter);
+                 }
                    views_bonus_eml_print_value('quoteCharacter',     $file_quote_character);
                  views_bonus_eml_print_close_tag('simpleDelimited');
                views_bonus_eml_print_close_tag('textFormat');
@@ -754,8 +810,8 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
               $var_missingvalues      = $var_node->field_var_missingvalues;
 
                 views_bonus_eml_print_open_tag('attribute');
-                  views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                   views_bonus_eml_print_tag_line('attributeName',    $var_title);
+                  views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                   views_bonus_eml_print_value('attributeDefinition', $var_definition);
                if ($attribute_formatstring[0]['value'] ||
                    $attribute_maximum[0]['value'] ||
