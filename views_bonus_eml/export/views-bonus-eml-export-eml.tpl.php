@@ -355,21 +355,24 @@ foreach ($row as $row_nid) {
 
 //  refs
     $field_dataset_owner_ref_nid = $node->field_dataset_owner_ref;
-    foreach ($field_dataset_owner_ref_nid as $v) {
-      foreach ($v as $owner_nid) {
-        $owner_nodes[] = node_load($owner_nid);
+    if ($field_dataset_owner_ref_nid) {
+      foreach ($field_dataset_owner_ref_nid as $v) {
+        foreach ($v as $owner_nid) {
+          $owner_nodes[] = node_load($owner_nid);
         }
-     }
-     $dataset_node[dataset_owners] = $owner_nodes;
+      }
+    }
+    $dataset_node[dataset_owners] = $owner_nodes;
 
     $field_dataset_contact_ref_nid = $node->field_dataset_contact_ref;
-    foreach ($field_dataset_contact_ref_nid as $v) {
-      foreach ($v as $contact_nid) {
-        $contact_nodes[] = node_load($contact_nid);
+    if ($field_dataset_contact_ref_nid) {
+      foreach ($field_dataset_contact_ref_nid as $v) {
+        foreach ($v as $contact_nid) {
+          $contact_nodes[] = node_load($contact_nid);
         }
-     }
-
-     $dataset_node[dataset_contacts] = $contact_nodes;
+      }
+    }
+    $dataset_node[dataset_contacts] = $contact_nodes;
 
     $field_dataset_datamanager_ref_nid = $node->field_dataset_datamanager_ref;
     foreach ($field_dataset_datamanager_ref_nid as $v) {
@@ -381,18 +384,22 @@ foreach ($row as $row_nid) {
 
 
     $field_dataset_fieldcrew_ref_nid = $node->field_dataset_fieldcrew_ref;
-    foreach ($field_dataset_fieldcrew_ref_nid as $v) {
-      foreach ($v as $fieldcrew_nid) {
-        $fieldcrew_nodes[] = node_load($fieldcrew_nid);
+    if ($field_dataset_fieldcrew_ref_nid) {
+      foreach ($field_dataset_fieldcrew_ref_nid as $v) {
+        foreach ($v as $fieldcrew_nid) {
+          $fieldcrew_nodes[] = node_load($fieldcrew_nid);
         }
-     }
-     $dataset_node[dataset_fieldcrew] = $fieldcrew_nodes;
+      }
+    }
+    $dataset_node[dataset_fieldcrew] = $fieldcrew_nodes;
 
     $field_dataset_labcrew_ref_nid = $node->field_dataset_labcrew_ref;
-    foreach ($field_dataset_labcrew_ref_nid as $v) {
-      foreach ($v as $labcrew_nid) {
-        $labcrew_nodes[] = node_load($labcrew_nid);
-        }
+    if ($field_dataset_labcrew_ref_nid) {
+      foreach ($field_dataset_labcrew_ref_nid as $v) {
+        foreach ($v as $labcrew_nid) {
+          $labcrew_nodes[] = node_load($labcrew_nid);
+          }
+       }
      }
      $dataset_node[dataset_labcrew] = $labcrew_nodes;
 
@@ -415,29 +422,31 @@ foreach ($row as $row_nid) {
 
 //  datafile
     $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
-    foreach ($field_dataset_datafile_ref_nid as $v) {
-      foreach ($v as $datafile_nid) {
-        $variable_nodes       = Array();
-        $datafile_site_nodes  = Array();
-        $datafile_node        = node_load($datafile_nid);
-//      variables
-        $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
-        if ($field_datafile_variable_ref_nids) {
-          foreach ($field_datafile_variable_ref_nids as $value) {
-            foreach ($value as $var_nid) {
-              $variable_nodes[] = node_load($var_nid);
+    if ($field_dataset_datafile_ref_nid) {
+      foreach ($field_dataset_datafile_ref_nid as $v) {
+        foreach ($v as $datafile_nid) {
+          $variable_nodes       = Array();
+          $datafile_site_nodes  = Array();
+          $datafile_node        = node_load($datafile_nid);
+  //      variables
+          $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
+          if ($field_datafile_variable_ref_nids) {
+            foreach ($field_datafile_variable_ref_nids as $value) {
+              foreach ($value as $var_nid) {
+                $variable_nodes[] = node_load($var_nid);
+              }
             }
           }
+  //      sites
+          if ($datafile_node->field_datafile_site_ref[0][nid]) {
+            $datafile_site_nodes = views_bonus_eml_get_site_information($datafile_node->field_datafile_site_ref);
+          }
+  //      all file related data
+          $datafile_nodes[] = array ('datafile'       => $datafile_node,
+                                     'variables'      => $variable_nodes,
+                                     'datafile_sites' => $datafile_site_nodes);
         }
-//      sites
-        if ($datafile_node->field_datafile_site_ref[0][nid]) {
-          $datafile_site_nodes = views_bonus_eml_get_site_information($datafile_node->field_datafile_site_ref);
-        }
-//      all file related data
-        $datafile_nodes[] = array ('datafile'       => $datafile_node,
-                                   'variables'      => $variable_nodes,
-                                   'datafile_sites' => $datafile_site_nodes);
-     }
+      }
     }
     $dataset_node[dataset_datafiles] = $datafile_nodes;
   }
