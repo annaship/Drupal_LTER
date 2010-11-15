@@ -64,7 +64,7 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_personid      = $person_node->field_person_personid;
       $person_role_arr      = $person_node->field_person_role;
       $person_role          = $person_role_arr[0]['value'];
-      $not_show_role        = array ('owner', 'creator', 'contact');
+      $not_show_role        = array ('metadataProvider', 'creator', 'contact');
 
       views_bonus_eml_print_open_tag($person_tag);
         if($person_last_name[0][value]){
@@ -489,7 +489,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
    */
 
   // $acr from config
-  $package_id = $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
+  $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
   
