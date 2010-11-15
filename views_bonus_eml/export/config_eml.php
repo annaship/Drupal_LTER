@@ -139,7 +139,7 @@ $publisher_obj = (object) array(
   'field_person_country'      => array ( array ('value' => 'USA')),
   'field_person_phone'        => array ( array ('value' => '')),
   'field_person_fax'          => array ( array ('value' => '')),
-  'field_person_role'         => array ( array ('value' => 'metadataProvider')),
+  'field_person_role'         => array ( array ('value' => 'publisher')),
   'field_person_email' 	      => array ( array ('value' => 'data-use@sevilleta.unm.edu')),
   'field_person_address'      => array ( array ('value' => 'Department of Biology, University of New Mexico, MSC30 2020 ')),
   'field_person_personid'     => array ( array ('value' => '')),

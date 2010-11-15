@@ -64,45 +64,56 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_personid      = $person_node->field_person_personid;
       $person_role_arr      = $person_node->field_person_role;
       $person_role          = $person_role_arr[0]['value'];
-      $not_show_role        = array ('metadataProvider', 'creator', 'contact');
+      $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
+      $print_role           = array ('metadataProvider', 'publisher');
 
-      views_bonus_eml_print_open_tag($person_tag);
-        if($person_last_name[0][value]){
-          views_bonus_eml_print_open_tag('individualName');
-            views_bonus_eml_print_value('givenName',        $person_first_name);
-            views_bonus_eml_print_value('surName',          $person_last_name);
-          views_bonus_eml_print_close_tag('individualName');
-        }
-        views_bonus_eml_print_value('organization',         $person_organization);
-        if ($person_address[0][value] ||
-            $person_city[0][value]    ||
-            $person_country[0][value]) {
-          views_bonus_eml_print_open_tag('address');
-            views_bonus_eml_print_value('deliveryPoint',      $person_address);
-            views_bonus_eml_print_value('city',               $person_city);
-            views_bonus_eml_print_value('administrativeArea', $person_state);
-            views_bonus_eml_print_value('postalCode',         $person_zipcode);
-            views_bonus_eml_print_value('country',            $person_country);
-          views_bonus_eml_print_close_tag('address');
-        }
-        views_bonus_eml_print_attr_line('phone',
-                        views_bonus_eml_get_uniq_value($person_phone),
-                        'phonetype', 'voice');
-        views_bonus_eml_print_attr_line('phone',
-                        views_bonus_eml_get_uniq_value($person_fax),
-                        'phonetype', 'fax');
-        if ($person_email[0]['email']) {
-          foreach($person_email as $email) {
-            views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
-          }
-        }
 
-      views_bonus_eml_print_value('userId', $person_personid);
-      if (!in_array($person_role, $not_show_role)) {
-        views_bonus_eml_print_tag_line('role', $person_role);
+      if (in_array($person_role, $print_role)) {
+        views_bonus_eml_print_open_tag($person_role);
+      } else {
+        views_bonus_eml_print_open_tag('associatedParty');
+      }
+      if($person_last_name[0][value]){
+        views_bonus_eml_print_open_tag('individualName');
+          views_bonus_eml_print_value('givenName',        $person_first_name);
+          views_bonus_eml_print_value('surName',          $person_last_name);
+        views_bonus_eml_print_close_tag('individualName');
+      }
+      if ($person_organization[0][value]) {
+        views_bonus_eml_print_value('organization',       $person_organization);
+      }
+      if ($person_address[0][value] ||
+          $person_city[0][value]    ||
+          $person_country[0][value]) {
+        views_bonus_eml_print_open_tag('address');
+          views_bonus_eml_print_value('deliveryPoint',      $person_address);
+          views_bonus_eml_print_value('city',               $person_city);
+          views_bonus_eml_print_value('administrativeArea', $person_state);
+          views_bonus_eml_print_value('postalCode',         $person_zipcode);
+          views_bonus_eml_print_value('country',            $person_country);
+        views_bonus_eml_print_close_tag('address');
+      }
+      views_bonus_eml_print_attr_line('phone',
+                      views_bonus_eml_get_uniq_value($person_phone),
+                      'phonetype', 'voice');
+      views_bonus_eml_print_attr_line('phone',
+                      views_bonus_eml_get_uniq_value($person_fax),
+                      'phonetype', 'fax');
+      if ($person_email[0]['email']) {
+        foreach($person_email as $email) {
+          views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
+        }
       }
 
-      views_bonus_eml_print_close_tag($person_tag);
+      views_bonus_eml_print_value('userId', $person_personid);
+      if (!in_array($person_tag, $not_show_role)) {
+        views_bonus_eml_print_tag_line('role', $person_tag);
+      }
+      if (in_array($person_role, $print_role)) {
+        views_bonus_eml_print_close_tag($person_role);
+      } else {
+        views_bonus_eml_print_close_tag('associatedParty');
+      }
     }
   }
 } // end of function "views_bonus_eml_print_person"
@@ -526,18 +537,16 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
       $associated_party_arr = array (
-        'data_manager'         => 'dataset_datamanagers',
-        'field_crew'           => 'dataset_fieldcrew',
+        'data manager'         => 'dataset_datamanagers',
+        'field crew'           => 'dataset_fieldcrew',
         'labcrew'              => 'dataset_labcrew',
-        'associate_researcher' => 'dataset_ext_assoc',
+        'associate researcher' => 'dataset_ext_assoc',
       );
 
       if ($associated_party_arr) {
         foreach ($associated_party_arr as $key => $value) {
           if ($dataset_node[$value][0]->nid) {
-            views_bonus_eml_print_open_tag('associatedParty');
               views_bonus_eml_print_person($key, $dataset_node[$value]);
-            views_bonus_eml_print_close_tag('associatedParty');
           }
         }
       }
