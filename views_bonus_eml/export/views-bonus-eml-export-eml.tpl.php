@@ -65,11 +65,13 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_role_arr      = $person_node->field_person_role;
       $person_role          = $person_role_arr[0]['value'];
       $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
-//      $print_role           = array ('metadataProvider', 'publisher');
 
-
-      if (in_array($person_role, $not_show_role)) {
-        views_bonus_eml_print_open_tag($person_role);
+//      print "\n\$person_role = ";
+//      print_r($person_role);
+//      print "<br/>\n\$person_tag = ";
+//      print_r($person_tag);
+      if (in_array($person_tag, $not_show_role)) {
+        views_bonus_eml_print_open_tag($person_tag);
       } else {
         views_bonus_eml_print_open_tag('associatedParty');
       }
@@ -106,13 +108,10 @@ function views_bonus_eml_print_person($person_tag, $content) {
       }
 
       views_bonus_eml_print_value('userId', $person_personid);
-      if (!in_array($person_tag, $not_show_role)) {
-        views_bonus_eml_print_tag_line('role', $person_tag);
-        views_bonus_eml_print_close_tag('associatedParty');
-      }
-      if (in_array($person_role, $not_show_role)) {
-        views_bonus_eml_print_close_tag($person_role);
+      if (in_array($person_tag, $not_show_role)) {
+        views_bonus_eml_print_close_tag($person_tag);
       } else {
+        views_bonus_eml_print_tag_line('role', $person_tag);
         views_bonus_eml_print_close_tag('associatedParty');
       }
     }
@@ -238,15 +237,15 @@ function views_bonus_eml_print_geographic_coverage($content) {
                 views_bonus_eml_print_tag_line('eastBoundingCoordinate',  $research_site_longitude);
                 views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
                 views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
-              views_bonus_eml_print_close_tag('boundingCoordinates');
-            }
 //[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
 //[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
-            if ($research_site_elevation[0]['value']) {
-                views_bonus_eml_print_open_tag('boundingAltitudes');
-                  views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
-                  views_bonus_eml_print_value('altitudeMaximum',  $research_site_elevation);
-                views_bonus_eml_print_close_tag('boundingAltitudes');
+              if ($research_site_elevation[0]['value']) {
+                  views_bonus_eml_print_open_tag('boundingAltitudes');
+                    views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
+                    views_bonus_eml_print_value('altitudeMaximum',  $research_site_elevation);
+                  views_bonus_eml_print_close_tag('boundingAltitudes');
+              }
+              views_bonus_eml_print_close_tag('boundingCoordinates');
             }
           views_bonus_eml_print_close_tag('geographicCoverage');
         } // endif; check if values exist
