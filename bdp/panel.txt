@@ -1,0 +1,643 @@
+$handler = new stdClass;
+$handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
+$handler->api_version = 1;
+$handler->name = 'node_view_panel_context';
+$handler->task = 'node_view';
+$handler->subtask = '';
+$handler->handler = 'panel_context';
+$handler->weight = 0;
+$handler->conf = array(
+  'title' => 'Dataset_p',
+  'no_blocks' => 0,
+  'pipeline' => 'standard',
+  'css_id' => '',
+  'css' => '',
+  'contexts' => array(),
+  'relationships' => array(
+    1 => array(
+      'context' => 'argument_nid_1',
+      'name' => 'node_from_noderef',
+      'id' => 2,
+      'identifier' => 'Owner ref',
+      'keyword' => 'ownerref',
+      'relationship_settings' => array(
+        'field_name' => 'field_dataset_owner_ref',
+      ),
+    ),
+    2 => array(
+      'context' => 'argument_nid_1',
+      'name' => 'node_from_noderef',
+      'id' => 3,
+      'identifier' => 'contact',
+      'keyword' => 'contact',
+      'relationship_settings' => array(
+        'field_name' => 'field_dataset_contact_ref',
+      ),
+    ),
+    3 => array(
+      'context' => 'argument_nid_1',
+      'name' => 'node_from_noderef',
+      'id' => 4,
+      'identifier' => 'Data File',
+      'keyword' => 'data_file',
+      'relationship_settings' => array(
+        'field_name' => 'field_dataset_datafile_ref',
+      ),
+    ),
+  ),
+  'access' => array(
+    'plugins' => array(
+      0 => array(
+        'name' => 'node_type',
+        'settings' => array(
+          'type' => array(
+            'data_set' => 'data_set',
+          ),
+        ),
+        'context' => 'argument_nid_1',
+        'not' => FALSE,
+      ),
+    ),
+    'logic' => 'and',
+  ),
+);
+$display = new panels_display;
+$display->layout = 'flexible';
+$display->layout_settings = array(
+  'items' => array(
+    'canvas' => array(
+      'type' => 'row',
+      'contains' => 'column',
+      'children' => array(
+        0 => 'main',
+      ),
+      'parent' => NULL,
+    ),
+    'main' => array(
+      'type' => 'column',
+      'width' => 100,
+      'width_type' => '%',
+      'children' => array(
+        0 => 'main-row',
+        1 => 1,
+        2 => 2,
+        3 => 3,
+      ),
+      'parent' => 'canvas',
+    ),
+    'main-row' => array(
+      'type' => 'row',
+      'contains' => 'region',
+      'children' => array(
+        0 => 'center',
+      ),
+      'parent' => 'main',
+    ),
+    'center' => array(
+      'type' => 'region',
+      'title' => 'Center',
+      'width' => 100,
+      'width_type' => '%',
+      'parent' => 'main-row',
+    ),
+    1 => array(
+      'type' => 'row',
+      'contains' => 'region',
+      'children' => array(
+        0 => 'owner',
+        1 => 'contact',
+      ),
+      'parent' => 'main',
+      'class' => '',
+    ),
+    'owner' => array(
+      'type' => 'region',
+      'title' => 'Owner',
+      'width' => 50,
+      'width_type' => '%',
+      'parent' => '1',
+      'class' => '',
+    ),
+    'contact' => array(
+      'type' => 'region',
+      'title' => 'Contact',
+      'width' => 50,
+      'width_type' => '%',
+      'parent' => '1',
+      'class' => '',
+    ),
+    2 => array(
+      'type' => 'row',
+      'contains' => 'region',
+      'children' => array(
+        0 => 'variables',
+        1 => 'datafile_info',
+      ),
+      'parent' => 'main',
+      'class' => '',
+    ),
+    'variables' => array(
+      'type' => 'region',
+      'title' => 'Data file name',
+      'width' => '50',
+      'width_type' => '%',
+      'parent' => '2',
+      'class' => '',
+    ),
+    3 => array(
+      'type' => 'row',
+      'contains' => 'region',
+      'children' => array(
+        0 => 'variables_',
+      ),
+      'parent' => 'main',
+      'class' => '',
+    ),
+    'variables_' => array(
+      'type' => 'region',
+      'title' => 'Variables',
+      'width' => 100,
+      'width_type' => '%',
+      'parent' => '3',
+      'class' => '',
+    ),
+    'datafile_info' => array(
+      'type' => 'region',
+      'title' => 'Datafile info',
+      'width' => '50',
+      'width_type' => '%',
+      'parent' => '2',
+      'class' => '',
+    ),
+  ),
+);
+$display->panel_settings = array(
+  'style_settings' => array(
+    'default' => NULL,
+    'owner' => NULL,
+    'center' => NULL,
+    'contact' => NULL,
+    'variables' => NULL,
+    'variables_' => NULL,
+    'datafile_info' => NULL,
+    'test' => NULL,
+    'test2' => NULL,
+  ),
+  'center' => array(
+    'style' => '-1',
+  ),
+  'owner' => array(
+    'style' => '-1',
+  ),
+  'contact' => array(
+    'style' => '-1',
+  ),
+  'style' => 'stylizer:dataset',
+  'variables' => array(
+    'style' => '-1',
+  ),
+  'variables_' => array(
+    'style' => '-1',
+  ),
+  'datafile_info' => array(
+    'style' => '-1',
+  ),
+);
+$display->cache = array(
+  'method' => '0',
+  'settings' => array(),
+);
+$display->title = 'Metadata info';
+$display->content = array();
+$display->panels = array();
+  $pane = new stdClass;
+  $pane->pid = 'new-1';
+  $pane->panel = 'center';
+  $pane->type = 'node_title';
+  $pane->subtype = 'node_title';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'link' => 1,
+    'context' => 'argument_nid_1',
+    'override_title' => 1,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-1'] = $pane;
+  $display->panels['center'][0] = 'new-1';
+  $pane = new stdClass;
+  $pane->pid = 'new-2';
+  $pane->panel = 'center';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_dataset_id';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'inline',
+    'formatter' => 'default',
+    'context' => 'argument_nid_1',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 1;
+  $display->content['new-2'] = $pane;
+  $display->panels['center'][1] = 'new-2';
+  $pane = new stdClass;
+  $pane->pid = 'new-3';
+  $pane->panel = 'center';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_dataset_maintenance';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'above',
+    'formatter' => 'default',
+    'context' => 'argument_nid_1',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 2;
+  $display->content['new-3'] = $pane;
+  $display->panels['center'][2] = 'new-3';
+  $pane = new stdClass;
+  $pane->pid = 'new-4';
+  $pane->panel = 'center';
+  $pane->type = 'content_fieldgroup';
+  $pane->subtype = 'data_set:group_methods';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'normal',
+    'format' => 'simple',
+    'empty' => '',
+    'context' => 'argument_nid_1',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 3;
+  $display->content['new-4'] = $pane;
+  $display->panels['center'][3] = 'new-4';
+  $pane = new stdClass;
+  $pane->pid = 'new-5';
+  $pane->panel = 'center';
+  $pane->type = 'content_fieldgroup';
+  $pane->subtype = 'data_set:group_geotemporal';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'normal',
+    'format' => 'simple',
+    'empty' => '',
+    'context' => 'argument_nid_1',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 4;
+  $display->content['new-5'] = $pane;
+  $display->panels['center'][4] = 'new-5';
+  $pane = new stdClass;
+  $pane->pid = 'new-6';
+  $pane->panel = 'center';
+  $pane->type = 'content_fieldgroup';
+  $pane->subtype = 'data_set:group_people';
+  $pane->shown = FALSE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'normal',
+    'format' => 'simple',
+    'empty' => '',
+    'context' => 'argument_nid_1',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 5;
+  $display->content['new-6'] = $pane;
+  $display->panels['center'][5] = 'new-6';
+  $pane = new stdClass;
+  $pane->pid = 'new-7';
+  $pane->panel = 'contact';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_dataset_contact_ref';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'normal',
+    'formatter' => 'default',
+    'context' => 'argument_nid_1',
+    'override_title' => 1,
+    'override_title_text' => 'Contacts',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-7'] = $pane;
+  $display->panels['contact'][0] = 'new-7';
+  $pane = new stdClass;
+  $pane->pid = 'new-8';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'node_title';
+  $pane->subtype = 'node_title';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'link' => 1,
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 1,
+    'override_title_text' => 'Data File info',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-8'] = $pane;
+  $display->panels['datafile_info'][0] = 'new-8';
+  $pane = new stdClass;
+  $pane->pid = 'new-9';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'custom';
+  $pane->subtype = 'custom';
+  $pane->shown = FALSE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'admin_title' => 'data file info',
+    'title' => '',
+    'body' => '<h2 class="pane-title">Data File Info</h4>',
+    'format' => '2',
+    'substitute' => 1,
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array(
+    'css_id' => '',
+    'css_class' => '',
+  );
+  $pane->extras = array();
+  $pane->position = 1;
+  $display->content['new-9'] = $pane;
+  $display->panels['datafile_info'][1] = 'new-9';
+  $pane = new stdClass;
+  $pane->pid = 'new-10';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_datafile_description';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'inline',
+    'formatter' => 'default',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 2;
+  $display->content['new-10'] = $pane;
+  $display->panels['datafile_info'][2] = 'new-10';
+  $pane = new stdClass;
+  $pane->pid = 'new-11';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_num_header_line';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'inline',
+    'formatter' => 'default',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 3;
+  $display->content['new-11'] = $pane;
+  $display->panels['datafile_info'][3] = 'new-11';
+  $pane = new stdClass;
+  $pane->pid = 'new-12';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_orientation';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'inline',
+    'formatter' => 'default',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 4;
+  $display->content['new-12'] = $pane;
+  $display->panels['datafile_info'][4] = 'new-12';
+  $pane = new stdClass;
+  $pane->pid = 'new-13';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_delimiter';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'inline',
+    'formatter' => 'default',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 5;
+  $display->content['new-13'] = $pane;
+  $display->panels['datafile_info'][5] = 'new-13';
+  $pane = new stdClass;
+  $pane->pid = 'new-14';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_fieldgroup';
+  $pane->subtype = 'data_file:group_relatedvarsdatasets';
+  $pane->shown = FALSE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'above',
+    'format' => 'simple',
+    'empty' => '',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 6;
+  $display->content['new-14'] = $pane;
+  $display->panels['datafile_info'][6] = 'new-14';
+  $pane = new stdClass;
+  $pane->pid = 'new-15';
+  $pane->panel = 'datafile_info';
+  $pane->type = 'content_fieldgroup';
+  $pane->subtype = 'data_file:group_temporal_coverage';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'above',
+    'format' => 'simple',
+    'empty' => '',
+    'context' => 'relationship_node_from_noderef_4',
+    'override_title' => 0,
+    'override_title_text' => '',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 7;
+  $display->content['new-15'] = $pane;
+  $display->panels['datafile_info'][7] = 'new-15';
+  $pane = new stdClass;
+  $pane->pid = 'new-16';
+  $pane->panel = 'owner';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_dataset_owner_ref';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'normal',
+    'formatter' => 'default',
+    'context' => 'argument_nid_1',
+    'override_title' => 1,
+    'override_title_text' => 'Owners',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-16'] = $pane;
+  $display->panels['owner'][0] = 'new-16';
+  $pane = new stdClass;
+  $pane->pid = 'new-17';
+  $pane->panel = 'variables';
+  $pane->type = 'content_field';
+  $pane->subtype = 'field_dataset_datafile_ref';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'label' => 'above',
+    'formatter' => 'default',
+    'context' => 'argument_nid_1',
+    'override_title' => 1,
+    'override_title_text' => 'Data file name',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-17'] = $pane;
+  $display->panels['variables'][0] = 'new-17';
+  $pane = new stdClass;
+  $pane->pid = 'new-18';
+  $pane->panel = 'variables_';
+  $pane->type = 'views_panes';
+  $pane->subtype = 'variable_info-panel_pane_1';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'context' => array(
+      0 => 'argument_nid_1',
+    ),
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => array(),
+    'style' => 'stylizer',
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 0;
+  $display->content['new-18'] = $pane;
+  $display->panels['variables_'][0] = 'new-18';
+$display->hide_title = PANELS_TITLE_FIXED;
+$display->title_pane = 'new-1';
+$handler->conf['display'] = $display;
