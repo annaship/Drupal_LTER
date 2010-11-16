@@ -1,0 +1,33 @@
+<?php
+
+  unset($vid_sum);   
+  unset($node);
+  unset($vid);
+        
+  $ref_nids = array(
+    $data -> node_data_field_dataset_ext_assoc_ref_field_dataset_ext_assoc_ref_nid,
+    $data -> node_data_field_dataset_contact_ref_field_dataset_contact_ref_nid,
+    $data -> node_data_field_dataset_datafile_ref_field_dataset_datafile_ref_nid,
+    $data -> node_data_field_dataset_datamanager_ref_field_dataset_datamanager_ref_nid,
+    $data -> node_data_field_dataset_fieldcrew_ref_field_dataset_fieldcrew_ref_nid,
+    $data -> node_data_field_dataset_labcrew_ref_field_dataset_labcrew_ref_nid,
+    $data -> node_data_field_dataset_owner_ref_field_dataset_owner_ref_nid,
+    $data -> node_data_field_dataset_biblio_ref_field_dataset_biblio_ref_nid,
+    $data -> node_data_field_dataset_site_ref_field_dataset_site_ref_nid,
+    $data -> node_data_field_datafile_site_ref_field_datafile_site_ref_nid,
+    $data -> node_data_field_datafile_variable_ref_field_datafile_variable_ref_nid
+  );
+
+  foreach ($ref_nids as $ref_arr) {        
+    foreach ($ref_arr as $inner_arr) {
+      foreach ($inner_arr as $ref_nid) {
+        $node = node_load($ref_nid);
+        $vid  = $node -> vid;
+        // dpr($vid);
+        $vid_sum += $vid;                
+      }
+    }
+  }
+  
+  print $vid_sum;
+?>

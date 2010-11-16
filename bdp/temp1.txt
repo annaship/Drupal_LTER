@@ -1,0 +1,87 @@
+<revision><br/>node_vid = 2818
+      
+<br/>node_data_field_dataset_ext_assoc_ref_field_dataset_ext_assoc_ref_nid = stdClass Object
+[nid] => 2773
+[type] => person
+[vid] => 2773
+
+<br/>node_data_field_dataset_contact_ref_field_dataset_contact_ref_nid = stdClass Object
+[nid] => 2773
+[type] => person
+[vid] => 2773
+
+<br/>node_data_field_dataset_contact_ref_field_dataset_contact_ref_nid = stdClass Object
+[nid] => 2778
+[type] => person
+[vid] => 2778
+
+<br/>node_data_field_dataset_datafile_ref_field_dataset_datafile_ref_nid = stdClass Object
+[nid] => 2776
+[type] => data_file
+[vid] => 2815
+
+<br/>node_data_field_dataset_datafile_ref_field_dataset_datafile_ref_nid = stdClass Object
+[nid] => 2784
+[type] => data_file
+[vid] => 2915
+
+<br/>node_data_field_dataset_datamanager_ref_field_dataset_datamanager_ref_nid = stdClass Object
+[nid] => 2778
+[type] => person
+[vid] => 2778
+
+<br/>node_data_field_dataset_fieldcrew_ref_field_dataset_fieldcrew_ref_nid = stdClass Object
+[nid] => 2773
+[type] => person
+[vid] => 2773
+
+<br/>node_data_field_dataset_labcrew_ref_field_dataset_labcrew_ref_nid = stdClass Object
+[nid] => 2778
+[type] => person
+[vid] => 2778
+
+<br/>node_data_field_dataset_owner_ref_field_dataset_owner_ref_nid = stdClass Object
+[nid] => 2773
+[type] => person
+[vid] => 2773
+
+<br/>node_data_field_dataset_owner_ref_field_dataset_owner_ref_nid = stdClass Object
+[nid] => 2778
+[type] => person
+[vid] => 2778
+
+<br/>node_data_field_dataset_biblio_ref_field_dataset_biblio_ref_nid = stdClass Object
+[nid] => 2779
+[type] => biblio
+[vid] => 2779
+
+<br/>node_data_field_dataset_site_ref_field_dataset_site_ref_nid = stdClass Object
+[nid] => 2774
+[type] => research_site
+[vid] => 2913
+
+<br/>node_data_field_datafile_site_ref_field_datafile_site_ref_nid = stdClass Object
+[nid] => 2774
+[type] => research_site
+[vid] => 2913
+
+<br/>node_data_field_datafile_variable_ref_field_datafile_variable_ref_nid = stdClass Object
+[nid] => 2777
+[type] => variable
+[vid] => 2807
+
+<br/>node_data_field_datafile_variable_ref_field_datafile_variable_ref_nid = stdClass Object
+[nid] => 2783
+[type] => variable
+[vid] => 2809
+
+<br/>node_data_field_datafile_variable_ref_field_datafile_variable_ref_nid = stdClass Object
+[nid] => 2785
+[type] => variable
+[vid] => 2810
+
+47783</revision>
+
+    </docid>
+    <documentType>eml://ecoinformatics.org/eml-2.0.1</documentType>
+    <documentURL>http://inigo.lternet.edu/prototype/eml_view1/2775</documentURL>
