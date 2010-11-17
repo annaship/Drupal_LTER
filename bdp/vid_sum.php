@@ -388,3 +388,63 @@ field_datafile_variable_ref] => Array
 
  print $vid_sum;
 ?>
+--------------
+<?php
+ unset($vid_sum);   
+ unset($ref_node);
+ unset($node);
+ unset($vid);  
+ unset($file_node);
+ unset($var_nids);
+ unset($file_sites_nids);
+
+ $vid_sum += $data -> node_vid;
+
+ $ref_names = array(
+   node_data_field_dataset_ext_assoc_ref_field_dataset_ext_assoc_ref_nid,
+   node_data_field_dataset_contact_ref_field_dataset_contact_ref_nid,
+   node_data_field_dataset_datafile_ref_field_dataset_datafile_ref_nid,
+   node_data_field_dataset_datamanager_ref_field_dataset_datamanager_ref_nid,
+   node_data_field_dataset_fieldcrew_ref_field_dataset_fieldcrew_ref_nid,
+   node_data_field_dataset_labcrew_ref_field_dataset_labcrew_ref_nid,
+   node_data_field_dataset_owner_ref_field_dataset_owner_ref_nid,
+   node_data_field_dataset_biblio_ref_field_dataset_biblio_ref_nid,
+   node_data_field_dataset_site_ref_field_dataset_site_ref_nid,
+ );
+
+ foreach ($ref_names as $ref_name) {      
+   $ref_node = $data -> $ref_name;
+   foreach ($ref_node as $inner_arr) {
+     foreach ($inner_arr as $ref_nid) {
+       $node = node_load($ref_nid);
+       $vid  = $node -> vid;
+       $vid_sum += $vid;                
+     }
+   }
+ }                                                              
+ 
+ foreach ($data -> node_data_field_dataset_datafile_ref_field_dataset_datafile_ref_nid as $file_nids) {
+   foreach ($file_nids as $file_nid) {
+     $file_node       = node_load($file_nid);
+     $var_nids        = $file_node -> field_datafile_variable_ref;
+     $file_sites_nids = $file_node -> field_datafile_site_ref; 
+     if ($var_nids) {
+       foreach ($var_nids as $var_inner) {
+         foreach ($var_inner as $var_nid) {  
+           $vid_sum += $var_nid;
+         }
+       }
+     }
+     if ($file_sites_nids) {
+       foreach ($file_sites_nids as $file_site_inner) {
+         foreach ($file_site_inner as $file_site_nid) {
+           $vid_sum += $file_site_nid;    
+         }
+       }
+     }
+   }
+ }
+   
+
+ print $vid_sum;
+?>

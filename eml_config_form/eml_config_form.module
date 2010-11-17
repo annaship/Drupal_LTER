@@ -1,0 +1,107 @@
+<?php
+// $Id: $
+
+function eml_config_form_menu () {
+  $items = array();
+  $items['quiz'] = array (
+    'title' => t('Create an EML config file'),
+    'page callback' => 'quiz_page', 
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+    );
+    return $items;
+}
+
+function quiz_page () {
+  return drupal_get_form('quiz_form');
+}
+
+function quiz_form ($form_state) {
+  $form = array();                 
+  
+  $form['acr'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Site name acronim'),  
+    '#required'  => TRUE,
+    '#size'  => 3,
+    '#maxlength' => 3,
+    '#default_value' => variable_get('acr', 'pie'),
+    // '#description' => t('Site name acronim'),
+  );
+
+  $form['language'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Language'),  
+    '#required'  => TRUE,
+    '#size'  => 15,
+    '#maxlength' => 64,
+    '#default_value' => variable_get('language', 'english'),
+  );
+                                                
+  $form['intellectual_rights'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Intellectual Rights'),  
+    '#default_value' =>  variable_get('intellectual_rights', ''),
+    // '#required'  => TRUE,
+    '#cols' => 60,
+    '#rows' => 5,
+  );
+
+  $form['data_policies'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Data Policies'),  
+    '#default_value' =>  variable_get('data_policies', ''),
+    // '#required'  => TRUE,
+    '#cols' => 60,
+    '#rows' => 5,
+  );                                               
+  
+  
+  $options = array ('yes', 'no');
+  $form ['toast'] = array (  
+    // '#type' => 'radios',
+    // '#title' => t('Log'),
+    // '#default_value' =>  variable_get('log', 0),
+    // '#options' => $options,
+    // '#description' => t('The log.'),
+    '#type' => 'radios',
+    '#title' => t('Do you like toasts?'),  
+    '#options' => array (t('No'), t('Yes')),
+    );
+                                                           
+    $form['access'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Access log settings'),
+      '#tree' => TRUE,
+    );      
+      
+  // $form['hidden'] = array('#type' => 'value', '#value' => 'is_it_here');          
+  
+  $form['submit'] = array (
+    '#type' => 'submit',
+    '#value' => t('Create'),
+    );
+  
+  return $form;
+  
+}
+
+function quiz_form_validate ($form_id, &$form_state) {          
+  $toast = $form_state['values']['toast'];
+  
+  if (!$toast) {
+    form_set_error('toast error', t('You must like toast!'));
+  }
+}
+
+function quiz_form_submit ($form_id, &$form_state) {          
+  $acr = $form_state['values']['acr'];
+  $toast = $form_state['values']['toast'];
+  $output = t('Hi ');
+  $output .= $acr;
+  $output .= t(' toast = ');
+  $output .= $toast;
+  drupal_set_message($output);
+  
+}
+
