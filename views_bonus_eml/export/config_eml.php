@@ -15,7 +15,7 @@
   $acr='sev'; // Sevilleta acronym
   // $id = content_type_data_set.content_field_dataset_id ;
   $scope='knb-lter-'.$acr;
-  $package_id = $acr . '.' .$id.'.'. $ver_vid;
+  $package_id = $acr . '.' . $id . '.' . $ver_vid;
 
 
 
