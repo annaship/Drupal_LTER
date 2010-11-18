@@ -323,11 +323,11 @@ function person_subform ($form, $role) {
 
   $query = db_query('SELECT nid from content_type_person WHERE field_person_role_value = "Metadata Provider" and nid = (SELECT max(nid) from content_type_person WHERE field_person_role_value = "Metadata Provider")');
           
-  $q = db_query('SELECT nid FROM node WHERE nid > 2888;');
-  while ($nid = db_result($q)) {
-    node_delete($nid);
-  }
-  // dpm(node_load(2890));
+  // $q = db_query('SELECT nid FROM node WHERE nid > 2888;');
+  // while ($nid = db_result($q)) {
+  //   node_delete($nid);
+  // }
+  // // dpm(node_load(2890));
 
   $metadata_provider_nid = db_result($query);
   // print $role;
