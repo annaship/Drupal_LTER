@@ -321,7 +321,10 @@ function person_subform ($form, $role) {
    'Zimbabwe' => t('Zimbabwe'),
  );
 
-  $query = db_query('SELECT nid from content_type_person WHERE field_person_role_value = "Metadata Provider" and nid = (SELECT max(nid) from content_type_person WHERE field_person_role_value = "Metadata Provider")');
+  $query = db_query('SELECT nid FROM content_type_person 
+                      WHERE field_person_role_value = "Metadata Provider" 
+                        and nid = (SELECT max(nid) FROM content_type_person 
+                                    WHERE field_person_role_value = "Metadata Provider")');
           
   // $q = db_query('SELECT nid FROM node WHERE nid > 2888;');
   // while ($nid = db_result($q)) {
@@ -330,13 +333,14 @@ function person_subform ($form, $role) {
   // // dpm(node_load(2890));
 
   $metadata_provider_nid = db_result($query);
-  // print $role;
   if ($metadata_provider_nid) {
     $persion_node = node_load($metadata_provider_nid);
   }    
   if ($role == 'publisher') {
-    $query = db_query('SELECT nid from content_type_person WHERE field_person_role_value = "Publisher" and nid = (SELECT max(nid) from content_type_person WHERE field_person_role_value = "Publisher")');
-    // $query = db_query('SELECT nid from content_type_person where field_person_role_value = "Publisher"');
+    $query = db_query('SELECT nid FROM content_type_person 
+                        WHERE field_person_role_value = "Publisher" 
+                          and nid = (SELECT max(nid) FROM content_type_person 
+                                      WHERE field_person_role_value = "Publisher")');
     $publisher_nid = db_result($query);    
     if ($publisher_nid) {
       $persion_node = node_load($publisher_nid);
@@ -355,7 +359,6 @@ function person_subform ($form, $role) {
     $email        = $persion_node->field_person_email[0]['email'];
     // $email        = 'data-use@sevilleta.unm.edu';
     // $personid     = $persion_node->field_person_personid[0]['value'];
-    // dpr($metadata_provider_node);
   
   if ($role == 'publisher') {
     $role_title = 'Publisher';
@@ -516,7 +519,7 @@ function quiz_form ($form_state) {
 
   $form['persons'] = array(
     '#type' => 'fieldset',
-    '#title' => t('persons'),
+    '#title' => t('Metadata Provider and Publisher'),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
