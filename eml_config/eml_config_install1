@@ -1,0 +1,62 @@
+<?php
+// eml_config.install
+
+function eml_config_schema() {
+    $schema['eml_config_data'] = array(
+      'description' => 'The table for eml_config.',
+      'fields' => array(
+        'nid' => array(
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'vid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => t('The vid of the vocabulary in which the term is inserted.'),
+        ),
+        'field_acronim_value' => array(
+          'description' => 'The Site Acronim.',
+          'type' => 'varchar',
+          'length' => 3,
+        ),
+        'field_language_value' => array(
+          'description' => 'The Language.',
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+        'field_intellectual_rights_value' => array(
+          'description' => 'The Intellectual Rights.',
+          'type' => 'text',
+          'size' => 'normal',
+        ),
+        'field_data_policies_value' => array(
+          'description' => 'The Data Policies.',
+          'type' => 'text',
+          'size' => 'normal',
+        ),
+      ),
+      'primary key' => array('vid'),
+      'unique keys' => array(
+        'nid' => array('nid'),
+      ),
+    );
+    // dpr($schema);
+    return $schema;
+  }
+
+function eml_config_install() {
+  // Create my tables.
+  dpm('INSTALL!');
+  drupal_install_schema('eml_config_data');
+}
+
+function eml_config_uninstall() {
+  // Drop my tables.                              
+  dpm('UNINSTALL');
+  drupal_uninstall_schema('eml_config_data');
+}
+
+?>

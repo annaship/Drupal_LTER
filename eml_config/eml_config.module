@@ -644,7 +644,7 @@ function eml_config_form_submit ($form_id, &$form_state) {
   // fwrite($fh, "\$role = '$role';\n");
   // fclose($fh);
 
-  db_query("INSERT INTO {eml_config_data} (field_acronim_value, field_language_value, field_intellectual_rights_value, field_data_policies_value) VALUES ('%s', '%s', '%s', '%s')", 
+  db_query("INSERT INTO {eml_config} (field_acronim_value, field_language_value, field_intellectual_rights_value, field_data_policies_value) VALUES ('%s', '%s', '%s', '%s')", 
   $form_state['values']['acr'], 
   $form_state['values']['language'], 
   $form_state['values']['intellectual_rights'], 
