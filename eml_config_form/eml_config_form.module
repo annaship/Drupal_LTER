@@ -329,16 +329,16 @@ function person_subform ($form) {
     '#collapsed' => FALSE,
   );                        
 
-  // $form['persons'] = array(
-  //   '#type' => 'fieldset',
-  //   '#title' => t('persons'),
-  //   '#tree' => TRUE,
-  //   '#collapsible' => TRUE,
-  //   '#collapsed' => FALSE,
-  // );                        
+  $form['persons']['metadataProvider'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('metadataProvider'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );                        
 
     
-  $form['persons']['first_name'] = array (
+  $form['persons']['metadataProvider']['first_name'] = array (
     '#type'  => 'textfield',
     '#title' => t('first_name'),  
     '#required'  => TRUE,
@@ -347,7 +347,7 @@ function person_subform ($form) {
     '#default_value' => variable_get('first_name', ''),    
   );
 
-  $form['persons']['last_name'] = array (
+  $form['persons']['metadataProvider']['last_name'] = array (
     '#type'  => 'textfield',
     '#title' => t('last_name'),  
     '#required'  => TRUE,
@@ -356,72 +356,78 @@ function person_subform ($form) {
     '#default_value' => variable_get('last_name', ''),
     );
 
-  $form['persons']['organization'] = array (
+  $form['persons']['metadataProvider']['organization'] = array (
     '#type'  => 'textfield',
     '#title' => t('organization'),  
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons']['address'] = array (
+  $form['persons']['metadataProvider']['address'] = array (
     '#type'  => 'textfield',
     '#title' => t('address'),  
     '#size'  => 60,
     '#maxlength' => 100,
     );
 
-  $form['persons']['city'] = array (
+  $form['persons']['metadataProvider']['city'] = array (
     '#type'  => 'textfield',
     '#title' => t('city'),  
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons']['state'] = array(
+  $form['persons']['metadataProvider']['state'] = array(
     '#type' => 'select',
     '#title' => t('state'),
     '#options' => $states,
   );
 
-  $form['persons']['zipcode'] = array (
+  $form['persons']['metadataProvider']['zipcode'] = array (
     '#type'  => 'textfield',
     '#title' => t('zipcode'),  
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons']['country'] = array(
+  $form['persons']['metadataProvider']['country'] = array(
     '#type' => 'select',
     '#title' => t('country'),
     '#options' => $country,
   );
 
-  $form['persons']['phone'] = array (
+  $form['persons']['metadataProvider']['phone'] = array (
     '#type'  => 'textfield',
     '#title' => t('phone'),  
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons']['fax'] = array (
+  $form['persons']['metadataProvider']['fax'] = array (
     '#type'  => 'textfield',
     '#title' => t('fax'),  
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons']['role'] = array (
-    '#type'     => 'select',
-    '#title'    => t('role'),
-    '#required'  => TRUE,
-    '#options'  => array(
-      'metadataProvider' => t('Metadata Provider'),
-      'publisher'        => t('Publisher'),
-    ),
-    '#default_value' => variable_get('role', 'Metadata Provider'),
+  // $form['persons']['metadataProvider']['role'] = array (
+  //   '#type'     => 'select',
+  //   '#title'    => t('role'),
+  //   '#required'  => TRUE,
+  //   '#options'  => array(
+  //     'metadataProvider' => t('Metadata Provider'),
+  //     'publisher'        => t('Publisher'),
+  //   ),
+  //   '#default_value' => variable_get('role', 'Metadata Provider'),
+  // );
+
+  $form['persons']['metadataProvider']['role'] = array(
+    '#type' => 'value', 
+    '#value' => 'Metadata Provider'
   );
 
-  $form['persons']['email'] = array (
+
+  $form['persons']['metadataProvider']['email'] = array (
     '#type'  => 'textfield',
     '#title' => t('email'),  
     '#required'  => TRUE,
@@ -430,7 +436,7 @@ function person_subform ($form) {
     '#default_value' => variable_get('email', ''),
     );
 
-  $form['persons']['personid'] = array (
+  $form['persons']['metadataProvider']['personid'] = array (
     '#type'  => 'textfield',
     '#title' => t('personid'),  
     '#size'  => 60,
