@@ -1,8 +1,8 @@
 <?php
-// eml_config.install
+// eml_config.install                  
 
 function eml_config_schema() {
-    $schema['eml_config_data'] = array(
+    $schema['eml_config'] = array(
       'description' => 'The table for eml_config.',
       'fields' => array(
         'nid' => array(
@@ -42,21 +42,18 @@ function eml_config_schema() {
       'unique keys' => array(
         'nid' => array('nid'),
       ),
-    );
-    // dpr($schema);
+    );     
     return $schema;
   }
 
 function eml_config_install() {
   // Create my tables.
-  dpm('INSTALL!');
-  drupal_install_schema('eml_config_data');
+  drupal_install_schema('eml_config');      
 }
 
 function eml_config_uninstall() {
-  // Drop my tables.                              
-  dpm('UNINSTALL');
-  drupal_uninstall_schema('eml_config_data');
+  // Drop my tables.
+  drupal_uninstall_schema('eml_config');
 }
 
 ?>
