@@ -5,7 +5,7 @@ function eml_config_form_menu () {
   $items = array();
   $items['quiz'] = array (
     'title' => t('Create an EML config file'),
-    'page callback' => 'quiz_page', 
+    'page callback' => 'quiz_page',
     'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
     );
@@ -14,7 +14,7 @@ function eml_config_form_menu () {
 
 function quiz_page () {
   return drupal_get_form('quiz_form');
-}         
+}
 
 function person_subform ($form, $role) {
   $states = array(
@@ -69,9 +69,9 @@ function person_subform ($form, $role) {
     'WA' => t('Washington'),
     'WI' => t('Wisconsin'),
     'WV' => t('West Virginia'),
-    'WY' => t('Wyoming'),  
+    'WY' => t('Wyoming'),
   );
-  
+
  $country_list = array (
    'United States' => t('United States'),
    'Abkhazia' => t('Abkhazia'),
@@ -318,106 +318,96 @@ function person_subform ($form, $role) {
    'Western Sahara' => t('Western Sahara'),
    'Yemen' => t('Yemen'),
    'Zambia' => t('Zambia'),
-   'Zimbabwe' => t('Zimbabwe'),  
- );                                                 
+   'Zimbabwe' => t('Zimbabwe'),
+ );
 
-  $query = db_query('SELECT nid from content_type_person where field_person_role_value = "Metadata Provider"');               
-  // while ($nid = db_result($query)) {
-    // node_delete(2887);
-  // }                 
-  // dpm(node_load(2887));
-  
-  $metadata_provider_nid = db_result($query);         
-  
+  $query = db_query('SELECT nid from content_type_person WHERE field_person_role_value = "Metadata Provider" and nid = (SELECT max(nid) from content_type_person WHERE field_person_role_value = "Metadata Provider")');
+          
+  $q = db_query('SELECT nid FROM node WHERE nid > 2888;');
+  while ($nid = db_result($q)) {
+    node_delete($nid);
+  }
+  // dpm(node_load(2890));
+
+  $metadata_provider_nid = db_result($query);
+  // print $role;
   if ($metadata_provider_nid) {
-    $metadata_provider_node = node_load($metadata_provider_nid);             
-    $first_name   = $metadata_provider_node->field_person_first_name[0]['value'];
-    $last_name    = $metadata_provider_node->field_person_last_name[0]['value'];
-    $organization = $metadata_provider_node->field_person_organization[0]['value'];
-    $address      = $metadata_provider_node->field_person_address[0]['value'];
-    $city         = $metadata_provider_node->field_person_city[0]['value'];
-    $state        = $metadata_provider_node->field_person_state[0]['value'];
-    $zipcode      = $metadata_provider_node->field_person_zipcode[0]['value'];
-    $country      = $metadata_provider_node->field_person_country[0]['value'];
-    $phone        = $metadata_provider_node->field_person_phone[0]['value'];
-    $fax          = $metadata_provider_node->field_person_fax[0]['value'];
-    $email        = $metadata_provider_node->field_person_email[0]['email'];
-    // $email        = 'data-use@sevilleta.unm.edu';
-    $personid     = $metadata_provider_node->field_person_personid[0]['value'];   
-    // dpr($metadata_provider_node);
-  }
-  else {dpm("UUUH");}
- 
- $query = db_query('SELECT nid from content_type_person where field_person_role_value = "Publisher"');
- $publisher_nid = db_result($query);
- if ($publisher_nid) {
-   dpm($publisher_nid);
- }
- else {dpm("UUUH");}
- // if ()
- // if 
- // while ($nid = db_result($q)) {
- //   $n = node_load($nid);
- //   $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
- //   $node = node_submit($n);
- //   node_save($node);
- // }
- 
- 
+    $persion_node = node_load($metadata_provider_nid);
+  }    
   if ($role == 'publisher') {
-    $role_title = 'Publisher'; 
-  }                                  
-  elseif ($role == 'metadataProvider') {
-    $role_title = 'Metadata Provider'; 
+    $query = db_query('SELECT nid from content_type_person WHERE field_person_role_value = "Publisher" and nid = (SELECT max(nid) from content_type_person WHERE field_person_role_value = "Publisher")');
+    // $query = db_query('SELECT nid from content_type_person where field_person_role_value = "Publisher"');
+    $publisher_nid = db_result($query);    
+    if ($publisher_nid) {
+      $persion_node = node_load($publisher_nid);
+    }      
   }
-    
+    // $first_name   = $persion_node->field_person_first_name[0]['value'];
+    // $last_name    = $persion_node->field_person_last_name[0]['value'];
+    $organization = $persion_node->field_person_organization[0]['value'];
+    $address      = $persion_node->field_person_address[0]['value'];
+    $city         = $persion_node->field_person_city[0]['value'];
+    $state        = $persion_node->field_person_state[0]['value'];
+    $zipcode      = $persion_node->field_person_zipcode[0]['value'];
+    $country      = $persion_node->field_person_country[0]['value'];
+    $phone        = $persion_node->field_person_phone[0]['value'];
+    $fax          = $persion_node->field_person_fax[0]['value'];
+    $email        = $persion_node->field_person_email[0]['email'];
+    // $email        = 'data-use@sevilleta.unm.edu';
+    // $personid     = $persion_node->field_person_personid[0]['value'];
+    // dpr($metadata_provider_node);
+  
+  if ($role == 'publisher') {
+    $role_title = 'Publisher';
+  }
+  elseif ($role == 'metadataProvider') {
+    $role_title = 'Metadata Provider';
+  }
+
   $form['persons'][$role] = array(
     '#type' => 'fieldset',
     '#title' => t($role_title),
     '#tree' => TRUE,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-  );                        
-
-    
-  $form['persons'][$role]['first_name'] = array (
-    '#type'  => 'textfield',
-    '#title' => t('first_name'),  
-    '#default_value' => variable_get('first_name', $first_name),    
-    // '#required'  => TRUE,
-    '#size'  => 15,
-    '#maxlength' => 64,
   );
 
-  $form['persons'][$role]['last_name'] = array (
-    // '#type'  => 'textfield',
-    '#title' => t('last_name'),  
-    '#default_value' => variable_get('last_name', $last_name),    
-    '#required'  => TRUE,
-    '#size'  => 60,
-    '#maxlength' => 60,
-    );
-                          
+  // $form['persons'][$role]['first_name'] = array (
+  //   '#type'  => 'textfield',
+  //   '#title' => t('first_name'),
+  //   '#default_value' => variable_get('first_name', $first_name),
+  //   '#size'  => 60,
+  //   '#maxlength' => 60,
+  //   );
+  // 
+  // $form['persons'][$role]['last_name'] = array (
+  //   '#type'  => 'textfield',
+  //   '#title' => t('last_name'),
+  //   '#default_value' => variable_get('last_name', $last_name),
+  //   '#size'  => 60,
+  //   '#maxlength' => 60,
+  //   );
+
   $form['persons'][$role]['organization'] = array (
     '#type'  => 'textfield',
-    '#title' => t('organization'),  
-    '#default_value' => variable_get('organization', $organization),    
+    '#title' => t('organization'),
+    '#default_value' => variable_get('organization', $organization),
     '#size'  => 60,
-    '#maxlength' => 60,      
+    '#maxlength' => 60,
     );
 
   $form['persons'][$role]['address'] = array (
     '#type'  => 'textfield',
-    '#title' => t('address'),  
-    '#default_value' => variable_get('address', $address),    
+    '#title' => t('address'),
+    '#default_value' => variable_get('address', $address),
     '#size'  => 60,
     '#maxlength' => 100,
     );
 
   $form['persons'][$role]['city'] = array (
     '#type'  => 'textfield',
-    '#title' => t('city'),  
-    '#default_value' => variable_get('city', $city),    
+    '#title' => t('city'),
+    '#default_value' => variable_get('city', $city),
     '#size'  => 60,
     '#maxlength' => 60,
     );
@@ -425,14 +415,14 @@ function person_subform ($form, $role) {
   $form['persons'][$role]['state'] = array(
     '#type' => 'select',
     '#title' => t('state'),
-    '#default_value' => variable_get('state', $state),    
+    '#default_value' => variable_get('state', $state),
     '#options' => $states,
   );
 
   $form['persons'][$role]['zipcode'] = array (
     '#type'  => 'textfield',
-    '#title' => t('zipcode'),  
-    '#default_value' => variable_get('zipcode', $zipcode),    
+    '#title' => t('zipcode'),
+    '#default_value' => variable_get('zipcode', $zipcode),
     '#size'  => 60,
     '#maxlength' => 60,
     );
@@ -440,58 +430,58 @@ function person_subform ($form, $role) {
   $form['persons'][$role]['country'] = array(
     '#type' => 'select',
     '#title' => t('country'),
-    '#default_value' => variable_get('country', $country),    
+    '#default_value' => variable_get('country', $country),
     '#options' => $country_list,
   );
 
   $form['persons'][$role]['phone'] = array (
     '#type'  => 'textfield',
-    '#title' => t('phone'),  
-    '#default_value' => variable_get('phone', $phone),    
+    '#title' => t('phone'),
+    '#default_value' => variable_get('phone', $phone),
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
   $form['persons'][$role]['fax'] = array (
     '#type'  => 'textfield',
-    '#title' => t('fax'),  
-    '#default_value' => variable_get('fax', $fax),    
+    '#title' => t('fax'),
+    '#default_value' => variable_get('fax', $fax),
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
   $form['persons'][$role]['role'] = array(
-    '#type' => 'value', 
+    '#type' => 'value',
     '#value' => $role_title,
   );
 
 
   $form['persons'][$role]['email'] = array (
     '#type'  => 'textfield',
-    '#title' => t('email'),  
-    '#default_value' => variable_get('email', $email),    
+    '#title' => t('email'),
+    '#default_value' => variable_get('email', $email),
     '#required'  => TRUE,
     '#size'  => 60,
     '#maxlength' => 60,
     );
 
-  $form['persons'][$role]['personid'] = array (
-    '#type'  => 'textfield',
-    '#title' => t('personid'),  
-    '#default_value' => variable_get('personid', $personid),    
-    '#size'  => 60,
-    '#maxlength' => 60,
-    );
+  // $form['persons'][$role]['personid'] = array (
+  //   '#type'  => 'textfield',
+  //   '#title' => t('personid'),
+  //   '#default_value' => variable_get('personid', $personid),
+  //   '#size'  => 60,
+  //   '#maxlength' => 60,
+  //   );
 
-  return $form;  
-}
+  return $form;
+}            
 
 function quiz_form ($form_state) {
-  $form = array();                    
-  
+  $form = array();
+
   $form['acr'] = array(
     '#type'  => 'textfield',
-    '#title' => t('Site name acronim'),  
+    '#title' => t('Site name acronim'),
     '#required'  => TRUE,
     '#size'  => 3,
     '#maxlength' => 3,
@@ -501,16 +491,16 @@ function quiz_form ($form_state) {
 
   $form['language'] = array(
     '#type'  => 'textfield',
-    '#title' => t('Language'),  
+    '#title' => t('Language'),
     '#required'  => TRUE,
     '#size'  => 15,
     '#maxlength' => 64,
     '#default_value' => variable_get('language', 'english'),
   );
-                                                
+
   $form['intellectual_rights'] = array(
     '#type' => 'textarea',
-    '#title' => t('Intellectual Rights'),  
+    '#title' => t('Intellectual Rights'),
     '#default_value' =>  variable_get('intellectual_rights', ''),
     '#cols' => 60,
     '#rows' => 5,
@@ -518,11 +508,11 @@ function quiz_form ($form_state) {
 
   $form['data_policies'] = array(
     '#type' => 'textarea',
-    '#title' => t('Data Policies'),  
+    '#title' => t('Data Policies'),
     '#default_value' =>  variable_get('data_policies', ''),
     '#cols' => 60,
     '#rows' => 5,
-  );                                               
+  );
 
   $form['persons'] = array(
     '#type' => 'fieldset',
@@ -530,51 +520,39 @@ function quiz_form ($form_state) {
     '#tree' => TRUE,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-  );                     
-                   
+  );
+
   $form = person_subform($form, 'metadataProvider');
-  // $form = person_subform($form, 'publisher');
+  $form = person_subform($form, 'publisher');
 
   // $form['persons']['role'] = array('#type' => 'value', '#value' => 'Metadata Provider');
 
   // $form_state['redirect'] = array('page1', 'id=' . $form_state['values']['index_search']);
-  
+
   $form['submit'] = array (
     '#type' => 'submit',
     '#value' => t('Create'),
     );
-  
+
   return $form;
-  
+
 }
 
-function quiz_form_validate ($form_id, &$form_state) {          
+function quiz_form_validate ($form_id, &$form_state) {
   // $toast = $form_state['values']['toast'];
-  // 
+  //
   // if (!$toast) {
   //   form_set_error('toast error', t('You must like toast!'));
   // }
-}               
+}
 
-function person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid) {             
-                               
-  // dpm("HERE");
-  // dpr($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
+function person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email) {
 
-
-  // $q = db_query('SELECT nid FROM node WHERE type="person" ;');
-  // while ($nid = db_result($q)) {
-  //   $n = node_load($nid);
-  //   $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
-  //   $node = node_submit($n);
-  //   node_save($node);
-  // }
-  
-  $node = new StdClass();    
+  $node = new StdClass();
   $node->type = "person";
-  $node->field_person_title = Array (0 => Array ('value' => ''));
-  $node->field_person_first_name = Array (0 => Array ('value' => ''));
-  $node->field_person_last_name = Array (0 => Array ('value' => ''));
+  // $node->field_person_title = Array (0 => Array ('value' => ''));
+  // $node->field_person_first_name = Array (0 => Array ('value' => ''));
+  // $node->field_person_last_name = Array (0 => Array ('value' => ''));
   $node->field_person_organization = Array (0 => Array ('value' => $organization));
   $node->field_person_address = Array (0 => Array ('value' => $address));
   $node->field_person_city = Array (0 => Array ('value' => $city));
@@ -585,23 +563,18 @@ function person_node_create ($organization, $address, $city, $state, $zipcode, $
   $node->field_person_fax = Array (0 => Array ('value' => $fax));
   $node->field_person_role = Array (0 => Array ('value' => $role));
   $node->field_person_email = Array (0 => Array ('email' => $email));
-  $node->field_person_personid = Array (0 => Array ('value' => $personid));
+  // $node->field_person_personid = Array (0 => Array ('value' => $personid));
   node_submit($node); // This step is needed only in Drupal 5, not in Drupal 6.
   node_save($node);
   return $node->nid;
-}             
+}
 
 // function config_node_create () {}
 
-// function person_node_create_temp ($organization) {
-//   dpm("in person_node_create_temp");
-//   dpm($organization);   
-//   return "INHERE";
-// }
-
-function quiz_form_submit ($form_id, &$form_state) {          
+function quiz_form_submit ($form_id, &$form_state) {
   $acr          = $form_state['values']['acr'];
-  $language     = $form_state['values']['language'];    
+  $language     = $form_state['values']['language'];      
+  
   $organization = $form_state['values']['persons']['metadataProvider']['organization'];
   $address      = $form_state['values']['persons']['metadataProvider']['address'];
   $city         = $form_state['values']['persons']['metadataProvider']['city'];
@@ -612,33 +585,46 @@ function quiz_form_submit ($form_id, &$form_state) {
   $fax          = $form_state['values']['persons']['metadataProvider']['fax'];
   $role         = $form_state['values']['persons']['metadataProvider']['role'];
   $email        = $form_state['values']['persons']['metadataProvider']['email'];
-  $personid     = $form_state['values']['persons']['metadataProvider']['personid'];
-                                                              
+
+  $node_id = person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
+
+  $organization = $form_state['values']['persons']['publisher']['organization'];
+  $address      = $form_state['values']['persons']['publisher']['address'];
+  $city         = $form_state['values']['persons']['publisher']['city'];
+  $state        = $form_state['values']['persons']['publisher']['state'];
+  $zipcode      = $form_state['values']['persons']['publisher']['zipcode'];
+  $country      = $form_state['values']['persons']['publisher']['country'];
+  $phone        = $form_state['values']['persons']['publisher']['phone'];
+  $fax          = $form_state['values']['persons']['publisher']['fax'];
+  $role         = $form_state['values']['persons']['publisher']['role'];
+  $email        = $form_state['values']['persons']['publisher']['email'];
+
+  $node_id = person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
+
   $output = t('Hi ');
   $output .= $acr;
   $output .= t(', role = ');
   $output .= $role;
   $output .= t(', organization = ');
   $output .= $organization;
-  
-  $node_id = person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
 
-  dpm($node_id);
-  drupal_set_message($output);       
-                                           
+
+  // dpm($node_id);
+  drupal_set_message($output);
+
   // write_config_eml_file ();
   // $myFile = "/Library/Webserver/Documents/drupal6-local/sites/all/files/testFile.php";
-  // $fh = fopen($myFile, 'w') or die("can't open file");         
+  // $fh = fopen($myFile, 'w') or die("can't open file");
   // // fwrite($fh, '
   // //   <?php
-  // //   /* 
+  // //   /*
   // //    * Here goes an site specific information
   // //    */
-  // // 
+  // //
   // //     // TODO: hardcode the pubPlace, specific for every given site
   // //     // example: <pubPLace> Plum Island Ecosystems LTER </pubPlace>
   // //     // for now taking automatically: variable_get('site_name', NULL);
-  // // 
+  // //
   // //     // package_id is scope.identifier.version
   // //     // for LTER, scope is "knb-lter-ACR" where ACR is the three leter site acronym
   // //     // Non-lTER sites may not have a convention for the scope
@@ -651,13 +637,13 @@ function quiz_form_submit ($form_id, &$form_state) {
   // fwrite($fh, "\$scope = 'knb-lter-'.\$acr;\n");
   // fwrite($fh, "\$package_id = \$acr . '.' . \$id . '.' . \$ver_vid;\n");
   // fwrite($fh, "\$language = '$language';\n");
-  // 
+  //
   // fwrite($fh, "\$role = '$role';\n");
-  // fclose($fh);             
-  
+  // fclose($fh);
+
   // db_query("INSERT INTO {content_type_config_eml_test} (field_acronim_value, field_language_value) VALUES ('%s', '%s')", $form_state['values']['acr'], $form_state['values']['language']);
-  // drupal_set_message(t('Your form has been saved.'));  
+  // drupal_set_message(t('Your form has been saved.'));
 }
 
 // content_type_config_eml_test table
-//  
+//
