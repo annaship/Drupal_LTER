@@ -1,0 +1,82 @@
+<?php
+// eml_config_form.install                  
+
+function eml_config_form_schema() {
+  function hook_schema() {
+    $schema['eml_config_form_data'] = array(
+      // example (partial) specification for table "node"
+      'description' => 'The table for eml_config.', 
+      'fields' => array(
+        'nid' => array(
+          'description' => 'The primary identifier for a node.', 
+          'type' => 'serial', 
+          'unsigned' => TRUE, 
+          'not null' => TRUE,
+        ), 
+        'vid' => array(
+          'description' => 'The current {node_revisions}.vid version identifier.', 
+          'type' => 'int', 
+          'unsigned' => TRUE, 
+          'not null' => TRUE, 
+          'default' => 0,
+        ), 
+        'field_acronim_value' => array(
+          'description' => 'The Site Acronim.', 
+          'type' => 'varchar', 
+          'length' => 3, 
+          'not null' => TRUE, 
+          'default' => '',
+        ), 
+        'field_language_value' => array(
+          'description' => 'The Language.', 
+          'type' => 'varchar', 
+          'length' => 255, 
+          'not null' => TRUE, 
+          'default' => 'english',
+        ),
+        'field_intellectual_rights_value' => array(
+          'description' => 'The Intellectual Rights.', 
+          'type' => 'varchar', 
+          'length' => 255, 
+          'default' => '',
+        ),
+        'field_data_policies_value' => array(
+          'description' => 'The Data Policies.', 
+          'type' => 'varchar', 
+          'length' => 255, 
+          'default' => '',
+        ),
+      ), 
+      'unique keys' => array(
+        'nid' => array('nid'),
+      ), 
+      'primary key' => array('vid'),
+    );
+    return $schema;
+  }
+
+
+  // $schema['eml_config_form_data'] = array(
+  //    // specification for mytable1
+  //   'fields' => array(
+  //     'a' => array('type' => 'int'),
+  //     'b' => array('type' => 'int'),
+  //   )
+  // );
+  // $schema['mytable2'] = array(
+  //    // specification for mytable2
+  // );
+  return $schema;
+}
+
+function eml_config_form_install() {
+  // Create my tables.
+  drupal_install_schema('eml_config_form');
+}
+
+function eml_config_form_uninstall() {
+  // Drop my tables.
+  drupal_uninstall_schema('eml_config_form');
+}
+
+?>
