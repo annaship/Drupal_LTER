@@ -16,7 +16,7 @@ function eml_config_page () {
   return drupal_get_form('eml_config_form');
 }
 
-function person_subform ($form, $role) {
+function person_subform($form, $role) {
   $states = array(
     'AK' => t('Alaska'),
     'AL' => t('Alabama'),
@@ -326,14 +326,6 @@ function person_subform ($form, $role) {
                         and nid = (SELECT max(nid) FROM content_type_person 
                                     WHERE field_person_role_value = "Metadata Provider")');
           
-  // $q = db_query('SELECT nid FROM content_type_person WHERE field_person_role_value = "Publisher";');
-  // while ($nid = db_result($q)) {
-  //   node_delete($nid);
-  // }
-  // dpm(node_load(2890));
-  
-  // dpm($role);
-
   $metadata_provider_nid = db_result($query);
   if ($metadata_provider_nid) {
     $persion_node = node_load($metadata_provider_nid);
@@ -482,8 +474,27 @@ function person_subform ($form, $role) {
   return $form;
 }            
 
-function eml_config_form ($form_state) {
+function get_last_settings() {
+  $query = db_query('SELECT nid FROM content_type_eml_settings 
+                      WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
+  ');
+  $last_settings_nid = db_result($query);
+  $last_settings_node = node_load($last_settings_nid);
+  $last_settings = array (
+    'last_acronym'             => $last_settings_node->field_acronym,
+    'last_language'            => $last_settings_node->field_language,
+    'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
+    'last_data_policies'       => $last_settings_node->field_data_policies,
+  );
+  return $last_settings; 
+}
+
+
+function eml_config_form($form_state) {
   $form = array();
+  unset($last_settings);
+  
+  $last_settings = get_last_settings();
 
   $form['acronym'] = array(
     '#type'  => 'textfield',
@@ -491,7 +502,7 @@ function eml_config_form ($form_state) {
     '#required'  => TRUE,
     '#size'  => 3,
     '#maxlength' => 3,
-    '#default_value' => variable_get('acronym', 'pie'),
+    '#default_value' => variable_get('acronym', $last_settings['last_acronym'][0]['value']),
     // '#description' => t('Site name acronym'),
   );
 
@@ -507,7 +518,7 @@ function eml_config_form ($form_state) {
   $form['intellectual_rights'] = array(
     '#type' => 'textarea',
     '#title' => t('Intellectual Rights'),
-    '#default_value' =>  variable_get('intellectual_rights', ''),
+    '#default_value' => variable_get('intellectual_rights', $last_settings['last_intellectual_rights'][0]['value']),    
     '#cols' => 60,
     '#rows' => 5,
   );
@@ -515,7 +526,7 @@ function eml_config_form ($form_state) {
   $form['data_policies'] = array(
     '#type' => 'textarea',
     '#title' => t('Data Policies'),
-    '#default_value' =>  variable_get('data_policies', ''),
+    '#default_value' => variable_get('data_policies', $last_settings['last_data_policies'][0]['value']),    
     '#cols' => 60,
     '#rows' => 5,
   );
@@ -630,68 +641,5 @@ function eml_config_form_submit ($form_id, &$form_state) {
 
   $eml_settings_node_id = eml_settings_node_create ($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_node_id, $publisher_node_id);
   
-  // dpm(node_load($eml_settings_node_id));
- 
-
-  $output = t('Hi ');
-  $output .= $acr;
-  $output .= t(', role = ');
-  $output .= $role;
-  $output .= t(', organization = ');
-  $output .= $organization;
-
-
-  // dpm($node_id);
-  drupal_set_message($output);
-
-  // write_config_eml_file ();
-  // $myFile = "/Library/Webserver/Documents/drupal6-local/sites/all/files/testFile.php";
-  // $fh = fopen($myFile, 'w') or die("can't open file");
-  // // fwrite($fh, '
-  // //   <?php
-  // //   /*
-  // //    * Here goes an site specific information
-  // //    */
-  // //
-  // //     // TODO: hardcode the pubPlace, specific for every given site
-  // //     // example: <pubPLace> Plum Island Ecosystems LTER </pubPlace>
-  // //     // for now taking automatically: variable_get('site_name', NULL);
-  // //
-  // //     // package_id is scope.identifier.version
-  // //     // for LTER, scope is "knb-lter-ACR" where ACR is the three leter site acronym
-  // //     // Non-lTER sites may not have a convention for the scope
-  // //     // Identifier is a unique identifier -- usually from the "data set ID".
-  // //     // Version is the $ver_id, a composites of Drupal VIDs for the related NIDs.
-  // // ');
-  // fwrite($fh, "<?php\n");
-  // fwrite($fh, "\$acr = '$acr';\n");
-  // fwrite($fh, "// \$id = content_type_data_set.content_field_dataset_id ;\n");
-  // fwrite($fh, "\$scope = 'knb-lter-'.\$acr;\n");
-  // fwrite($fh, "\$package_id = \$acr . '.' . \$id . '.' . \$ver_vid;\n");
-  // fwrite($fh, "\$language = '$language';\n");
-  //
-  // fwrite($fh, "\$role = '$role';\n");
-  // fclose($fh);
-  
-  // $node = new StdClass();
-  // $node->type = "eml_config";
-  // 
-  // $node->field_acronym_value = $form_state['values']['acr'];
-  // $node->field_language_value = $form_state['values']['language'];
-  // $node->field_intellectual_rights_value = $form_state['values']['intellectual_rights'];
-  // $node->field_data_policies_value = $form_state['values']['data_policies']);
-  // node_submit($node); // This step is needed only in Drupal 5, not in Drupal 6.
-  // node_save($node);
-  // 
-  // dpm($node);
-  
-  // db_query("INSERT INTO {eml_config} (field_acronym_value, field_language_value, field_intellectual_rights_value, field_data_policies_value) VALUES ('%s', '%s', '%s', '%s')", 
-  // $form_state['values']['acr'], 
-  // $form_state['values']['language'], 
-  // $form_state['values']['intellectual_rights'], 
-  // $form_state['values']['data_policies']);
   drupal_set_message(t('Your form has been saved.'));
 }
-
-// content_type_config_eml_test table
-//
