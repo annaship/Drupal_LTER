@@ -323,9 +323,9 @@ function person_subform($form, $role) {
 
 // If Metadata Provider exists take the last one and use by default
   $query = db_query('SELECT nid FROM content_type_person 
-                      WHERE field_person_role_value = "Metadata Provider" 
+                      WHERE (field_person_role_value = "Metadata Provider" 
                         and nid = (SELECT max(nid) FROM content_type_person 
-                                    WHERE field_person_role_value = "Metadata Provider")');
+                                    WHERE field_person_role_value = "Metadata Provider"))');
           
   $metadata_provider_nid = db_result($query);
   if ($metadata_provider_nid) {
@@ -482,20 +482,28 @@ function get_last_settings() {
                       WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
   ');
   $last_settings_nid  = db_result($query);
-  $last_settings_node = node_load($last_settings_nid);
-  $last_settings      = array (
-    'last_acronym'             => $last_settings_node->field_acronym,
-    'last_language'            => $last_settings_node->field_language,
-    'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
-    'last_data_policies'       => $last_settings_node->field_data_policies,
-  );
-  return $last_settings; 
+  if($last_settings_nid) {
+    $last_settings_node = node_load($last_settings_nid);
+    $last_settings      = array (
+      'last_acronym'             => $last_settings_node->field_acronym,
+      'last_language'            => $last_settings_node->field_language,
+      'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
+      'last_data_policies'       => $last_settings_node->field_data_policies,
+    );
+    return $last_settings; 
+  }
 }
-
 
 function eml_config_form($form_state) {
   $form = array();
   unset($last_settings);
+  
+  // $q = db_query('SELECT nid FROM node WHERE nid IN (683, 687);');           
+  // while ($nid = db_result($q)) {                                                                               
+  //   node_delete($nid);                                                                                         
+  // }                                                                                                            
+  // dpm(node_load(2890));                                                                                        
+  
   
   $last_settings = get_last_settings();
 

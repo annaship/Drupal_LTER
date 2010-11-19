@@ -4,7 +4,7 @@
  * Template to display a view as an eml.
  */
 
-include_once 'config_eml.php';
+//include_once 'config_eml.php';
 /*
  * public functions and variables
  */
@@ -16,13 +16,14 @@ function prepare_settings() {
   $last_settings_nid  = db_result($query);
   $last_settings_node = node_load($last_settings_nid);
   $last_settings      = array (
-    'last_acronym'             => $last_settings_node->field_acronym,
-    'last_language'            => $last_settings_node->field_language,
-    'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
-    'last_data_policies'       => $last_settings_node->field_data_policies,
-    'last_field_publisher_ref' => $last_settings_node->field_publisher_ref,
+    'last_acronym'               => $last_settings_node->field_acronym,
+    'last_language'              => $last_settings_node->field_language,
+    'last_intellectual_rights'   => $last_settings_node->field_intellectual_rights,
+    'last_data_policies'         => $last_settings_node->field_data_policies,
     'last_metadata_provider_ref' => $last_settings_node->field_metadata_provider_ref,
+    'last_publisher_ref'         => $last_settings_node->field_publisher_ref,
   );
+
   return $last_settings;
 }
 
@@ -69,6 +70,8 @@ function views_bonus_eml_get_uniq_value($content) {
 }
 
 function views_bonus_eml_print_person($person_tag, $content) {
+//      print "\n\$content = ";
+//      print_r($content);
 
   if ($content[0]->nid) {
     foreach ($content as $person_node) {
@@ -88,10 +91,6 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_role          = $person_role_arr[0]['value'];
       $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
 
-//      print "\n\$person_role = ";
-//      print_r($person_role);
-//      print "<br/>\n\$person_tag = ";
-//      print_r($person_tag);
       if (in_array($person_tag, $not_show_role)) {
         views_bonus_eml_print_open_tag($person_tag);
       } else {
@@ -491,6 +490,18 @@ $dataset_quality          = $dataset_node[dataset]->field_quality;
 $dataset_id               = $dataset_node[dataset]->field_dataset_id;
 $dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
 
+$last_settings = prepare_settings();
+$acr = $last_settings['last_acronym'][0]['value'];
+$metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref'][0]['nid']));
+$publisher_arr         = array (node_load($last_settings['last_publisher_ref'][0]['nid']));
+
+//dpr($last_settings['last_acronym'][0]['value']);
+if (!$last_settings['last_acronym'][0]['value']) {
+  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
+}
+
+//dpr(node_load(16));
+
 $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
   /* -----------------
@@ -530,9 +541,6 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
    * 3) create and populate a template
    */
 
-  $last_settings = prepare_settings();
-//   dpr($last_settings);
-  $acr = $last_settings['last_acronym'][0]['value'];
   $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
@@ -566,7 +574,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
       // Person refs start
       views_bonus_eml_print_person('creator', $dataset_node[dataset_owners]);
-      // metadataProvider from config_eml.php
+      // metadataProvider from settings
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
       $associated_party_arr = array (
