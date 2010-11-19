@@ -9,6 +9,28 @@ include_once 'config_eml.php';
  * public functions and variables
  */
 
+function prepare_settings() {
+  $query = db_query('SELECT nid FROM content_type_eml_settings
+                      WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
+  ');
+  $last_settings_nid  = db_result($query);
+  $last_settings_node = node_load($last_settings_nid);
+  $last_settings      = array (
+    'last_acronym'             => $last_settings_node->field_acronym,
+    'last_language'            => $last_settings_node->field_language,
+    'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
+    'last_data_policies'       => $last_settings_node->field_data_policies,
+    'last_field_publisher_ref' => $last_settings_node->field_publisher_ref,
+    'last_metadata_provider_ref' => $last_settings_node->field_metadata_provider_ref,
+  );
+  return $last_settings;
+}
+
+// put allowed HTML tags here
+function views_bonus_eml_my_strip_tags($content = '') {
+  return strip_tags($content, '<p><h1><h2><h3><h4><h5><a><pre><para>');
+}
+
 function views_bonus_eml_print_open_tag($tag) {
   print '<' . $tag . '>';
 }
@@ -508,7 +530,9 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
    * 3) create and populate a template
    */
 
-  // $acr from config
+  $last_settings = prepare_settings();
+//   dpr($last_settings);
+  $acr = $last_settings['last_acronym'][0]['value'];
   $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
@@ -562,13 +586,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       //pubDate
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
 
-      //language -- <language>english</language>
-      views_bonus_eml_print_tag_line('language', $language);
-
-//        print "\nURRA\n";
-//        print_r($dataset_abstract[0][value]);
-//        print "\nSTOPPP\n";
-
+      views_bonus_eml_print_value('language', $last_settings['last_language']);
 
       if ($dataset_abstract[0]['value']) {
         views_bonus_eml_print_open_tag('abstract');
@@ -602,7 +620,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         views_bonus_eml_print_open_tag('section');
         views_bonus_eml_print_tag_line('title', 'Data Policies');
           views_bonus_eml_print_open_tag('para');
-            views_bonus_eml_print_tag_line('literalLayout', $intellectual_rights);
+            views_bonus_eml_print_value('literalLayout', $last_settings['last_intellectual_rights']);
           views_bonus_eml_print_close_tag('para');
         views_bonus_eml_print_close_tag('section');
       views_bonus_eml_print_close_tag('intellectualRights');
