@@ -14,17 +14,23 @@ function prepare_settings() {
                       WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
   ');
   $last_settings_nid  = db_result($query);
-  $last_settings_node = node_load($last_settings_nid);
-  $last_settings      = array (
-    'last_acronym'               => $last_settings_node->field_acronym,
-    'last_language'              => $last_settings_node->field_language,
-    'last_intellectual_rights'   => $last_settings_node->field_intellectual_rights,
-    'last_data_policies'         => $last_settings_node->field_data_policies,
-    'last_metadata_provider_ref' => $last_settings_node->field_metadata_provider_ref,
-    'last_publisher_ref'         => $last_settings_node->field_publisher_ref,
-  );
+  
+  if (!$last_settings_nid) {
+  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
+  }
+  else {
+    $last_settings_node = node_load($last_settings_nid);
+    $last_settings      = array (
+      'last_acronym'               => $last_settings_node->field_acronym,
+      'last_language'              => $last_settings_node->field_language,
+      'last_intellectual_rights'   => $last_settings_node->field_intellectual_rights,
+      'last_data_policies'         => $last_settings_node->field_data_policies,
+      'last_metadata_provider_ref' => $last_settings_node->field_metadata_provider_ref,
+      'last_publisher_ref'         => $last_settings_node->field_publisher_ref,
+    );
 
-  return $last_settings;
+    return $last_settings;
+  }
 }
 
 // put allowed HTML tags here
@@ -494,13 +500,6 @@ $last_settings = prepare_settings();
 $acr = $last_settings['last_acronym'][0]['value'];
 $metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref'][0]['nid']));
 $publisher_arr         = array (node_load($last_settings['last_publisher_ref'][0]['nid']));
-
-//dpr($last_settings['last_acronym'][0]['value']);
-if (!$last_settings['last_acronym'][0]['value']) {
-  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
-}
-
-//dpr(node_load(16));
 
 $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
