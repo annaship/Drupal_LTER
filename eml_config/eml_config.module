@@ -1,7 +1,7 @@
 <?php
 // $Id: $
 
-function eml_config_menu () {
+function eml_config_menu() {
   $items = array();
   $items['eml_config'] = array (
     'title' => t('Create an EML config file'),
@@ -9,10 +9,10 @@ function eml_config_menu () {
     'access arguments' => array('access content'),
     'type' => MENU_SUGGESTED_ITEM,
     );
-    return $items;
+  return $items;
 }
 
-function eml_config_page () {
+function eml_config_page() {
   return drupal_get_form('eml_config_form');
 }
 
@@ -321,6 +321,7 @@ function person_subform($form, $role) {
    'Zimbabwe' => t('Zimbabwe'),
  );
 
+// If Metadata Provider exists take the last one and use by default
   $query = db_query('SELECT nid FROM content_type_person 
                       WHERE field_person_role_value = "Metadata Provider" 
                         and nid = (SELECT max(nid) FROM content_type_person 
@@ -330,6 +331,7 @@ function person_subform($form, $role) {
   if ($metadata_provider_nid) {
     $persion_node = node_load($metadata_provider_nid);
   }    
+  // If Publisher exists take the last one and use by default
   if ($role == 'publisher') {
     $query = db_query('SELECT nid FROM content_type_person 
                         WHERE field_person_role_value = "Publisher" 
@@ -341,8 +343,6 @@ function person_subform($form, $role) {
       $persion_node = node_load($publisher_nid);
     }      
   }
-    // $first_name   = $persion_node->field_person_first_name[0]['value'];
-    // $last_name    = $persion_node->field_person_last_name[0]['value'];
     $organization = $persion_node->field_person_organization[0]['value'];
     $address      = $persion_node->field_person_address[0]['value'];
     $city         = $persion_node->field_person_city[0]['value'];
@@ -352,7 +352,9 @@ function person_subform($form, $role) {
     $phone        = $persion_node->field_person_phone[0]['value'];
     $fax          = $persion_node->field_person_fax[0]['value'];
     $email        = $persion_node->field_person_email[0]['email'];
-    // $email        = 'data-use@sevilleta.unm.edu';
+    // Commented fields are here in case we will need them
+    // $first_name   = $persion_node->field_person_first_name[0]['value'];
+    // $last_name    = $persion_node->field_person_last_name[0]['value'];
     // $personid     = $persion_node->field_person_personid[0]['value'];
   
   if ($role == 'publisher') {
@@ -369,22 +371,6 @@ function person_subform($form, $role) {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-
-  // $form['persons'][$role]['first_name'] = array (
-  //   '#type'  => 'textfield',
-  //   '#title' => t('first_name'),
-  //   '#default_value' => variable_get('first_name', $first_name),
-  //   '#size'  => 60,
-  //   '#maxlength' => 60,
-  //   );
-  // 
-  // $form['persons'][$role]['last_name'] = array (
-  //   '#type'  => 'textfield',
-  //   '#title' => t('last_name'),
-  //   '#default_value' => variable_get('last_name', $last_name),
-  //   '#size'  => 60,
-  //   '#maxlength' => 60,
-  //   );
 
   $form['persons'][$role]['organization'] = array (
     '#type'  => 'textfield',
@@ -453,7 +439,6 @@ function person_subform($form, $role) {
     '#value' => $role_title,
   );
 
-
   $form['persons'][$role]['email'] = array (
     '#type'  => 'textfield',
     '#title' => t('email'),
@@ -462,6 +447,24 @@ function person_subform($form, $role) {
     '#size'  => 60,
     '#maxlength' => 60,
     );
+
+  // Commented fields are here in case we will need them
+
+  // $form['persons'][$role]['first_name'] = array (
+  //   '#type'  => 'textfield',
+  //   '#title' => t('first_name'),
+  //   '#default_value' => variable_get('first_name', $first_name),
+  //   '#size'  => 60,
+  //   '#maxlength' => 60,
+  //   );
+  // 
+  // $form['persons'][$role]['last_name'] = array (
+  //   '#type'  => 'textfield',
+  //   '#title' => t('last_name'),
+  //   '#default_value' => variable_get('last_name', $last_name),
+  //   '#size'  => 60,
+  //   '#maxlength' => 60,
+  //   );
 
   // $form['persons'][$role]['personid'] = array (
   //   '#type'  => 'textfield',
@@ -478,9 +481,9 @@ function get_last_settings() {
   $query = db_query('SELECT nid FROM content_type_eml_settings 
                       WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
   ');
-  $last_settings_nid = db_result($query);
+  $last_settings_nid  = db_result($query);
   $last_settings_node = node_load($last_settings_nid);
-  $last_settings = array (
+  $last_settings      = array (
     'last_acronym'             => $last_settings_node->field_acronym,
     'last_language'            => $last_settings_node->field_language,
     'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
@@ -542,9 +545,6 @@ function eml_config_form($form_state) {
   $form = person_subform($form, 'metadataProvider');
   $form = person_subform($form, 'publisher');
   
-
-  $form['vid'] = array('#type' => 'value', '#value' => 1);
-
   // $form_state['redirect'] = array('page1', 'id=' . $form_state['values']['index_search']);
 
   $form['submit'] = array (
@@ -552,11 +552,10 @@ function eml_config_form($form_state) {
     '#value' => t('Create'),
     );
 
-    // dpr(node_load(693));
   return $form;
-
 }
 
+// not used for now, validation is going in DB
 function eml_config_form_validate ($form_id, &$form_state) {
   // $toast = $form_state['values']['toast'];
   //
@@ -569,9 +568,6 @@ function person_node_create ($organization, $address, $city, $state, $zipcode, $
 
   $node = new StdClass();
   $node->type = "person";
-  // $node->field_person_title = Array (0 => Array ('value' => ''));
-  // $node->field_person_first_name = Array (0 => Array ('value' => ''));
-  // $node->field_person_last_name = Array (0 => Array ('value' => ''));
   $node->field_person_organization = Array (0 => Array ('value' => $organization));
   $node->field_person_address = Array (0 => Array ('value' => $address));
   $node->field_person_city = Array (0 => Array ('value' => $city));
@@ -582,12 +578,19 @@ function person_node_create ($organization, $address, $city, $state, $zipcode, $
   $node->field_person_fax = Array (0 => Array ('value' => $fax));
   $node->field_person_role = Array (0 => Array ('value' => $role));
   $node->field_person_email = Array (0 => Array ('email' => $email));
+
+  // Commented fields are here in case we will need them
+  // $node->field_person_title = Array (0 => Array ('value' => ''));
+  // $node->field_person_first_name = Array (0 => Array ('value' => ''));
+  // $node->field_person_last_name = Array (0 => Array ('value' => ''));
   // $node->field_person_personid = Array (0 => Array ('value' => $personid));
-  node_submit($node); // This step is needed only in Drupal 5, not in Drupal 6.
+
   node_save($node);
+
   return $node->nid;
 }
 
+// Custom content type "eml_settings" has to be created first
 function eml_settings_node_create ($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_ref, $publisher_ref) {
 
   $node = new StdClass();
@@ -600,14 +603,12 @@ function eml_settings_node_create ($acronym, $language, $intellectual_rights, $d
   $node->field_metadata_provider_ref  = Array (0 => Array ('nid'   => $metadata_provider_ref));
   $node->field_publisher_ref          = Array (0 => Array ('nid'   => $publisher_ref));
 
-  node_submit($node); // This step is needed only in Drupal 5, not in Drupal 6.
   node_save($node);
+
   return $node->nid;
 }
 
-// function config_node_create () {}
-
-function eml_config_form_submit ($form_id, &$form_state) {
+function eml_config_form_submit($form_id, &$form_state) {
   $acronym             = $form_state['values']['acronym'];
   $language            = $form_state['values']['language'];
   $intellectual_rights = $form_state['values']['intellectual_rights'];
@@ -624,7 +625,7 @@ function eml_config_form_submit ($form_id, &$form_state) {
   $role         = $form_state['values']['persons']['metadataProvider']['role'];
   $email        = $form_state['values']['persons']['metadataProvider']['email'];
 
-  $metadata_provider_node_id = person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
+  $metadata_provider_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
 
   $organization = $form_state['values']['persons']['publisher']['organization'];
   $address      = $form_state['values']['persons']['publisher']['address'];
@@ -637,9 +638,9 @@ function eml_config_form_submit ($form_id, &$form_state) {
   $role         = $form_state['values']['persons']['publisher']['role'];
   $email        = $form_state['values']['persons']['publisher']['email'];
 
-  $publisher_node_id = person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
+  $publisher_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
 
-  $eml_settings_node_id = eml_settings_node_create ($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_node_id, $publisher_node_id);
+  $eml_settings_node_id = eml_settings_node_create($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_node_id, $publisher_node_id);
   
-  drupal_set_message(t('Your form has been saved.'));
+  drupal_set_message(t('Your EML settings have been saved.'));
 }
