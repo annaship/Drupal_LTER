@@ -1,0 +1,5 @@
+; $Id: eml_config.info, v 1.0 2010-11-18 AM ashipunova Exp $
+name = EML Config
+description = "EML Config form"
+core = 6.x
+

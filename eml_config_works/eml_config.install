@@ -17,8 +17,8 @@ function eml_config_schema() {
           'default' => 0,
           'description' => t('The vid of the vocabulary in which the term is inserted.'),
         ),
-        'field_acronym_value' => array(
-          'description' => 'The Site Acronym.',
+        'field_acronim_value' => array(
+          'description' => 'The Site Acronim.',
           'type' => 'varchar',
           'length' => 3,
         ),

@@ -1,11 +1,11 @@
 <?php
-// eml_config.install                  
+// eml_config.install
 
 function eml_config_schema() {
-    $schema['eml_config'] = array(
+    $schema['eml_config_data'] = array(
       'description' => 'The table for eml_config.',
       'fields' => array(
-        'cid' => array(
+        'nid' => array(
           'type' => 'serial',
           'unsigned' => TRUE,
           'not null' => TRUE,
@@ -17,8 +17,8 @@ function eml_config_schema() {
           'default' => 0,
           'description' => t('The vid of the vocabulary in which the term is inserted.'),
         ),
-        'field_acronym_value' => array(
-          'description' => 'The Site Acronym.',
+        'field_acronim_value' => array(
+          'description' => 'The Site Acronim.',
           'type' => 'varchar',
           'length' => 3,
         ),
@@ -40,20 +40,23 @@ function eml_config_schema() {
       ),
       'primary key' => array('vid'),
       'unique keys' => array(
-        'cid' => array('cid'),
+        'nid' => array('nid'),
       ),
-    );     
+    );
+    // dpr($schema);
     return $schema;
   }
 
 function eml_config_install() {
   // Create my tables.
-  drupal_install_schema('eml_config');      
+  dpm('INSTALL!');
+  drupal_install_schema('eml_config_data');
 }
 
 function eml_config_uninstall() {
-  // Drop my tables.
-  drupal_uninstall_schema('eml_config');
+  // Drop my tables.                              
+  dpm('UNINSTALL');
+  drupal_uninstall_schema('eml_config_data');
 }
 
 ?>
