@@ -1,0 +1,7 @@
+1) modules: 
+  a) eml_config 
+  b) view_bonus_eml
+3) CCT - cct_eml_setings
+4) views: 
+  a) view_eml_view
+  b) view_eml_setings
