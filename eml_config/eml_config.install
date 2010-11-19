@@ -5,7 +5,7 @@ function eml_config_schema() {
     $schema['eml_config'] = array(
       'description' => 'The table for eml_config.',
       'fields' => array(
-        'nid' => array(
+        'cid' => array(
           'type' => 'serial',
           'unsigned' => TRUE,
           'not null' => TRUE,
@@ -40,7 +40,7 @@ function eml_config_schema() {
       ),
       'primary key' => array('vid'),
       'unique keys' => array(
-        'nid' => array('nid'),
+        'cid' => array('cid'),
       ),
     );     
     return $schema;

@@ -326,11 +326,13 @@ function person_subform ($form, $role) {
                         and nid = (SELECT max(nid) FROM content_type_person 
                                     WHERE field_person_role_value = "Metadata Provider")');
           
-  // $q = db_query('SELECT nid FROM node WHERE nid > 2888;');
+  // $q = db_query('SELECT nid FROM content_type_person WHERE field_person_role_value = "Publisher";');
   // while ($nid = db_result($q)) {
   //   node_delete($nid);
   // }
-  // // dpm(node_load(2890));
+  // dpm(node_load(2890));
+  
+  // dpm($role);
 
   $metadata_provider_nid = db_result($query);
   if ($metadata_provider_nid) {
@@ -342,8 +344,12 @@ function person_subform ($form, $role) {
                           and nid = (SELECT max(nid) FROM content_type_person 
                                       WHERE field_person_role_value = "Publisher")');
     $publisher_nid = db_result($query);    
+    // dpm($publisher_nid);
+    // dpm($persion_node);
+    
     if ($publisher_nid) {
       $persion_node = node_load($publisher_nid);
+      // dpm($persion_node);
     }      
   }
     // $first_name   = $persion_node->field_person_first_name[0]['value'];
@@ -527,8 +533,9 @@ function eml_config_form ($form_state) {
 
   $form = person_subform($form, 'metadataProvider');
   $form = person_subform($form, 'publisher');
+  
 
-  // $form['persons']['role'] = array('#type' => 'value', '#value' => 'Metadata Provider');
+  $form['vid'] = array('#type' => 'value', '#value' => 1);
 
   // $form_state['redirect'] = array('page1', 'id=' . $form_state['values']['index_search']);
 
@@ -643,7 +650,19 @@ function eml_config_form_submit ($form_id, &$form_state) {
   //
   // fwrite($fh, "\$role = '$role';\n");
   // fclose($fh);
-
+  
+  // $node = new StdClass();
+  // $node->type = "eml_config";
+  // 
+  // $node->field_acronim_value = $form_state['values']['acr'];
+  // $node->field_language_value = $form_state['values']['language'];
+  // $node->field_intellectual_rights_value = $form_state['values']['intellectual_rights'];
+  // $node->field_data_policies_value = $form_state['values']['data_policies']);
+  // node_submit($node); // This step is needed only in Drupal 5, not in Drupal 6.
+  // node_save($node);
+  // 
+  // dpm($node);
+  
   db_query("INSERT INTO {eml_config} (field_acronim_value, field_language_value, field_intellectual_rights_value, field_data_policies_value) VALUES ('%s', '%s', '%s', '%s')", 
   $form_state['values']['acr'], 
   $form_state['values']['language'], 

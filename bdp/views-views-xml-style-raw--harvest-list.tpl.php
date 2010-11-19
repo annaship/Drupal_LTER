@@ -12,9 +12,7 @@
  * @see views_views_xml_style--xml-test1.theme.inc
  */	         
 
-  $raw_xml = $xml;
-
-  $string = $raw_xml;
+  $string = $xml;
   $pattern = '/(<scope>)/i';
   $replacement = "<docid>\n      $1";
 
