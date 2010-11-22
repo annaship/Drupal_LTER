@@ -5,24 +5,10 @@
  * @file
  * Provides the ability to export to specific
  */
- 
-// function views_bonus_eml_export_menu() {    
-//   $items = array();            
-//   $items['eml_view/%node'] = array(
-//     'title' => t('Create an EML config file'),
-//     'page callback' => 'eml_config_page',
-//     'file' => 'eml_config.module',
-//     'file path' => drupal_get_path('module', 'eml_config'),
-//     'access arguments' => array('access content'), 
-//     'type' => MENU_CALLBACK,
-//   return $items;
-// }
-
 
 /**
  * Implementation of hook_views_api().
  */
- 
 function views_bonus_eml_export_views_api() {
   return array(
     'api' => 2,

@@ -495,8 +495,11 @@ foreach ($row as $row_nid) {
     $api_perefix = '?q=';
   }
 
+  // variable_set('eml_settings_acronym', ''); 
   if (!$last_settings['last_acronym']) {    
-    print("Please provide site specific settings here: " . $GLOBALS['base_url'] . "/" . $api_perefix . "eml_config\n");
+    // print("Please provide site specific settings here: " . $GLOBALS['base_url'] . "/" . $api_perefix . "eml_config\n");
+    $dest = drupal_get_destination();
+    drupal_goto('eml_config', $dest);
   } 
 
   $acr = $last_settings['last_acronym'];
