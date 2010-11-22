@@ -9,28 +9,19 @@
  * public functions and variables
  */
 
-function prepare_settings() {
-  $query = db_query('SELECT nid FROM content_type_eml_settings
-                      WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
-  ');
-  $last_settings_nid  = db_result($query);
-  
-  if (!$last_settings_nid) {
-  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
-  }
-  else {
-    $last_settings_node = node_load($last_settings_nid);
-    $last_settings      = array (
-      'last_acronym'               => $last_settings_node->field_acronym,
-      'last_language'              => $last_settings_node->field_language,
-      'last_intellectual_rights'   => $last_settings_node->field_intellectual_rights,
-      'last_data_policies'         => $last_settings_node->field_data_policies,
-      'last_metadata_provider_ref' => $last_settings_node->field_metadata_provider_ref,
-      'last_publisher_ref'         => $last_settings_node->field_publisher_ref,
-    );
+function prepare_settings() {     
+  unset($last_settings);
+  $default_setting = '';
+  $last_settings   = array (
+    'last_acronym'               => variable_get('eml_settings_acronym',                $default_setting),
+    'last_language'              => variable_get('eml_settings_language',               $default_setting),
+    'last_intellectual_rights'   => variable_get('eml_settings_intellectual_rights',    $default_setting),
+    'last_data_policies'         => variable_get('eml_settings_data_policies',          $default_setting),
+    'last_metadata_provider_ref' => variable_get('eml_settings_metadata_provider_ref',  $default_setting),
+    'last_publisher_ref'         => variable_get('eml_settings_publisher_ref',          $default_setting),
+  );
 
     return $last_settings;
-  }
 }
 
 // put allowed HTML tags here
@@ -102,18 +93,18 @@ function views_bonus_eml_print_person($person_tag, $content) {
       } else {
         views_bonus_eml_print_open_tag('associatedParty');
       }
-      if($person_last_name[0][value]){
+      if($person_last_name[0]['value']){
         views_bonus_eml_print_open_tag('individualName');
           views_bonus_eml_print_value('givenName',        $person_first_name);
           views_bonus_eml_print_value('surName',          $person_last_name);
         views_bonus_eml_print_close_tag('individualName');
       }
-      if ($person_organization[0][value]) {
+      if ($person_organization[0]['value']) {
         views_bonus_eml_print_value('organization',       $person_organization);
       }
-      if ($person_address[0][value] ||
-          $person_city[0][value]    ||
-          $person_country[0][value]) {
+      if ($person_address[0]['value'] ||
+          $person_city[0]['value']    ||
+          $person_country[0]['value']) {
         views_bonus_eml_print_open_tag('address');
           views_bonus_eml_print_value('deliveryPoint',      $person_address);
           views_bonus_eml_print_value('city',               $person_city);
@@ -208,25 +199,25 @@ function views_bonus_eml_get_lon_geo_point($content) {
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
-  if ($content[0][site_node]->nid) {
+  if ($content[0]['site_node']->nid) {
     foreach ($content as $research_site_node) {
-        $research_site_landform   = $research_site_node[site_node]->field_research_site_landform;
-        $research_site_geology    = $research_site_node[site_node]->field_research_site_geology;
-        $research_site_soils      = $research_site_node[site_node]->field_research_site_soils;
-        $research_site_hydrology  = $research_site_node[site_node]->field_research_site_hydrology;
-        $research_site_vegetation = $research_site_node[site_node]->field_research_site_vegetation;
-        $research_site_climate    = $research_site_node[site_node]->field_research_site_climate;
-        $research_site_history    = $research_site_node[site_node]->field_research_site_history;
-        $research_site_siteid     = $research_site_node[site_node]->field_research_site_siteid;
-        $research_site_elevation  = $research_site_node[site_node]->field_research_site_elevation;
-        $research_site_longitude  = $research_site_node[longitude];
-        $research_site_latitude   = $research_site_node[latitude];
+        $research_site_landform   = $research_site_node['site_node']->field_research_site_landform;
+        $research_site_geology    = $research_site_node['site_node']->field_research_site_geology;
+        $research_site_soils      = $research_site_node['site_node']->field_research_site_soils;
+        $research_site_hydrology  = $research_site_node['site_node']->field_research_site_hydrology;
+        $research_site_vegetation = $research_site_node['site_node']->field_research_site_vegetation;
+        $research_site_climate    = $research_site_node['site_node']->field_research_site_climate;
+        $research_site_history    = $research_site_node['site_node']->field_research_site_history;
+        $research_site_siteid     = $research_site_node['site_node']->field_research_site_siteid;
+        $research_site_elevation  = $research_site_node['site_node']->field_research_site_elevation;
+        $research_site_longitude  = $research_site_node['longitude'];
+        $research_site_latitude   = $research_site_node['latitude'];
 
 //      not used for now:
-//        $research_site_node[geo_point] returns "POINT(55.71 19.31466668)"
+//        $research_site_node['geo_point'] returns "POINT(55.71 19.31466668)"
 //        if we'll need POINT go to views_bonus_eml_get_lon_geo_point and change it as needed,
 //        then call:
-//        views_bonus_eml_get_lon_geo_point($research_site_node[geo_point]);
+//        views_bonus_eml_get_lon_geo_point($research_site_node['geo_point']);
 
         if ($research_site_landform[0]['value']   ||
             $research_site_geology[0]['value']    ||
@@ -282,14 +273,14 @@ function views_bonus_eml_print_geographic_coverage($content) {
 
 function views_bonus_eml_get_geo($site_nid) {
   unset($geo_lon_lat_point);
-  $db_url = parse_url($GLOBALS[db_url]);
-  if (preg_match("/\/(.+)/", $db_url[path], $matches)) {
+  $db_url = parse_url($GLOBALS['db_url']);
+  if (preg_match("/\/(.+)/", $db_url['path'], $matches)) {
     $db_name = $matches[1];
   }
 
-  $server   = $db_url[host];
-  $username = $db_url[user];
-  $password = $db_url[pass];
+  $server   = $db_url['host'];
+  $username = $db_url['user'];
+  $password = $db_url['pass'];
   $database = $db_name;
 
   $con = mysql_connect($server, $username, $password);
@@ -321,9 +312,9 @@ function views_bonus_eml_get_geo($site_nid) {
         $site_node = node_load($site_nid);
         $dataset_geo_lon_lat_point = views_bonus_eml_get_geo($site_nid);
         $site_nodes[] = array('site_node' => $site_node,
-                              'longitude' => $dataset_geo_lon_lat_point[longitude],
-                              'latitude'  => $dataset_geo_lon_lat_point[latitude],
-                              'geo_point' => $dataset_geo_lon_lat_point[geo_point]);
+                              'longitude' => $dataset_geo_lon_lat_point['longitude'],
+                              'latitude'  => $dataset_geo_lon_lat_point['latitude'],
+                              'geo_point' => $dataset_geo_lon_lat_point['geo_point']);
       }
     }
     return $site_nodes;
@@ -378,7 +369,7 @@ $urlBase = 'http://' . $_SERVER['HTTP_HOST'] . '/';
 //   1) take all from db as an Array
 foreach ($row as $row_nid) {
     $node = node_load($row_nid);
-    $dataset_node[dataset] = $node;
+    $dataset_node['dataset'] = $node;
 
 //  refs
     $field_dataset_owner_ref_nid = $node->field_dataset_owner_ref;
@@ -389,7 +380,7 @@ foreach ($row as $row_nid) {
         }
       }
     }
-    $dataset_node[dataset_owners] = $owner_nodes;
+    $dataset_node['dataset_owners'] = $owner_nodes;
 
     $field_dataset_contact_ref_nid = $node->field_dataset_contact_ref;
     if ($field_dataset_contact_ref_nid) {
@@ -399,7 +390,7 @@ foreach ($row as $row_nid) {
         }
       }
     }
-    $dataset_node[dataset_contacts] = $contact_nodes;
+    $dataset_node['dataset_contacts'] = $contact_nodes;
 
     $field_dataset_datamanager_ref_nid = $node->field_dataset_datamanager_ref;
     foreach ($field_dataset_datamanager_ref_nid as $v) {
@@ -407,7 +398,7 @@ foreach ($row as $row_nid) {
         $datamanager_nodes[] = node_load($datamanager_nid);
         }
      }
-     $dataset_node[dataset_datamanagers] = $datamanager_nodes;
+     $dataset_node['dataset_datamanagers'] = $datamanager_nodes;
 
 
     $field_dataset_fieldcrew_ref_nid = $node->field_dataset_fieldcrew_ref;
@@ -418,7 +409,7 @@ foreach ($row as $row_nid) {
         }
       }
     }
-    $dataset_node[dataset_fieldcrew] = $fieldcrew_nodes;
+    $dataset_node['dataset_fieldcrew'] = $fieldcrew_nodes;
 
     $field_dataset_labcrew_ref_nid = $node->field_dataset_labcrew_ref;
     if ($field_dataset_labcrew_ref_nid) {
@@ -428,7 +419,7 @@ foreach ($row as $row_nid) {
           }
        }
      }
-     $dataset_node[dataset_labcrew] = $labcrew_nodes;
+     $dataset_node['dataset_labcrew'] = $labcrew_nodes;
 
     $field_dataset_ext_assoc_ref_nid = $node->field_dataset_ext_assoc_ref;
     if ($field_dataset_ext_assoc_ref_nid) {
@@ -437,12 +428,12 @@ foreach ($row as $row_nid) {
           $ext_assoc_nodes[] = node_load($ext_assoc_nid);
           }
        }
-       $dataset_node[dataset_ext_assoc] = $ext_assoc_nodes;
+       $dataset_node['dataset_ext_assoc'] = $ext_assoc_nodes;
     }
 
-    if ($node->field_dataset_site_ref[0][nid]) {
+    if ($node->field_dataset_site_ref[0]['nid']) {
       $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
-      $dataset_node[dataset_site] = $site_nodes;
+      $dataset_node['dataset_site'] = $site_nodes;
     }
 
     $datafile_node  = Array();
@@ -465,7 +456,7 @@ foreach ($row as $row_nid) {
             }
           }
   //      sites
-          if ($datafile_node->field_datafile_site_ref[0][nid]) {
+          if ($datafile_node->field_datafile_site_ref[0]['nid']) {
             $datafile_site_nodes = views_bonus_eml_get_site_information($datafile_node->field_datafile_site_ref);
           }
   //      all file related data
@@ -475,39 +466,49 @@ foreach ($row as $row_nid) {
         }
       }
     }
-    $dataset_node[dataset_datafiles] = $datafile_nodes;
+    $dataset_node['dataset_datafiles'] = $datafile_nodes;
   }
 
 /*
  * 1a) create dataset variables here
  */
 
-$dataset_short_name       = $dataset_node[dataset]->field_dataset_short_name;
-$dataset_title            = $dataset_node[dataset]->title;
-$dataset_publication_date = $dataset_node[dataset]->field_dataset_publication_date;
-$dataset_abstract         = $dataset_node[dataset]->field_dataset_abstract;
-$dataset_add_info         = $dataset_node[dataset]->field_dataset_add_info;
-$dataset_beg_end_date     = $dataset_node[dataset]->field_beg_end_date;
-$dataset_purpose          = $dataset_node[dataset]->field_dataset_purpose;
-$dataset_maintenance      = $dataset_node[dataset]->field_dataset_maintenance;
-$dataset_instrumentation  = $dataset_node[dataset]->field_instrumentation;
-$dataset_methods          = $dataset_node[dataset]->field_methods;
-$dataset_quality          = $dataset_node[dataset]->field_quality;
-$dataset_id               = $dataset_node[dataset]->field_dataset_id;
-$dataset_related_links    = $dataset_node[dataset]->field_dataset_related_links;
+$dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
+$dataset_title            = $dataset_node['dataset']->title;
+$dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
+$dataset_abstract         = $dataset_node['dataset']->field_dataset_abstract;
+$dataset_add_info         = $dataset_node['dataset']->field_dataset_add_info;
+$dataset_beg_end_date     = $dataset_node['dataset']->field_beg_end_date;
+$dataset_purpose          = $dataset_node['dataset']->field_dataset_purpose;
+$dataset_maintenance      = $dataset_node['dataset']->field_dataset_maintenance;
+$dataset_instrumentation  = $dataset_node['dataset']->field_instrumentation;
+$dataset_methods          = $dataset_node['dataset']->field_methods;
+$dataset_quality          = $dataset_node['dataset']->field_quality;
+$dataset_id               = $dataset_node['dataset']->field_dataset_id;
+$dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
 
-$last_settings = prepare_settings();
-$acr = $last_settings['last_acronym'][0]['value'];
-$metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref'][0]['nid']));
-$publisher_arr         = array (node_load($last_settings['last_publisher_ref'][0]['nid']));
-
+$last_settings = prepare_settings();  
+// dpr('last_settings = ');
+// dpr($last_settings);
+// (
+//     ['last_acronym'] =&gt; qqq
+//     ['last_language'] =&gt; english
+//     ['last_intellectual_rights'] =&gt; qqq asdfasdfsadfqewqw
+//     ['last_data_policies'] =&gt; qqq qweqwesadfasdfasdgsafgs
+//     ['last_metadata_provider_ref'] =&gt; 2912
+//     ['last_publisher_ref'] =&gt; 2913
+// )
+// 
+$acr = $last_settings['last_acronym'];
+$metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref']));
+$publisher_arr         = array (node_load($last_settings['last_publisher_ref']));
 $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
   /* -----------------
    * 2) calculate vid version
    * ---------------------
    */
-  $ver_vid = $dataset_node[dataset]->vid;
+  $ver_vid = $dataset_node['dataset']->vid;
 
 //  persons and sites vid
   $dataset_ref = array(
@@ -529,7 +530,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
   }
 
 // vid of datafiles + variables + datafile_sites
- $flatten_files = flatten_array($dataset_node[dataset_datafiles]);
+ $flatten_files = flatten_array($dataset_node['dataset_datafiles']);
  if ($flatten_files) {
    foreach ($flatten_files as $object_value) {
      $ver_vid += $object_value->vid;
@@ -540,7 +541,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
    * 3) create and populate a template
    */
 
-  $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0][value]  . '.' . $ver_vid;
+  $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0]['value']  . '.' . $ver_vid;
 
   print '<?xml version="1.0" encoding="UTF-8" ?>';
 
@@ -572,7 +573,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       views_bonus_eml_print_tag_line('title', $dataset_title);
 
       // Person refs start
-      views_bonus_eml_print_person('creator', $dataset_node[dataset_owners]);
+      views_bonus_eml_print_person('creator', $dataset_node['dataset_owners']);
       // metadataProvider from settings
       views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
@@ -593,7 +594,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
       //pubDate
       views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
 
-      views_bonus_eml_print_value('language', $last_settings['last_language']);
+      views_bonus_eml_print_tag_line('language', $last_settings['last_language']);
 
       if ($dataset_abstract[0]['value']) {
         views_bonus_eml_print_open_tag('abstract');
@@ -627,22 +628,22 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         views_bonus_eml_print_open_tag('section');
         views_bonus_eml_print_tag_line('title', 'Data Policies');
           views_bonus_eml_print_open_tag('para');
-            views_bonus_eml_print_value('literalLayout', $last_settings['last_intellectual_rights']);
+            views_bonus_eml_print_tag_line('literalLayout', $last_settings['last_intellectual_rights']);
           views_bonus_eml_print_close_tag('para');
         views_bonus_eml_print_close_tag('section');
       views_bonus_eml_print_close_tag('intellectualRights');
 
       // if there is one and only one file take path from it
-      $dataset_datafile_path = $dataset_node[dataset_datafiles][0][datafile]->field_data_file[0]['filepath'];
-      if ($dataset_datafile_path && !$dataset_node[dataset_datafiles][1]) {
+      $dataset_datafile_path = $dataset_node['dataset_datafiles'][0]['datafile']->field_data_file[0]['filepath'];
+      if ($dataset_datafile_path && !$dataset_node['dataset_datafiles'][1]) {
         views_bonus_eml_print_open_tag('distribution');
           views_bonus_eml_print_tag_line('url', $urlBase . dirname($dataset_datafile_path));
         views_bonus_eml_print_close_tag('distribution');
       }
 
-      if ($dataset_node[dataset_site][0][site_node]->nid || $dataset_beg_end_date[0]['value']) {
+      if ($dataset_node['dataset_site'][0]['site_node']->nid || $dataset_beg_end_date[0]['value']) {
         views_bonus_eml_print_open_tag('coverage');
-          views_bonus_eml_print_geographic_coverage($dataset_node[dataset_site]);
+          views_bonus_eml_print_geographic_coverage($dataset_node['dataset_site']);
           views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
           // taxonomicCoverage here
         views_bonus_eml_print_close_tag('coverage');
@@ -667,7 +668,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         views_bonus_eml_print_close_tag('maintenance');
       }
 
-      views_bonus_eml_print_person('contact', $dataset_node[dataset_contacts]);
+      views_bonus_eml_print_person('contact', $dataset_node['dataset_contacts']);
       //publisher, specific for every given site from config file,
       views_bonus_eml_print_person('publisher', $publisher_arr);
       views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
@@ -725,22 +726,22 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
 <?php
       // Data_file start
       $file_var_array = Array();
-      if ($dataset_node[dataset_datafiles] && $dataset_node[dataset_datafiles][0][datafile]->nid) {
-        foreach ($dataset_node[dataset_datafiles] as $file_var_array) {
+      if ($dataset_node['dataset_datafiles'] && $dataset_node['dataset_datafiles'][0]['datafile']->nid) {
+        foreach ($dataset_node['dataset_datafiles'] as $file_var_array) {
 
           // Collect all data_file values here to use in a conditions
-          $file_data_file         = $file_var_array[datafile]->field_data_file;
-          $datafile_description   = $file_var_array[datafile]->field_datafile_description;
-          $file_num_header_line   = $file_var_array[datafile]->field_num_header_line;
-          $file_num_footer_lines  = $file_var_array[datafile]->field_num_footer_lines;
-          $file_record_delimiter  = $file_var_array[datafile]->field_record_delimiter;
-          $file_orientation       = $file_var_array[datafile]->field_orientation;
-          $file_delimiter         = $file_var_array[datafile]->field_delimiter;
-          $file_quote_character   = $file_var_array[datafile]->field_quote_character;
-          $datafile_date          = $file_var_array[datafile]->field_beg_end_date;
-          $file_instrumentation   = $file_var_array[datafile]->field_instrumentation;
-          $file_methods           = $file_var_array[datafile]->field_methods;
-          $file_quality           = $file_var_array[datafile]->field_quality;
+          $file_data_file         = $file_var_array['datafile']->field_data_file;
+          $datafile_description   = $file_var_array['datafile']->field_datafile_description;
+          $file_num_header_line   = $file_var_array['datafile']->field_num_header_line;
+          $file_num_footer_lines  = $file_var_array['datafile']->field_num_footer_lines;
+          $file_record_delimiter  = $file_var_array['datafile']->field_record_delimiter;
+          $file_orientation       = $file_var_array['datafile']->field_orientation;
+          $file_delimiter         = $file_var_array['datafile']->field_delimiter;
+          $file_quote_character   = $file_var_array['datafile']->field_quote_character;
+          $datafile_date          = $file_var_array['datafile']->field_beg_end_date;
+          $file_instrumentation   = $file_var_array['datafile']->field_instrumentation;
+          $file_methods           = $file_var_array['datafile']->field_methods;
+          $file_quality           = $file_var_array['datafile']->field_quality;
 
           views_bonus_eml_print_open_tag('dataTable');
 
@@ -775,7 +776,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
              views_bonus_eml_print_value('recordDelimiter',      $file_record_delimiter);
              views_bonus_eml_print_value('attributeOrientation', $file_orientation);
              views_bonus_eml_print_open_tag('simpleDelimited');
-             if ($file_delimiter[0][value]) {
+             if ($file_delimiter[0]['value']) {
                views_bonus_eml_print_value('fieldDelimiter',     $file_delimiter);
              }
              else {
@@ -795,9 +796,9 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
           }
           views_bonus_eml_print_close_tag('physical');
 
-          if ($file_var_array[datafile_sites][0][site_node]->nid || $datafile_date[0]['value']) {
+          if ($file_var_array['datafile_sites'][0]['site_node']->nid || $datafile_date[0]['value']) {
              views_bonus_eml_print_open_tag('coverage');
-               views_bonus_eml_print_geographic_coverage($file_var_array[datafile_sites]);
+               views_bonus_eml_print_geographic_coverage($file_var_array['datafile_sites']);
                views_bonus_eml_print_temporal_coverage($datafile_date);
                // taxonomic coverage here
              views_bonus_eml_print_close_tag('coverage');
@@ -829,7 +830,7 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
           // Take variables here to use in conditions
           views_bonus_eml_print_open_tag('attributeList');
 
-          foreach ($file_var_array[variables] as $var_node) {
+          foreach ($file_var_array['variables'] as $var_node) {
             if ($var_node->nid) {
               $var_title              = $var_node->title;
               $attribute_label        = $var_node->field_attribute_label;
@@ -884,14 +885,14 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
                   if ($code_definitions[0]['value']) {
                    views_bonus_eml_print_open_tag('nominal');
                      views_bonus_eml_print_open_tag('nonNumericDomain');
-                       foreach ($code_definitions as $code_definition) {
+                       foreach ($code_definitions as $code_definition) {      
                          views_bonus_eml_print_open_tag('enumeratedDomain');
-                           if (preg_match("/(.+)=(.+)/", $code_definition[value], $matches)) {
+                           if (preg_match("/(.+)=(.+)/", $code_definition['value'], $matches)) {     
                              views_bonus_eml_print_tag_line('code',       $matches[1]);
                              views_bonus_eml_print_tag_line('definition', $matches[2]);
                             }
                             else {
-                              views_bonus_eml_print_value('codeDefinition', $code_definition[value]);
+                              views_bonus_eml_print_tag_line('codeDefinition', $code_definition['value']);
                             }
                          views_bonus_eml_print_close_tag('enumeratedDomain');
                        }
@@ -906,12 +907,12 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
                if ($var_missingvalues[0]['value']) {
                  views_bonus_eml_print_open_tag('missingValueCode');
                  foreach ($var_missingvalues as $var_missingvalue) {
-                    if (preg_match("/(.+)=(.+)/", $var_missingvalue[value], $matches)) {
+                    if (preg_match("/(.+)=(.+)/", $var_missingvalue['value'], $matches)) {
                       views_bonus_eml_print_tag_line('code',       $matches[1]);
                       views_bonus_eml_print_tag_line('definition', $matches[2]);
                     }
                     else {
-                      views_bonus_eml_print_tag_line('missingValues', $var_missingvalue[value]);
+                      views_bonus_eml_print_tag_line('missingValues', $var_missingvalue['value']);
                     }
                  }
                  views_bonus_eml_print_close_tag('missingValueCode');

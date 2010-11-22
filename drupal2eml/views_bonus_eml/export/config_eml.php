@@ -144,7 +144,7 @@ $publisher_obj = (object) array(
 );
 
 
-//$metadata_provider_arr = array ($metadata_provider_obj);
-//$publisher_arr         = array ($publisher_obj);
+$metadata_provider_arr = array ($metadata_provider_obj);
+$publisher_arr         = array ($publisher_obj);
 
 ?>

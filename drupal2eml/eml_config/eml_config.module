@@ -1,5 +1,9 @@
 <?php
-// $Id: $
+// $Id: eml_config.module, v 2.0 2010-11-22 ashipunova $
+/*
+ * Form for eml settings, required by views_bonus_eml_export
+ * ?q=eml_config
+*/
 
 function eml_config_menu() {
   $items = array();
@@ -14,6 +18,133 @@ function eml_config_menu() {
 
 function eml_config_page() {
   return drupal_get_form('eml_config_form');
+}
+
+function eml_config_form($form_state) {
+  $form = array();
+  unset($last_settings);
+  
+  // $q = db_query('SELECT nid FROM node WHERE nid > 689;');           
+  // while ($nid = db_result($q)) {                                                                               
+  //   node_delete($nid);                                                                                         
+  // }                                                                                                            
+  // dpm(node_load(2890));                                                                                        
+  
+  
+  // $last_settings = get_last_settings();
+  $default_setting = '';
+  $last_settings   = array (
+    'last_acronym'             => variable_get('eml_settings_acronym', $default_setting),
+    'last_language'            => variable_get('eml_settings_language', $default_setting),
+    'last_intellectual_rights' => variable_get('eml_settings_intellectual_rights', $default_setting),
+    'last_data_policies'       => variable_get('eml_settings_data_policies', $default_setting),
+  );
+
+  $form['acronym'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Site name acronym'),
+    '#required'  => TRUE,
+    '#size'  => 3,
+    '#maxlength' => 3,
+    '#default_value' => variable_get('acronym', $last_settings['last_acronym']),
+    // '#description' => t('Site name acronym'),
+  );
+
+  $form['language'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Language'),
+    '#required'  => TRUE,
+    '#size'  => 15,
+    '#maxlength' => 64,
+    '#default_value' => variable_get('language', 'english'),
+  );
+
+  $form['intellectual_rights'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Intellectual Rights'),
+    '#default_value' => variable_get('intellectual_rights', $last_settings['last_intellectual_rights']),    
+    '#cols' => 60,
+    '#rows' => 5,
+  );
+
+  $form['data_policies'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Data Policies'),
+    '#default_value' => variable_get('data_policies', $last_settings['last_data_policies']),    
+    '#cols' => 60,
+    '#rows' => 5,
+  );
+
+  $form['persons'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Metadata Provider and Publisher'),
+    '#tree' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $form = person_subform($form, 'metadataProvider');
+  $form = person_subform($form, 'publisher');
+  
+  // $form_state['redirect'] = array('page1', 'id=' . $form_state['values']['index_search']);
+
+  $form['submit'] = array (
+    '#type' => 'submit',
+    '#value' => t('Create'),
+    );
+
+  return $form;
+}
+
+// not used for now, validation is going in DB
+function eml_config_form_validate ($form_id, &$form_state) {
+  // $toast = $form_state['values']['toast'];
+  //
+  // if (!$toast) {
+  //   form_set_error('toast error', t('You must like toast!'));
+  // }
+}
+
+function eml_config_form_submit($form_id, &$form_state) {
+  $acronym             = $form_state['values']['acronym'];
+  $language            = $form_state['values']['language'];
+  $intellectual_rights = $form_state['values']['intellectual_rights'];
+  $data_policies       = $form_state['values']['data_policies'];
+  
+  $organization = $form_state['values']['persons']['metadataProvider']['organization'];
+  $address      = $form_state['values']['persons']['metadataProvider']['address'];
+  $city         = $form_state['values']['persons']['metadataProvider']['city'];
+  $state        = $form_state['values']['persons']['metadataProvider']['state'];
+  $zipcode      = $form_state['values']['persons']['metadataProvider']['zipcode'];
+  $country      = $form_state['values']['persons']['metadataProvider']['country'];
+  $phone        = $form_state['values']['persons']['metadataProvider']['phone'];
+  $fax          = $form_state['values']['persons']['metadataProvider']['fax'];
+  $role         = $form_state['values']['persons']['metadataProvider']['role'];
+  $email        = $form_state['values']['persons']['metadataProvider']['email'];
+
+  $metadata_provider_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
+
+  $organization = $form_state['values']['persons']['publisher']['organization'];
+  $address      = $form_state['values']['persons']['publisher']['address'];
+  $city         = $form_state['values']['persons']['publisher']['city'];
+  $state        = $form_state['values']['persons']['publisher']['state'];
+  $zipcode      = $form_state['values']['persons']['publisher']['zipcode'];
+  $country      = $form_state['values']['persons']['publisher']['country'];
+  $phone        = $form_state['values']['persons']['publisher']['phone'];
+  $fax          = $form_state['values']['persons']['publisher']['fax'];
+  $role         = $form_state['values']['persons']['publisher']['role'];
+  $email        = $form_state['values']['persons']['publisher']['email'];
+
+  $publisher_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
+                 
+  variable_set('eml_settings_acronym', $acronym);   
+  variable_set('eml_settings_language', $language);
+  variable_set('eml_settings_intellectual_rights', $intellectual_rights);
+  variable_set('eml_settings_data_policies', $data_policies);
+  variable_set('eml_settings_metadata_provider_ref', $metadata_provider_node_id);
+  variable_set('eml_settings_publisher_ref', $publisher_node_id);
+   
+  drupal_set_message(t('Your EML settings have been saved.'));
 }
 
 function person_subform($form, $role) {
@@ -478,101 +609,6 @@ function person_subform($form, $role) {
   return $form;
 }            
 
-function get_last_settings() {
-  $query = db_query('SELECT nid FROM content_type_eml_settings 
-                      WHERE vid = (SELECT max(vid) FROM content_type_eml_settings)
-  ');
-  $last_settings_nid  = db_result($query);
-  if($last_settings_nid) {
-    $last_settings_node = node_load($last_settings_nid);
-    $last_settings      = array (
-      'last_acronym'             => $last_settings_node->field_acronym,
-      'last_language'            => $last_settings_node->field_language,
-      'last_intellectual_rights' => $last_settings_node->field_intellectual_rights,
-      'last_data_policies'       => $last_settings_node->field_data_policies,
-    );
-    return $last_settings; 
-  }
-}
-
-function eml_config_form($form_state) {
-  $form = array();
-  unset($last_settings);
-  
-  // $q = db_query('SELECT nid FROM node WHERE nid > 689;');           
-  // while ($nid = db_result($q)) {                                                                               
-  //   node_delete($nid);                                                                                         
-  // }                                                                                                            
-  // dpm(node_load(2890));                                                                                        
-  
-  
-  $last_settings = get_last_settings();
-
-  $form['acronym'] = array(
-    '#type'  => 'textfield',
-    '#title' => t('Site name acronym'),
-    '#required'  => TRUE,
-    '#size'  => 3,
-    '#maxlength' => 3,
-    '#default_value' => variable_get('acronym', $last_settings['last_acronym'][0]['value']),
-    // '#description' => t('Site name acronym'),
-  );
-
-  $form['language'] = array(
-    '#type'  => 'textfield',
-    '#title' => t('Language'),
-    '#required'  => TRUE,
-    '#size'  => 15,
-    '#maxlength' => 64,
-    '#default_value' => variable_get('language', 'english'),
-  );
-
-  $form['intellectual_rights'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Intellectual Rights'),
-    '#default_value' => variable_get('intellectual_rights', $last_settings['last_intellectual_rights'][0]['value']),    
-    '#cols' => 60,
-    '#rows' => 5,
-  );
-
-  $form['data_policies'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Data Policies'),
-    '#default_value' => variable_get('data_policies', $last_settings['last_data_policies'][0]['value']),    
-    '#cols' => 60,
-    '#rows' => 5,
-  );
-
-  $form['persons'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Metadata Provider and Publisher'),
-    '#tree' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-  );
-
-  $form = person_subform($form, 'metadataProvider');
-  $form = person_subform($form, 'publisher');
-  
-  // $form_state['redirect'] = array('page1', 'id=' . $form_state['values']['index_search']);
-
-  $form['submit'] = array (
-    '#type' => 'submit',
-    '#value' => t('Create'),
-    );
-
-  return $form;
-}
-
-// not used for now, validation is going in DB
-function eml_config_form_validate ($form_id, &$form_state) {
-  // $toast = $form_state['values']['toast'];
-  //
-  // if (!$toast) {
-  //   form_set_error('toast error', t('You must like toast!'));
-  // }
-}
-
 function person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email) {
 
   $node = new StdClass();
@@ -597,59 +633,4 @@ function person_node_create ($organization, $address, $city, $state, $zipcode, $
   node_save($node);
 
   return $node->nid;
-}
-
-// Custom content type "eml_settings" has to be created first
-function eml_settings_node_create ($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_ref, $publisher_ref) {
-
-  $node = new StdClass();
-  $node->type = "eml_settings";
-  
-  $node->field_acronym                = Array (0 => Array ('value' => $acronym));
-  $node->field_language               = Array (0 => Array ('value' => $language));
-  $node->field_intellectual_rights    = Array (0 => Array ('value' => $intellectual_rights));
-  $node->field_data_policies          = Array (0 => Array ('value' => $data_policies));
-  $node->field_metadata_provider_ref  = Array (0 => Array ('nid'   => $metadata_provider_ref));
-  $node->field_publisher_ref          = Array (0 => Array ('nid'   => $publisher_ref));
-
-  node_save($node);
-
-  return $node->nid;
-}
-
-function eml_config_form_submit($form_id, &$form_state) {
-  $acronym             = $form_state['values']['acronym'];
-  $language            = $form_state['values']['language'];
-  $intellectual_rights = $form_state['values']['intellectual_rights'];
-  $data_policies       = $form_state['values']['data_policies'];
-  
-  $organization = $form_state['values']['persons']['metadataProvider']['organization'];
-  $address      = $form_state['values']['persons']['metadataProvider']['address'];
-  $city         = $form_state['values']['persons']['metadataProvider']['city'];
-  $state        = $form_state['values']['persons']['metadataProvider']['state'];
-  $zipcode      = $form_state['values']['persons']['metadataProvider']['zipcode'];
-  $country      = $form_state['values']['persons']['metadataProvider']['country'];
-  $phone        = $form_state['values']['persons']['metadataProvider']['phone'];
-  $fax          = $form_state['values']['persons']['metadataProvider']['fax'];
-  $role         = $form_state['values']['persons']['metadataProvider']['role'];
-  $email        = $form_state['values']['persons']['metadataProvider']['email'];
-
-  $metadata_provider_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
-
-  $organization = $form_state['values']['persons']['publisher']['organization'];
-  $address      = $form_state['values']['persons']['publisher']['address'];
-  $city         = $form_state['values']['persons']['publisher']['city'];
-  $state        = $form_state['values']['persons']['publisher']['state'];
-  $zipcode      = $form_state['values']['persons']['publisher']['zipcode'];
-  $country      = $form_state['values']['persons']['publisher']['country'];
-  $phone        = $form_state['values']['persons']['publisher']['phone'];
-  $fax          = $form_state['values']['persons']['publisher']['fax'];
-  $role         = $form_state['values']['persons']['publisher']['role'];
-  $email        = $form_state['values']['persons']['publisher']['email'];
-
-  $publisher_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
-
-  $eml_settings_node_id = eml_settings_node_create($acronym, $language, $intellectual_rights, $data_policies, $metadata_provider_node_id, $publisher_node_id);
-  
-  drupal_set_message(t('Your EML settings have been saved.'));
 }
