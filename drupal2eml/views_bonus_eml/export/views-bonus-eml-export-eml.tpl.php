@@ -487,17 +487,11 @@ foreach ($row as $row_nid) {
   $dataset_id               = $dataset_node['dataset']->field_dataset_id;
   $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
                                  
-  // variable_set('eml_settings_acronym', '');   
   $last_settings = prepare_settings();     
                                           
-  $api_perefix = '';
-  if (!$GLOBALS['conf']['clean_url']) {
-    $api_perefix = '?q=';
-  }
-
   // variable_set('eml_settings_acronym', ''); 
   if (!$last_settings['last_acronym']) {    
-    // print("Please provide site specific settings here: " . $GLOBALS['base_url'] . "/" . $api_perefix . "eml_config\n");
+    drupal_set_message("Please provide the site specific settings");
     $dest = drupal_get_destination();
     drupal_goto('eml_config', $dest);
   } 
