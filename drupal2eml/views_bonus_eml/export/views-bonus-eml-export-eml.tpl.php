@@ -4,13 +4,13 @@
  * Template to display a view as an eml.
  */
 
-//include_once 'config_eml.php';
 /*
  * public functions and variables
  */
 
 function prepare_settings() {     
   unset($last_settings);
+
   $default_setting = '';
   $last_settings   = array (
     'last_acronym'               => variable_get('eml_settings_acronym',                $default_setting),
@@ -486,19 +486,14 @@ $dataset_methods          = $dataset_node['dataset']->field_methods;
 $dataset_quality          = $dataset_node['dataset']->field_quality;
 $dataset_id               = $dataset_node['dataset']->field_dataset_id;
 $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
+                                 
+// variable_set('eml_settings_acronym', '');   
+$last_settings = prepare_settings();     
 
-$last_settings = prepare_settings();  
-// dpr('last_settings = ');
-// dpr($last_settings);
-// (
-//     ['last_acronym'] =&gt; qqq
-//     ['last_language'] =&gt; english
-//     ['last_intellectual_rights'] =&gt; qqq asdfasdfsadfqewqw
-//     ['last_data_policies'] =&gt; qqq qweqwesadfasdfasdgsafgs
-//     ['last_metadata_provider_ref'] =&gt; 2912
-//     ['last_publisher_ref'] =&gt; 2913
-// )
-// 
+if (!$last_settings['last_acronym']) {    
+  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
+} 
+
 $acr = $last_settings['last_acronym'];
 $metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref']));
 $publisher_arr         = array (node_load($last_settings['last_publisher_ref']));

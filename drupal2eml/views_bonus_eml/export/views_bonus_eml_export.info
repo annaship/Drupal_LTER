@@ -3,7 +3,7 @@
 name = Bonus: Views Export EML
 description = "Plugin to export views in an EML format"
 dependencies[] = views
-# dependencies[] = eml_config
+dependencies[] = eml_config
 package = Views
 core = 6.x
 
