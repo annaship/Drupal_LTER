@@ -272,7 +272,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
 } // end of function views_bonus_eml_print_geographic_coverage
 
 function views_bonus_eml_get_geo($site_nid) {
-  unset($geo_lon_lat_point);
+  unset($geo_lon_lat_point);    
   $db_url = parse_url($GLOBALS['db_url']);
   if (preg_match("/\/(.+)/", $db_url['path'], $matches)) {
     $db_name = $matches[1];
@@ -473,31 +473,36 @@ foreach ($row as $row_nid) {
  * 1a) create dataset variables here
  */
 
-$dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
-$dataset_title            = $dataset_node['dataset']->title;
-$dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
-$dataset_abstract         = $dataset_node['dataset']->field_dataset_abstract;
-$dataset_add_info         = $dataset_node['dataset']->field_dataset_add_info;
-$dataset_beg_end_date     = $dataset_node['dataset']->field_beg_end_date;
-$dataset_purpose          = $dataset_node['dataset']->field_dataset_purpose;
-$dataset_maintenance      = $dataset_node['dataset']->field_dataset_maintenance;
-$dataset_instrumentation  = $dataset_node['dataset']->field_instrumentation;
-$dataset_methods          = $dataset_node['dataset']->field_methods;
-$dataset_quality          = $dataset_node['dataset']->field_quality;
-$dataset_id               = $dataset_node['dataset']->field_dataset_id;
-$dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
+  $dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
+  $dataset_title            = $dataset_node['dataset']->title;
+  $dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
+  $dataset_abstract         = $dataset_node['dataset']->field_dataset_abstract;
+  $dataset_add_info         = $dataset_node['dataset']->field_dataset_add_info;
+  $dataset_beg_end_date     = $dataset_node['dataset']->field_beg_end_date;
+  $dataset_purpose          = $dataset_node['dataset']->field_dataset_purpose;
+  $dataset_maintenance      = $dataset_node['dataset']->field_dataset_maintenance;
+  $dataset_instrumentation  = $dataset_node['dataset']->field_instrumentation;
+  $dataset_methods          = $dataset_node['dataset']->field_methods;
+  $dataset_quality          = $dataset_node['dataset']->field_quality;
+  $dataset_id               = $dataset_node['dataset']->field_dataset_id;
+  $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
                                  
-// variable_set('eml_settings_acronym', '');   
-$last_settings = prepare_settings();     
+  // variable_set('eml_settings_acronym', '');   
+  $last_settings = prepare_settings();     
+                                          
+  $api_perefix = '';
+  if (!$GLOBALS['conf']['clean_url']) {
+    $api_perefix = '?q=';
+  }
 
-if (!$last_settings['last_acronym']) {    
-  dpr('Please provide a settings here: http://localhost/drupal-local/?q=eml_config');
-} 
+  if (!$last_settings['last_acronym']) {    
+    print("Please provide site specific settings here: " . $GLOBALS['base_url'] . "/" . $api_perefix . "eml_config\n");
+  } 
 
-$acr = $last_settings['last_acronym'];
-$metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref']));
-$publisher_arr         = array (node_load($last_settings['last_publisher_ref']));
-$views_bonus_eml_site_name = variable_get('site_name', NULL);
+  $acr = $last_settings['last_acronym'];
+  $metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref']));
+  $publisher_arr         = array (node_load($last_settings['last_publisher_ref']));
+  $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
   /* -----------------
    * 2) calculate vid version
