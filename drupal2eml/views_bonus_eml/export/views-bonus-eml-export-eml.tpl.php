@@ -599,9 +599,6 @@ $views_bonus_eml_site_name = variable_get('site_name', NULL);
         views_bonus_eml_print_close_tag('abstract');
       }
 
-
-//      views_bonus_eml_print_value('abstract', $dataset_abstract);
-
       // TODO: add if, depend of structure
       views_bonus_eml_print_open_tag('keywordSet');
         // dpr($node->taxonomy);
