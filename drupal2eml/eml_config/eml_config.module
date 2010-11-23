@@ -43,7 +43,7 @@ function eml_config_form($form_state) {
   $form['acronym'] = array(
     '#type'  => 'textfield',
     '#title' => t('Site name acronym'),
-    '#required'  => TRUE,
+    // '#required'  => TRUE,
     '#size'  => 3,
     '#maxlength' => 3,
     '#default_value' => variable_get('acronym', $last_settings['last_acronym']),
@@ -53,7 +53,7 @@ function eml_config_form($form_state) {
   $form['language'] = array(
     '#type'  => 'textfield',
     '#title' => t('Language'),
-    '#required'  => TRUE,
+    // '#required'  => TRUE,
     '#size'  => 15,
     '#maxlength' => 64,
     '#default_value' => variable_get('language', 'english'),
@@ -575,7 +575,7 @@ function person_subform($form, $role) {
     '#type'  => 'textfield',
     '#title' => t('email'),
     '#default_value' => variable_get('email', $email),
-    '#required'  => TRUE,
+    // '#required'  => TRUE,
     '#size'  => 60,
     '#maxlength' => 60,
     );

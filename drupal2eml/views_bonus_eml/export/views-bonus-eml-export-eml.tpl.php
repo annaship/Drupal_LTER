@@ -723,7 +723,7 @@ foreach ($row as $row_nid) {
       if ($dataset_node['dataset_datafiles'] && $dataset_node['dataset_datafiles'][0]['datafile']->nid) {
         foreach ($dataset_node['dataset_datafiles'] as $file_var_array) {
 
-          // Collect all data_file values here to use in a conditions
+          // Collect all data_file values here to use in a conditions  
           $file_data_file         = $file_var_array['datafile']->field_data_file;
           $datafile_description   = $file_var_array['datafile']->field_datafile_description;
           $file_num_header_line   = $file_var_array['datafile']->field_num_header_line;
@@ -744,9 +744,7 @@ foreach ($row as $row_nid) {
               views_bonus_eml_print_tag_line('entityName', $file_data['filename']);
             }
           } else {
-//??? there's no $file_data_file and $file_data['filepath']
-            //!!! ISG to rescue EML validity -- IM not sure how.. we can always make the field mandatory.
-            views_bonus_eml_print_tag_line('entityName', $file_data['filepath']);
+            views_bonus_eml_print_tag_line('entityName', $file_var_array['datafile']->title);
           }
 
           views_bonus_eml_print_value('entityDescription', $datafile_description);
@@ -757,9 +755,7 @@ foreach ($row as $row_nid) {
               views_bonus_eml_print_tag_line('objectName', $file_data['filename']);
            }
           } else {
-//??? there's no $file_data_file and $file_data['filepath']
-          //!!! ISG to rescue EML validity -- IM not sure how.. we can always make the field mandatory.
-            views_bonus_eml_print_tag_line('entityName', $file_data['filepath']);
+            views_bonus_eml_print_tag_line('objectName', $file_var_array['datafile']->title);
           }
           views_bonus_eml_print_open_tag('dataFormat');
           // Here some tags are obligate: textFormat, attributeOrientation,
