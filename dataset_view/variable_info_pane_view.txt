@@ -212,6 +212,8 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
+$handler->override_option('use_ajax', TRUE);
+$handler->override_option('use_pager', 'mini');
 $handler->override_option('style_plugin', 'table');
 $handler->override_option('style_options', NULL);
 $handler = $view->new_display('panel_pane', 'Variable pane', 'panel_pane_1');

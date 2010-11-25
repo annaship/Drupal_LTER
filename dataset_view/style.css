@@ -1,0 +1,11 @@
+/* add to style.css in current_theme*/
+
+#show_vars_link {
+  color: blue;
+  padding-bottom: 1em;
+}
+
+#show_vars_link:hover, #show_vars_link:active{
+  color: red;
+  text-decoration: underline;
+}

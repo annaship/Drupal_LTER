@@ -142,8 +142,8 @@ $display->panels = array();
   $pane->configuration = array(
     'admin_title' => 'Data Table',
     'title' => 'Data Table',
-    'body' => '',
-    'format' => '1',
+    'body' => '<div id="show_vars_link">Show/Hide Variables</div>',
+    'format' => '2',
     'substitute' => 1,
   );
   $pane->cache = array();

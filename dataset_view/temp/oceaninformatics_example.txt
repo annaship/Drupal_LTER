@@ -1,0 +1,421 @@
+
+<h4>
+<img id='cbutton' src='/datazoo/template/images/custom/menuclosed.png' onclick='showDiv("columns", this.id)' /> Columns </h4>
+162
+<div id='columns' class='display-box' style='display:none' >
+<table>
+163
+<tr>
+<th>column</th>
+<th>attribute</th>
+<th>unit</th>
+<th>missing value codes</th>
+<th>Codeset</th>
+</tr>
+
+<tr class='column-summary'>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "601_column"); return false;'>Year</a>
+</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "601_attribute"); return false;'>yearGMT</td>
+<td>&nbsp;</td>
+<td></td>
+<td>&nbsp;</td>
+</tr>
+<tr class='column-info'>
+<td colspan='5'>
+<div class='display-box-contrast column-details' id='601_column'>
+<table>
+<tr>
+<th colspan='2' class='type'>Column Details</th>
+</tr>
+<tr>
+<th>Column Identifier</th>
+<td>601</td>
+</tr>
+<tr>
+<th>Storage Type</th>
+<td>integer</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='601_attribute'>
+<table>
+<tr>
+<th colspan='2' class='type'>Attribute Details</th>
+</tr>
+<tr>
+<th>Attribute Identifier</th>
+<td>42</td>
+</tr>
+<tr>
+<th>Type</th>
+<td>datetime</td>
+</tr>
+<tr>
+<th>Definition</th>
+<td>year of measurement in GMT</td>
+</tr>
+<tr>
+<th>Measurement Scale</th>
+<td>dateTime</td>
+</tr>
+<tr>
+<th>Format String</th>
+<td>YYYY</td>
+</tr></table>
+</div></td>
+</tr>
+<tr class='column-summary'>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "603_column"); return false;'>Annual Ice Extent</a>
+</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "603_attribute"); return false;'>seaiceExtent</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "603_unit"); return false;'>squareKilometers</td>
+<td>-999: missing value 
+<br /></td>
+<td>&nbsp;</td>
+</tr>
+<tr class='column-info'>
+<td colspan='5'>
+<div class='display-box-contrast column-details' id='603_column'>
+<table>
+<tr>
+<th colspan='2' class='type'>Column Details</th>
+</tr>
+<tr>
+<th>Column Identifier</th>
+<td>603</td>
+</tr>
+<tr>
+<th>Storage Type</th>
+<td>double</td>
+</tr>
+<tr>
+<th colspan='2' class='type'>dataAnalysis</th>
+</tr>
+<tr>
+<th>calculationType</th>
+<td>calculated</td>
+</tr>
+<tr>
+<th>calculationTypeDetail</th>
+<td>average</td>
+</tr>
+<tr>
+<th>calculationFrequencyIn</th>
+<td>year</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='603_attribute'>
+<table>
+<tr>
+<th colspan='2' class='type'>Attribute Details</th>
+</tr>
+<tr>
+<th>Attribute Identifier</th>
+<td>22</td>
+</tr>
+<tr>
+<th>Type</th>
+<td>area</td>
+</tr>
+<tr>
+<th>Definition</th>
+<td>total surface area inside ice edge</td>
+</tr>
+<tr>
+<th>Measurement Scale</th>
+<td>ratio</td>
+</tr>
+<tr>
+<th>Number Type</th>
+<td>real</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='603_unit'>
+<table>
+<tr>
+<th colspan='2' class='type'>Unit Details</th>
+</tr>
+<tr>
+<th>Unit System</th>
+<td>LTER Unit Registry</td>
+</tr>
+<tr>
+<th>Unit Identifier</th>
+<td>68</td>
+</tr>
+<tr>
+<th>Name</th>
+<td>squareKilometers</td>
+</tr>
+<tr>
+<th>Abbreviation</th>
+<td>km²</td>
+</tr>
+<tr>
+<th>Description</th>
+<td>square kilometers</td>
+</tr>
+<tr>
+<th>Quantity</th>
+<td>square kilometers</td>
+</tr></table>
+</div></td>
+</tr>
+<tr class='column-summary'>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3020_column"); return false;'>Annual Ice Area</a>
+</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3020_attribute"); return false;'>seaiceArea</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3020_unit"); return false;'>squareKilometers</td>
+<td>-999: missing value 
+<br /></td>
+<td>&nbsp;</td>
+</tr>
+<tr class='column-info'>
+<td colspan='5'>
+<div class='display-box-contrast column-details' id='3020_column'>
+<table>
+<tr>
+<th colspan='2' class='type'>Column Details</th>
+</tr>
+<tr>
+<th>Column Identifier</th>
+<td>3020</td>
+</tr>
+<tr>
+<th>Storage Type</th>
+<td>double</td>
+</tr>
+<tr>
+<th colspan='2' class='type'>dataAnalysis</th>
+</tr>
+<tr>
+<th>calculationType</th>
+<td>calculated</td>
+</tr>
+<tr>
+<th>calculationTypeDetail</th>
+<td>average</td>
+</tr>
+<tr>
+<th>calculationInterval</th>
+<td>year</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='3020_attribute'>
+<table>
+<tr>
+<th colspan='2' class='type'>Attribute Details</th>
+</tr>
+<tr>
+<th>Attribute Identifier</th>
+<td>23</td>
+</tr>
+<tr>
+<th>Type</th>
+<td>area</td>
+</tr>
+<tr>
+<th>Definition</th>
+<td>sea-ice covered ocean area inside ice-edge</td>
+</tr>
+<tr>
+<th>Measurement Scale</th>
+<td>ratio</td>
+</tr>
+<tr>
+<th>Number Type</th>
+<td>real</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='3020_unit'>
+<table>
+<tr>
+<th colspan='2' class='type'>Unit Details</th>
+</tr>
+<tr>
+<th>Unit System</th>
+<td>LTER Unit Registry</td>
+</tr>
+<tr>
+<th>Unit Identifier</th>
+<td>68</td>
+</tr>
+<tr>
+<th>Name</th>
+<td>squareKilometers</td>
+</tr>
+<tr>
+<th>Abbreviation</th>
+<td>km²</td>
+</tr>
+<tr>
+<th>Description</th>
+<td>square kilometers</td>
+</tr>
+<tr>
+<th>Quantity</th>
+<td>square kilometers</td>
+</tr></table>
+</div></td>
+</tr>
+<tr class='column-summary'>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3021_column"); return false;'>Annual Open Water</a>
+</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3021_attribute"); return false;'>waterArea</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "3021_unit"); return false;'>squareKilometers</td>
+<td>-999: missing value 
+<br /></td>
+<td>&nbsp;</td>
+</tr>
+<tr class='column-info'>
+<td colspan='5'>
+<div class='display-box-contrast column-details' id='3021_column'>
+<table>
+<tr>
+<th colspan='2' class='type'>Column Details</th>
+</tr>
+<tr>
+<th>Column Identifier</th>
+<td>3021</td>
+</tr>
+<tr>
+<th>Storage Type</th>
+<td>double</td>
+</tr>
+<tr>
+<th colspan='2' class='type'>dataAnalysis</th>
+</tr>
+<tr>
+<th>calculationType</th>
+<td>calculated</td>
+</tr>
+<tr>
+<th>calculationTypeDetail</th>
+<td>average</td>
+</tr>
+<tr>
+<th>calculationInterval</th>
+<td>year</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='3021_attribute'>
+<table>
+<tr>
+<th colspan='2' class='type'>Attribute Details</th>
+</tr>
+<tr>
+<th>Attribute Identifier</th>
+<td>158</td>
+</tr>
+<tr>
+<th>Type</th>
+<td>area</td>
+</tr>
+<tr>
+<th>Definition</th>
+<td>area of open water</td>
+</tr>
+<tr>
+<th>Measurement Scale</th>
+<td>ratio</td>
+</tr>
+<tr>
+<th>Number Type</th>
+<td>real</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='3021_unit'>
+<table>
+<tr>
+<th colspan='2' class='type'>Unit Details</th>
+</tr>
+<tr>
+<th>Unit System</th>
+<td>LTER Unit Registry</td>
+</tr>
+<tr>
+<th>Unit Identifier</th>
+<td>68</td>
+</tr>
+<tr>
+<th>Name</th>
+<td>squareKilometers</td>
+</tr>
+<tr>
+<th>Abbreviation</th>
+<td>km²</td>
+</tr>
+<tr>
+<th>Description</th>
+<td>square kilometers</td>
+</tr>
+<tr>
+<th>Quantity</th>
+<td>square kilometers</td>
+</tr></table>
+</div></td>
+</tr>
+<tr class='column-summary'>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "602_column"); return false;'>Date GMT</a>
+</td>
+<td>
+<a href='#' onClick='DZDatasets.showColumnInfo(this, "602_attribute"); return false;'>dateGMT</td>
+<td>&nbsp;</td>
+<td>0000-00-00: missing value 
+<br /></td>
+<td>&nbsp;</td>
+</tr>
+<tr class='column-info'>
+<td colspan='5'>
+<div class='display-box-contrast column-details' id='602_column'>
+<table>
+<tr>
+<th colspan='2' class='type'>Column Details</th>
+</tr>
+<tr>
+<th>Column Identifier</th>
+<td>602</td>
+</tr>
+<tr>
+<th>Storage Type</th>
+<td>date</td>
+</tr></table>
+</div>
+<div class='display-box-contrast column-details' id='602_attribute'>
+<table>
+<tr>
+<th colspan='2' class='type'>Attribute Details</th>
+</tr>
+<tr>
+<th>Attribute Identifier</th>
+<td>39</td>
+</tr>
+<tr>
+<th>Type</th>
+<td>datetime</td>
+</tr>
+<tr>
+<th>Definition</th>
+<td>date in GMT</td>
+</tr>
+<tr>
+<th>Measurement Scale</th>
+<td>dateTime</td>
+</tr></table>
+</div></td>
+</tr></table>
+164
+</div>
+165
