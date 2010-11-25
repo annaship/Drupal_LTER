@@ -628,7 +628,7 @@ function person_subform($form, $role) {
 function person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email) {
 
   global $user;
-  drupal_set_message($user->uid);  
+
   $uid = $user->uid;
   $node = new StdClass();
   $node->type = "person";

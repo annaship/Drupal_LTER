@@ -145,6 +145,9 @@ class EMLConfigTestCase extends DrupalWebTestCase {
    */
    
   function testElementExample() {
+    $this->drupalGet('eml_config');
+    $this->assertText(t('Site name acronym'));
+        
     // Make one basic POST with a set of values and check for correct responses.
     $edit = array(
       'acronym' => 'ver',
@@ -158,7 +161,6 @@ class EMLConfigTestCase extends DrupalWebTestCase {
       'persons[metadataProvider][country]' => 'Ukraine',
       'persons[metadataProvider][phone]' => '',
       'persons[metadataProvider][fax]' => '',
-      // 'persons[metadataProvider][role]' => 'Metadata Provider',
       'persons[metadataProvider][email]' => 'email@example.com',
 
       'persons[publisher][organization]' => 'LTER org',
@@ -169,20 +171,13 @@ class EMLConfigTestCase extends DrupalWebTestCase {
       'persons[publisher][country]' => 'Ukraine',
       'persons[publisher][phone]' => '',
       'persons[publisher][fax]' => '',
-      // 'persons[publisher][role]' => 'Publisher',
-      'persons[publisher][email]' => 'email@example.com',
-      
-      
-      // 'persons' => array( metadataProvider
-      //         ),
-      //  $this->verbose($user);     
-      // 'eml_config_element_discrete[prefix]' => sprintf('%03d', rand(0, 999)),
-      // 'eml_config_element_discrete[extension]' => sprintf('%04d', rand(0, 9999)),
-      // 'eml_config_element_combined[areacode]' => sprintf('%03d', rand(0, 999)),
-      // 'eml_config_element_combined[prefix]' => sprintf('%03d', rand(0, 999)),
-      // 'eml_config_element_combined[extension]' => sprintf('%04d', rand(0, 9999)),
+      'persons[publisher][email]' => 'email@example.com',      
     );
     $this->drupalPost('eml_config/element_example', $edit, t('Create'));
+    // $this->drupalGet('eml_config/element_example');
+    $this->assertText('Your EML settings have been saved');
+    // $this->assertText(t('And acronym = @value', array('@value' => $edit['acronym'])));
+  
     // $this->assertText(t('eml_config_textfield has value @value', array('@value' => $edit['eml_config_textfield'])));
     // $this->assertText(t('eml_config_checkbox has value 1'));
     // $this->assertPattern(t('/areacode.*!areacode/', array('!areacode' => $edit['eml_config_element_discrete[areacode]'])));
@@ -196,6 +191,54 @@ class EMLConfigTestCase extends DrupalWebTestCase {
     // $this->drupalPost('examples/eml_config/element_example', $edit, t('Submit'));
     // $this->assertText(t('eml_config_checkbox has value 0'));
   }
+
+  // function testNoEmail() {
+  //   $this->drupalGet('eml_config');
+  //   $this->assertText(t('Site name acronym'));
+  //       
+  //   // Make one basic POST with a set of values and check for correct responses.
+  //   $edit = array(
+  //     'acronym' => 'ver',
+  //     'language' => 'english',
+  //     'intellectual_rights' => 'Here we are!',
+  //     'persons[metadataProvider][organization]' => 'LTER org',
+  //     'persons[metadataProvider][address]' => 'address',
+  //     'persons[metadataProvider][city]' => 'Aaa',
+  //     'persons[metadataProvider][state]' => 'MD',
+  //     'persons[metadataProvider][zipcode]' => '02536',
+  //     'persons[metadataProvider][country]' => 'Ukraine',
+  //     'persons[metadataProvider][phone]' => '',
+  //     'persons[metadataProvider][fax]' => '',
+  //     'persons[metadataProvider][email]' => '',
+  // 
+  //     'persons[publisher][organization]' => 'LTER org',
+  //     'persons[publisher][address]' => 'address',
+  //     'persons[publisher][city]' => 'Aaa',
+  //     'persons[publisher][state]' => 'MD',
+  //     'persons[publisher][zipcode]' => '02536',
+  //     'persons[publisher][country]' => 'Ukraine',
+  //     'persons[publisher][phone]' => '',
+  //     'persons[publisher][fax]' => '',
+  //     'persons[publisher][email]' => 'email@example.com',      
+  //   );
+  //   $this->drupalPost('eml_config/element_example', $edit, t('Create'));
+  //   // $this->drupalGet('eml_config/element_example');
+  //   // $this->assertText('LTER org');
+  // 
+  //   // $this->assertText(t('eml_config_textfield has value @value', array('@value' => $edit['eml_config_textfield'])));
+  //   // $this->assertText(t('eml_config_checkbox has value 1'));
+  //   // $this->assertPattern(t('/areacode.*!areacode/', array('!areacode' => $edit['eml_config_element_discrete[areacode]'])));
+  //   // $this->assertPattern(t('/prefix.*!prefix/', array('!prefix' => $edit['eml_config_element_discrete[prefix]'])));
+  //   // $this->assertPattern(t('/extension.*!extension/', array('!extension' => $edit['eml_config_element_discrete[extension]'])));
+  //   // 
+  //   // $this->assertText(t('eml_config_element_combined has value @value', array('@value' => $edit['eml_config_element_combined[areacode]'] . $edit['eml_config_element_combined[prefix]'] . $edit['eml_config_element_combined[extension]'])));
+  //   // 
+  //   // // Now flip the checkbox and check for correct behavior.
+  //   // $edit['eml_config_checkbox'] = FALSE;
+  //   // $this->drupalPost('examples/eml_config/element_example', $edit, t('Submit'));
+  //   // $this->assertText(t('eml_config_checkbox has value 0'));
+  // }
+
 
 }
 
