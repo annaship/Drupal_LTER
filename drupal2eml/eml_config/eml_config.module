@@ -5,8 +5,6 @@
  * ?q=eml_config
 */
 
-require_once('eml_config_form_submit.inc');
-
 function eml_config_menu() {
   $items = array();
   $items['eml_config'] = array (

@@ -1,4 +1,7 @@
 <?php
+
+require_once('eml_config_form_submit.inc');
+
 function eml_config_form($form_state) {
   $form = array();
   unset($last_settings);

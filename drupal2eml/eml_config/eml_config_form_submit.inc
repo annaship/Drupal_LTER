@@ -53,7 +53,7 @@ function eml_config_form_submit($form_id, &$form_state) {
   variable_set('eml_settings_publisher_ref', $publisher_node_id);
    
   drupal_set_message(t('Your EML settings have been saved.'));
-  drupal_set_message(t('Metadata Provider\'s email is ') . $metadata_provider_settings['email']);
+  // drupal_set_message(t('Metadata Provider\'s email is ') . $metadata_provider_settings['email']);
 
 }
 
