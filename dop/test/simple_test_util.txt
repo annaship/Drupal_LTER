@@ -1,0 +1,3 @@
+http://api.drupal.org/api/drupal/modules--simpletest--drupal_web_test_case.php/class/DrupalWebTestCase/7
+
+/Library/WebServer/Documents/drupal-local/sites/default/files/simpletest/verbose

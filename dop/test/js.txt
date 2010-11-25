@@ -1,0 +1,195 @@
+http://www.myacpl.org/koha/?p=463
+//alert("Hello World");
+//view view-variable-info view-id-variable_info view-display-id-panel_pane_1 view-dom-id-2
+$("view-variable-info").hide();
+$("table").show();
+
+var header_cells = document.getElementsByClassName("view-variable-info");
+
+http://webdesignfan.com/working-with-firebug-part-2-javascript/
+
+console.log('5' + 5, 5 + 5)
+
+views-field views-field-title
+
+----- works: 
+var header_cells = document.getElementsByClassName("view-variable-info");
+
+$(header_cells).show();
+
+console.log(header_cells);
+----------
+http://drupal.org/node/606294:
+
+$myfield = $data->field_my_field;
+$link = "<a href='javascript:callMyFunction($myfield)'>Click me</a>";
+echo $link;
+
+===========
+http://oceaninformatics.ucsd.edu/datazoo/data/pallter/datasets?action=summary&id=49
+  TODO: Variables - click and open whole table
+  
+ashipunova@sig-app11:/data/drupal/sites/all/themes/my_basic$ vim scripts.js
+
+$(document).ready(function(){
+//  alert("Hello World");
+var table_variable_info = document.getElementsByClassName("view-variable-info");
+
+$(table_variable_info).show();
+
+//showDiv("columns", this.id);
+
+//  $("#navbar ul li a")
+//  .wrapInner("<span>" + "</span>");
+});
+
+//Drupal.behaviors.shadows = function (context) {
+// Shawdow maker
+//  $('.views-table').boxShadow( 10px, 10px, 5, #888;);
+//};
+
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+"scripts.js" 17L, 399C written                                7,30          All
+--------
+$(document).ready(function(){
+//  alert("Hello World");
+// show_vars_link
+//  $("#navbar ul li a")
+
+
+var table_variable_info = document.getElementsByClassName("view-variable-info");
+
+$(table_variable_info).hide();
+
+//showDiv("columns", this.id);
+//todo link here
+  $("#show_vars_link").click(function() {
+//      showDiv("columns", this.id)
+  $(table_variable_info).show();
+  }
+//  .wrapInner("<span>" + "</span>");
+});
+
+//Drupal.behaviors.shadows = function (context) {
+// Shawdow maker
+//  $('.views-table').boxShadow( 10px, 10px, 5, #888;);
+//};
+================
+$(document).ready(function(){
+//  alert("Hello World");
+// show_vars_link
+//  $("#navbar ul li a")
+
+
+var table_variable_info = document.getElementsByClassName("view-variable-info");
+
+$(table_variable_info).hide();
+
+//showDiv("columns", this.id);
+//todo size/color or arrows - open/close, click again - hide
+  $("#show_vars_link").click(function() {
+   $(table_variable_info).show();
+  });
+});
+
+//Drupal.behaviors.shadows = function (context) {
+// Shawdow maker
+//  $('.views-table').boxShadow( 10px, 10px, 5, #888;);
+//};
+============
+JavaScript in Drupal
+http://drupal.org/node/121997
+------------
+    content.style.display!='none' ? content.style.display='none' : content.style.display='block';    
+    
+W!    $("#show_vars_link").wrapInner("<span>" + "</span>");
+
+
+//style.display='none';
+
+var el = document.getElementById(id);
+  el.style.color = "red";
+============
+
+// trigger the function when clicking on #img
+$("#img").click(function () {
+// check visibility
+if ($("#div").is(":hidden")) {
+// it's hidden - show it
+$("#div").slideDown("slow");
+} else {
+// it's not hidden - slide it down
+$("#div").hide();
+}
+});
+
+W! if ($(".view-variable-info").is(":hidden")) { 
+//alert("Ura!");
+$(".view-variable-info").slideDown("slow");
+
+};
+=============
+$(document).ready(function(){
+//  alert("Hello World");
+//var table_variable_info = document.getElementsByClassName("view-variable-info");
+
+//$(table_variable_info).hide();
+$(".view-variable-info").hide();
+//$("#show_vars_link").style.color = "red";
+
+
+//showDiv("columns", this.id);
+//todo size/color or arrows - open/close, click again - hide
+  $("#show_vars_link").click(function() {
+//   $(table_variable_info)
+$(".view-variable-info").show();
+  });
+});
+===============
+
+$(document).ready(function(){
+
+var table_variable_info = document.getElementsByClassName("view-variable-info");
+
+$(table_variable_info).hide();
+
+//todo size/color or arrows - open/close, click again - hide
+  $("#show_vars_link").click(function() {
+   $(table_variable_info).show();
+  });
+});
+
+//Drupal.behaviors.shadows = function (context) {
+// Shawdow maker
+//  $('.views-table').boxShadow( 10px, 10px, 5, #888;);
+//};
+
+
+
+
+$("#img").click(function () {
+// check visibility
+if ($("#div").is(":hidden")) {
+// it's hidden - show it
+$("#div").slideDown("slow");
+} else {
+// it's not hidden - slide it down
+$("#div").hide();
+}
+});
+
+if ($(".view-variable-info").is(":hidden")) { 
+//alert("Ura!");
+$(".view-variable-info").slideDown("slow");
+
+};
+
+========
+JavaScript in Drupal
+http://drupal.org/node/121997
+

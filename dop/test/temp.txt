@@ -1,0 +1,46 @@
+'persons[metadataProvider][organization]' => 'LTER org',
+
+'persons[metadataProvider][address]' => 'address',
+
+'persons[metadataProvider][city]' => 'Aaa',
+
+'persons[metadataProvider][state]' => '',
+
+'persons[metadataProvider][zipcode]' => '02536',
+
+'persons[metadataProvider][country]' => '',
+
+'persons[metadataProvider][phone]' => '',
+
+'persons[metadataProvider][fax]' => '',
+
+'persons[metadataProvider][role]' => 'Metadata Provider',
+
+'persons[metadataProvider][email]' => 'email@example.com',
+
+eml_config_element_discrete[prefix]' => '',
+
+http://localhost/drupal-local/?q=batch&op=start&id=9
+
+============
+
+'persons[publisher][organization]' => 'LTER org',
+
+'persons[publisher][address]' => 'address',
+
+'persons[publisher][city]' => 'Aaa',
+
+'persons[publisher][state]' => '',
+
+'persons[publisher][zipcode]' => '02536',
+
+'persons[publisher][country]' => '',
+
+'persons[publisher][phone]' => '',
+
+'persons[publisher][fax]' => '',
+
+'persons[publisher][role]' => 'Publisher',
+
+'persons[publisher][email]' => 'email@example.com',
+

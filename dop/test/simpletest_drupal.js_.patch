@@ -1,0 +1,28 @@
+Index: misc/drupal.js
+===================================================================
+RCS file: /cvs/drupal/drupal/misc/drupal.js,v
+retrieving revision 1.41.2.3
+diff -u -r1.41.2.3 drupal.js
+--- misc/drupal.js	25 Jun 2008 09:06:57 -0000	1.41.2.3
++++ misc/drupal.js	13 Mar 2009 03:25:19 -0000
+@@ -252,17 +252,17 @@
+  */
+ Drupal.ahahError = function(xmlhttp, uri) {
+   if (xmlhttp.status == 200) {
+-    if (jQuery.trim($(xmlhttp.responseText).text())) {
++    if (jQuery.trim(xmlhttp.responseText)) {
+       var message = Drupal.t("An error occurred. \n@uri\n@text", {'@uri': uri, '@text': xmlhttp.responseText });
+     }
+     else {
+-      var message = Drupal.t("An error occurred. \n@uri\n(no information available).", {'@uri': uri, '@text': xmlhttp.responseText });
++      var message = Drupal.t("An error occurred. \n@uri\n(no information available).", {'@uri': uri });
+     }
+   }
+   else {
+     var message = Drupal.t("An HTTP error @status occurred. \n@uri", {'@uri': uri, '@status': xmlhttp.status });
+   }
+-  return message;
++  return message.replace(/\n/g, '<br />');
+ }
+ 
+ // Global Killswitch on the <html> element
