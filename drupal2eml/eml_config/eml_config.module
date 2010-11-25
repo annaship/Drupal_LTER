@@ -106,6 +106,7 @@ function eml_config_form_validate ($form_id, &$form_state) {
 }
 
 function eml_config_form_submit($form_id, &$form_state) {
+  // date_default_timezone_set('America/New_York');
   $acronym             = $form_state['values']['acronym'];
   $language            = $form_state['values']['language'];
   $intellectual_rights = $form_state['values']['intellectual_rights'];
@@ -122,7 +123,7 @@ function eml_config_form_submit($form_id, &$form_state) {
   $role         = $form_state['values']['persons']['metadataProvider']['role'];
   $email        = $form_state['values']['persons']['metadataProvider']['email'];
 
-  $metadata_provider_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email, $personid);
+  $metadata_provider_node_id = person_node_create($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email);
 
   $organization = $form_state['values']['persons']['publisher']['organization'];
   $address      = $form_state['values']['persons']['publisher']['address'];
@@ -475,6 +476,8 @@ function person_subform($form, $role) {
       $persion_node = node_load($publisher_nid);
     }      
   }
+  
+  if ($persion_node) {
     $organization = $persion_node->field_person_organization[0]['value'];
     $address      = $persion_node->field_person_address[0]['value'];
     $city         = $persion_node->field_person_city[0]['value'];
@@ -484,6 +487,19 @@ function person_subform($form, $role) {
     $phone        = $persion_node->field_person_phone[0]['value'];
     $fax          = $persion_node->field_person_fax[0]['value'];
     $email        = $persion_node->field_person_email[0]['email'];
+  }
+  else {
+    $organization = '';
+    $address      = '';
+    $city         = '';
+    $state        = '';
+    $zipcode      = '';
+    $country      = '';
+    $phone        = '';
+    $fax          = '';
+    $email        = '';
+    
+  }
     // Commented fields are here in case we will need them
     // $first_name   = $persion_node->field_person_first_name[0]['value'];
     // $last_name    = $persion_node->field_person_last_name[0]['value'];
@@ -611,8 +627,12 @@ function person_subform($form, $role) {
 
 function person_node_create ($organization, $address, $city, $state, $zipcode, $country, $phone, $fax, $role, $email) {
 
+  global $user;
+  drupal_set_message($user->uid);  
+  $uid = $user->uid;
   $node = new StdClass();
   $node->type = "person";
+  $node->uid = $uid;
   $node->field_person_organization = Array (0 => Array ('value' => $organization));
   $node->field_person_address = Array (0 => Array ('value' => $address));
   $node->field_person_city = Array (0 => Array ('value' => $city));
