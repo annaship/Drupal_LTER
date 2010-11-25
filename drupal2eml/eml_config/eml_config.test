@@ -176,7 +176,8 @@ class EMLConfigTestCase extends DrupalWebTestCase {
     $this->drupalPost('eml_config/element_example', $edit, t('Create'));
     // $this->drupalGet('eml_config/element_example');
     $this->assertText('Your EML settings have been saved');
-    $this->assertText(t('Metadata Provider\'s email is @value', array('@value' => $edit['persons[metadataProvider][email]'])));
+    $this->assertText(t('Metadata Provider\'s email is @value', 
+            array('@value' => $edit['persons[metadataProvider][email]'])));
   
     // $this->assertText(t('eml_config_textfield has value @value', array('@value' => $edit['eml_config_textfield'])));
     // $this->assertText(t('eml_config_checkbox has value 1'));
