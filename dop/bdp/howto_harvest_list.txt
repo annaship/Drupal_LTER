@@ -1,9 +1,0 @@
-Hi Inigo,
-
-To have harvest list:
-
-1) enable module views_datasource ('Views XML');
-2) enable module views_customfield
-3) copy views-views-xml-style-raw--harvest-list.tpl.php into /sites/all/themes/CURRENT_THEME
-4) import view harvest_list     
-5) click "Theme: Information", "Rescan template files"

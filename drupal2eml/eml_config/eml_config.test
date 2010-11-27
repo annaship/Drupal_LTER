@@ -27,8 +27,24 @@ class EMLConfigTestCase extends DrupalWebTestCase {
    * Test the element_example form for correct behavior.
    */
    
+   // function testEMLConfigNoUser() {
+   //   // global $user;
+   //   // $this->drupalLogout($user);
+   //   // $anonym = user_load(0);
+   //   // $this->drupalLogin($anonym);
+   //   // Logout and retrieve the page as an anonymous user
+   //   // Must not pass!
+   //   $this->drupalLogout();
+   //   $this->drupalGet('eml_config');
+   //   $this->assertText(t('User login'), t('Check that user is prompted to login'));
+   //   
+   // }
+   
+   
   function testEMLConfigExample() {
     $this->drupalGet('eml_config');
+    
+    // $this->drupalGet('eml_config');
     $this->assertText(t('Site name acronym'));
         
     // Make one basic POST with a set of values and check for correct responses.

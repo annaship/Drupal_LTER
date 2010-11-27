@@ -1,3 +1,9 @@
+$('html, body').scrollTop($(".view-variable-info").offset().top);
+
+$('html, body').animate({
+  scrollTop: $(".view-variable-info").offset().top
+}, 2000);
+
 // #show_vars_link {
 //   color: blue;
 //   padding-bottom: 1em;

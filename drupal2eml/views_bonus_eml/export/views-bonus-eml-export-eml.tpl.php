@@ -291,6 +291,7 @@ function views_bonus_eml_get_geo($site_nid) {
 
   $db_selected = mysql_select_db($database, $con);
 
+// TODO: refactoring, {}, %
   $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
               Y(field_research_site_pt_coords_geo) as latitude,
               AsText(field_research_site_pt_coords_geo) as geo_point
@@ -473,6 +474,7 @@ foreach ($row as $row_nid) {
  * 1a) create dataset variables here
  */
 
+// dpr($dataset_node['dataset']);
   $dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
   $dataset_title            = $dataset_node['dataset']->title;
   $dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
@@ -487,7 +489,9 @@ foreach ($row as $row_nid) {
   $dataset_id               = $dataset_node['dataset']->field_dataset_id;
   $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
                                  
-  $last_settings = prepare_settings();     
+  // if(user_is_logged_in()){                               
+    $last_settings = prepare_settings();     
+  // }
                                           
   // variable_set('eml_settings_acronym', ''); 
   if (!$last_settings['last_acronym']) {    

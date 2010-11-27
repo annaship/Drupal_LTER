@@ -1,0 +1,243 @@
+<?php
+// $Id: eml_config.test,v 1.1.2.3 2010/10/06 13:32:18 ilo Exp $
+
+/**
+ * @file
+ * test file for eml_config module.
+ */
+
+/**
+ * Default test case for the eml_config module.
+ */
+class EMLExportTestCase extends DrupalWebTestCase {
+  
+  protected $privileged_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'EML export',
+      'description' => 'Various tests on the views-bonus-eml-export-eml module.',
+      'group' => 'LTER',
+    );
+  }
+
+  function setUp() {
+    $args = func_get_args();
+    $modules = array_merge(array(
+                'views_bonus_eml_export',
+                'content',
+                // 'content copy',
+                // 'content permissions',
+                // 'option widgets',
+                'text',
+                // 'node reference' ,
+                // 'user reference',
+                // 'schema'
+                ),
+                $args);
+    call_user_func_array(array('parent','setUp'), $modules);
+    // parent::setUp('views_bonus_eml_export',
+    //               'content',
+    //               'content copy',
+    //               'content permissions',
+    //               'option widgets',
+    //               'text',
+    //               'node reference' ,
+    //               'user reference',
+    //               'schema',    
+    // );
+    
+  // Create and log in our privileged user.
+  $admin_user = $this->drupalCreateUser(array(
+                          'access content',
+                          'administer content types',
+                          'administer nodes',
+                          'access administration pages',
+                          'administer site configuration',
+                          'access site reports',
+                          'administer permissions',
+                          'administer users'));
+  $this->drupalLogin($admin_user);
+  //  $permissions = array(
+  //      'access content',
+  //      'administer content types',
+  //      'administer nodes',
+  //      'administer filters',
+  //    );
+  // 
+  //   $privileged_user = $this->drupalCreateUser($permissions);
+    // $this->drupalLogin($privileged_user);  
+  }
+
+  /**
+   * Test the eml_view for correct behavior.
+   */
+ function testCreateDataset() {
+   
+   $dataset = array(
+     'type' => 'data_set',
+     // $edit = array (
+     //   'title' => $this->randomName(8),
+     //   'body' => $this->randomName(16),
+     //   'field_zap_proc_callback[0][value]' => $this->randomName(16),
+     //   'field_zap_proc_status[value]'=> '1',
+     //   'field_zap_proc_sequential[value]'=>'1',
+     // );
+     'field_dataset_abstract[0][value]' => $this->randomName(16),
+     'field_dataset_abstract[0][value]' => $this->randomName(32),
+     'field_dataset_abstract[0][format]' => '2',
+     'field_dataset_short_name[0][value]' => $this->randomName(32),
+     'field_dataset_id[0][value]' => '8',
+     'field_dataset_purpose[0][value]' => $this->randomName(32),
+     'field_dataset_purpose[0][format]' => $this->randomName(16),
+     'field_dataset_add_info[0][value]' => $this->randomName(32),
+     'field_dataset_add_info[0][format]' => $this->randomName(16),
+     'field_dataset_maintenance[0][value]' => $this->randomName(32),
+     'field_dataset_maintenance[0][format]' => $this->randomName(16),
+     'field_dataset_publication_date[0][value]' => time(),
+     'field_dataset_publication_date[0][value2]' => time(),
+     'field_dataset_publication_date[0][timezone]' => 'America/New_York',
+     'field_dataset_publication_date[0][timezone_db]' => 'America/New_York',
+     'field_dataset_publication_date[0][date_type]' => 'date',
+     'field_beg_end_date[0][value]' => time(),
+     'field_beg_end_date[0][value2]' => time(),
+     'field_beg_end_date[0][timezone]' => 'America/New_York',
+     'field_beg_end_date[0][timezone_db]' => 'America/New_York',
+     'field_beg_end_date[0][date_type]' => 'date',
+     'field_methods[0][value]' => $this->randomName(32),
+     'field_methods[0][format]' => $this->randomName(16),
+     'field_methods[1][value]' => $this->randomName(32),
+     'field_methods[1][format]' => $this->randomName(16),
+    
+   );
+
+ $dataset_node = $this->drupalCreateNode($dataset);
+ $this->verbose('Node created: ' . var_export($dataset_node, TRUE));
+ $this->drupalGet("eml_view/{$dataset_node->nid}");
+ // $this->drupalGet("node/{$dataset_node->nid}/edit");
+ $this->assertResponse(200, t('EML exists'));
+ // 
+ // $this->assertResponse(200, t('User is allowed to edit the content.'));
+   
+   
+   $owner = array(
+     'type' => 'person',
+     'organization' => $this->randomName(32),
+     'address' => $this->randomName(64),
+     'city' => $this->randomName(64),
+     'state' => $this->randomName(16),
+     'zipcode' => $this->randomName(16),
+     'country' => $this->randomName(64),
+     'phone' => $this->randomName(16),
+     'fax' => $this->randomName(16),
+     'email' => $this->randomName(64),
+   );
+   $owner_node = $this->drupalCreateNode($owner);
+   $this->verbose('Node created: ' . var_export($owner_node, TRUE));
+   $this->drupalGet("node/{$owner_node->nid}/edit");
+   $this->assertResponse(200, t('User is allowed to edit the content.'));
+ }
+   // $owner = array(
+   //   'type' => 'simpletest_example',
+   //   'title' => $this->randomName(32),
+   //   'body' => $this->randomName(64),
+   // );
+   // $node = $this->drupalCreateNode($settings);
+   
+   // function createDataSet() {
+   //     $owner = array(
+   //       'persons[metadataProvider][organization]' => 'LTER org',
+   //       'persons[metadataProvider][address]' => 'address',
+   //       'persons[metadataProvider][city]' => 'Aaa',
+   //       'persons[metadataProvider][state]' => 'MD',
+   //       'persons[metadataProvider][zipcode]' => '02536',
+   //       'persons[metadataProvider][country]' => 'Ukraine',
+   //       'persons[metadataProvider][phone]' => '',
+   //       'persons[metadataProvider][fax]' => '',
+   //       'persons[metadataProvider][email]' => 'email@example.com',     
+   //     );
+   //   
+   // }
+   
+   // function testEMLExport() {
+     
+     
+     
+     // $this->drupalGet('eml_view/213');
+     // $this->assertText('<eml:eml xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd" packageId="knb-lter-pie.8.5684" system="knb">');
+   // }
+   
+  //  $this->drupalGet('');
+  // 
+  //  $this->clickLink(t('Privacy'));
+  //  $this->assertText(t('Transparency and Choice'));
+  //  $this->assertTitle(t('Google Privacy Center'));
+  // 
+  //  $this->clickLink(t('privacy principles'));
+  // 
+  //  $edit = array (
+  //    'q' => 'search',
+  //  );
+  //  $this->drupalPost(NULL, $edit, t('submit'));
+  // 
+  //  $this->clickLink(t('2'));
+  //  
+  // function testEMLExportExample() {
+  //   $this->drupalGet('eml_view');
+  //   $this->assertText(t('User login'), t('Check that user is prompted to login'));
+  //   
+  //   // $this->drupalGet('eml_config');
+  //   $this->assertText(t('Site name acronym'));
+  //       
+  //   // Make one basic POST with a set of values and check for correct responses.
+  //   $edit = array(
+  //     'acronym' => 'ver',
+  //     'language' => 'english',
+  //     'intellectual_rights' => 'Here we are!',
+  //     'persons[metadataProvider][organization]' => 'LTER org',
+  //     'persons[metadataProvider][address]' => 'address',
+  //     'persons[metadataProvider][city]' => 'Aaa',
+  //     'persons[metadataProvider][state]' => 'MD',
+  //     'persons[metadataProvider][zipcode]' => '02536',
+  //     'persons[metadataProvider][country]' => 'Ukraine',
+  //     'persons[metadataProvider][phone]' => '',
+  //     'persons[metadataProvider][fax]' => '',
+  //     'persons[metadataProvider][email]' => 'email@example.com',
+  // 
+  //     'persons[publisher][organization]' => 'LTER org',
+  //     'persons[publisher][address]' => 'address',
+  //     'persons[publisher][city]' => 'Aaa',
+  //     'persons[publisher][state]' => 'MD',
+  //     'persons[publisher][zipcode]' => '02536',
+  //     'persons[publisher][country]' => 'Ukraine',
+  //     'persons[publisher][phone]' => '',
+  //     'persons[publisher][fax]' => '',
+  //     'persons[publisher][email]' => 'email@example.com',      
+  //   );
+  //   $this->drupalPost('eml_config/eml_config_example', $edit, t('Create'));
+  //   $this->assertText('Your EML settings have been saved');
+  // 
+  //   $this->drupalGet('eml_config/eml_config_example');
+  //   $this->verbose('City created: ' . var_export($edit['persons[metadataProvider][city]'], TRUE));
+  //   // $this->assertText(t('@value', array('@value' => $edit['persons[metadataProvider][city]'])));
+  //   
+  //   // $this->assertText(t('Metadata Provider\'s email is @value', 
+  //   //         array('@value' => $edit['persons[metadataProvider][email]'])));
+  // 
+  //   // $this->assertText(t('eml_config_textfield has value @value', array('@value' => $edit['eml_config_textfield'])));
+  //   // $this->assertText(t('eml_config_checkbox has value 1'));
+  //   // $this->assertPattern(t('/areacode.*!areacode/', array('!areacode' => $edit['eml_config_element_discrete[areacode]'])));
+  //   // $this->assertPattern(t('/prefix.*!prefix/', array('!prefix' => $edit['eml_config_element_discrete[prefix]'])));
+  //   // $this->assertPattern(t('/extension.*!extension/', array('!extension' => $edit['eml_config_element_discrete[extension]'])));
+  //   // 
+  //   // $this->assertText(t('eml_config_element_combined has value @value', array('@value' => $edit['eml_config_element_combined[areacode]'] . $edit['eml_config_element_combined[prefix]'] . $edit['eml_config_element_combined[extension]'])));
+  //   // 
+  //   // // Now flip the checkbox and check for correct behavior.
+  //   // $edit['eml_config_checkbox'] = FALSE;
+  //   // $this->drupalPost('examples/eml_config/element_example', $edit, t('Submit'));
+  //   // $this->assertText(t('eml_config_checkbox has value 0'));
+  // }
+
+
+}
+
