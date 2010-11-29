@@ -15,27 +15,16 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
 
   foreach ($themed_rows as $row) {
 
-    // unset($ver_vid);
-    // unset($dataset_node);
-    // unset($node);
-    // unset($owner_nodes);
-    // unset($contact_nodes);
-    // unset($datamanager_nodes);
-    // unset($fieldcrew_nodes);
-    // unset($labcrew_nodes);
-    // unset($ext_assoc_nodes);
-    // unset($site_nodes);
-
-    $ver_vid            = 0;
-    $dataset_node       = Array();
-    $node               = Array();
-    $owner_nodes        = Array();
-    $contact_nodes      = Array();
-    $datamanager_nodes  = Array();
-    $fieldcrew_nodes    = Array();
-    $labcrew_nodes      = Array();
-    $ext_assoc_nodes    = Array();
-    $site_nodes         = Array();
+    unset($ver_vid);
+    unset($dataset_node);
+    unset($node);
+    unset($owner_nodes);
+    unset($contact_nodes);
+    unset($datamanager_nodes);
+    unset($fieldcrew_nodes);
+    unset($labcrew_nodes);
+    unset($ext_assoc_nodes);
+    unset($site_nodes);
 
   //   1) take all from db as an Array
     foreach ($row as $row_nid) {
@@ -107,16 +96,16 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
         $dataset_node['dataset_site'] = $site_nodes;
       }
 
-      $datafile_node  = Array();
+     unset($datafile_node);
 
   //  datafile
       $field_dataset_datafile_ref_nid = $node->field_dataset_datafile_ref;
       if ($field_dataset_datafile_ref_nid) {
         foreach ($field_dataset_datafile_ref_nid as $v) {
           foreach ($v as $datafile_nid) {
-            $variable_nodes       = Array();
-            $datafile_site_nodes  = Array();
-            $datafile_node        = node_load($datafile_nid);
+           unset($variable_nodes);
+           unset($datafile_site_nodes);
+            $datafile_node = node_load($datafile_nid);
     //      variables
             $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
             if ($field_datafile_variable_ref_nids) {
@@ -393,7 +382,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
   </access>
   <?php
         // Data_file start
-        $file_var_array = Array();
+        unset($file_var_array);
         if ($dataset_node['dataset_datafiles'] && $dataset_node['dataset_datafiles'][0]['datafile']->nid) {
           foreach ($dataset_node['dataset_datafiles'] as $file_var_array) {
 
