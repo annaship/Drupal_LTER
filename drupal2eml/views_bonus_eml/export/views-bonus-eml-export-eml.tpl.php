@@ -31,65 +31,30 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
       $node = node_load($row_nid);
       $dataset_node['dataset'] = $node;
 
-  //  refs
-      $field_dataset_owner_ref_nid = $node->field_dataset_owner_ref;
-      if ($field_dataset_owner_ref_nid) {
-        foreach ($field_dataset_owner_ref_nid as $v) {
-          foreach ($v as $owner_nid) {
-            $owner_nodes[] = node_load($owner_nid);
-          }
-        }
-      }
-      $dataset_node['dataset_owners'] = $owner_nodes;
-
-      $field_dataset_contact_ref_nid = $node->field_dataset_contact_ref;
-      if ($field_dataset_contact_ref_nid) {
-        foreach ($field_dataset_contact_ref_nid as $v) {
-          foreach ($v as $contact_nid) {
-            $contact_nodes[] = node_load($contact_nid);
-          }
-        }
-      }
-      $dataset_node['dataset_contacts'] = $contact_nodes;
-
-      $field_dataset_datamanager_ref_nid = $node->field_dataset_datamanager_ref;
-      foreach ($field_dataset_datamanager_ref_nid as $v) {
-        foreach ($v as $datamanager_nid) {
-          $datamanager_nodes[] = node_load($datamanager_nid);
-          }
-       }
-       $dataset_node['dataset_datamanagers'] = $datamanager_nodes;
-
-
-      $field_dataset_fieldcrew_ref_nid = $node->field_dataset_fieldcrew_ref;
-      if ($field_dataset_fieldcrew_ref_nid) {
-        foreach ($field_dataset_fieldcrew_ref_nid as $v) {
-          foreach ($v as $fieldcrew_nid) {
-            $fieldcrew_nodes[] = node_load($fieldcrew_nid);
-          }
-        }
-      }
-      $dataset_node['dataset_fieldcrew'] = $fieldcrew_nodes;
-
-      $field_dataset_labcrew_ref_nid = $node->field_dataset_labcrew_ref;
-      if ($field_dataset_labcrew_ref_nid) {
-        foreach ($field_dataset_labcrew_ref_nid as $v) {
-          foreach ($v as $labcrew_nid) {
-            $labcrew_nodes[] = node_load($labcrew_nid);
+  //  refs                                           
+      $dataset_reference_names = array(
+        'dataset_owner',
+        'dataset_contact',
+        'dataset_datamanager',
+        'dataset_fieldcrew',
+        'dataset_labcrew',
+        'dataset_ext_assoc', 
+      );        
+                      
+      foreach ($dataset_reference_names as $dataset_reference_name) {   
+        unset($ref_nodes);
+        $field_name = "field_" . $dataset_reference_name . "_ref";        
+        $ref_nid_array = $node->$field_name; 
+        $array_name    = $dataset_reference_name . "_nodes";
+        if ($ref_nid_array) {
+          foreach ($ref_nid_array as $v) {
+            foreach ($v as $ref_nid) {
+              $ref_nodes[] = node_load($ref_nid); 
             }
-         }
-       }
-       $dataset_node['dataset_labcrew'] = $labcrew_nodes;
-
-      $field_dataset_ext_assoc_ref_nid = $node->field_dataset_ext_assoc_ref;
-      if ($field_dataset_ext_assoc_ref_nid) {
-        foreach ($field_dataset_ext_assoc_ref_nid as $v) {
-          foreach ($v as $ext_assoc_nid) {
-            $ext_assoc_nodes[] = node_load($ext_assoc_nid);
-            }
-         }
-         $dataset_node['dataset_ext_assoc'] = $ext_assoc_nodes;
-      }
+          }
+        }
+        $dataset_node[$dataset_reference_name] = $ref_nodes;
+      } 
 
       if ($node->field_dataset_site_ref[0]['nid']) {
         $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
@@ -172,9 +137,9 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
 
   //  persons and sites vid
     $dataset_ref = array(
-      'dataset_owners',
-      'dataset_contacts',
-      'dataset_datamanagers',
+      'dataset_owner',
+      'dataset_contact',
+      'dataset_datamanager',
       'dataset_fieldcrew',
       'dataset_labcrew',
       'dataset_ext_assoc',
@@ -233,12 +198,12 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
         views_bonus_eml_print_tag_line('title', $dataset_title);
 
         // Person refs start
-        views_bonus_eml_print_person('creator', $dataset_node['dataset_owners']);
+        views_bonus_eml_print_person('creator', $dataset_node['dataset_owner']);
         // metadataProvider from settings
         views_bonus_eml_print_person('metadataProvider', $metadata_provider_arr);
 
         $associated_party_arr = array (
-          'data manager'         => 'dataset_datamanagers',
+          'data manager'         => 'dataset_datamanager',
           'field crew'           => 'dataset_fieldcrew',
           'labcrew'              => 'dataset_labcrew',
           'associate researcher' => 'dataset_ext_assoc',
@@ -325,7 +290,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
           views_bonus_eml_print_close_tag('maintenance');
         }
 
-        views_bonus_eml_print_person('contact', $dataset_node['dataset_contacts']);
+        views_bonus_eml_print_person('contact', $dataset_node['dataset_contact']);
         //publisher, specific for every given site from config file,
         views_bonus_eml_print_person('publisher', $publisher_arr);
         views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
