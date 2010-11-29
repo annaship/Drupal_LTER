@@ -31,7 +31,8 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
       $node = node_load($row_nid);
       $dataset_node['dataset'] = $node;
 
-  //  refs                                           
+  //  refs                  
+  // TODO: there are 3 similar arrays, remove
       $dataset_reference_names = array(
         'dataset_owner',
         'dataset_contact',
@@ -41,11 +42,10 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
         'dataset_ext_assoc', 
       );        
                       
-      foreach ($dataset_reference_names as $dataset_reference_name) {   
+      foreach ($dataset_reference_names as $dataset_reference_name) {
         unset($ref_nodes);
-        $field_name = "field_" . $dataset_reference_name . "_ref";        
+        $field_name = "field_" . $dataset_reference_name . "_ref";
         $ref_nid_array = $node->$field_name; 
-        $array_name    = $dataset_reference_name . "_nodes";
         if ($ref_nid_array) {
           foreach ($ref_nid_array as $v) {
             foreach ($v as $ref_nid) {
@@ -215,7 +215,8 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                 views_bonus_eml_print_person($key, $dataset_node[$value]);
             }
           }
-        }
+        }    
+        
         //pubDate
         views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
 
@@ -470,12 +471,32 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                      $attribute_minimum[0]['value'] ||
                      $attribute_precision[0]['value'] ||
                      $attribute_unit[0]['value']) {
-                   views_bonus_eml_print_open_tag('measurementScale');
-                   if ($attribute_formatstring[0]['value']) {
-                     views_bonus_eml_print_open_tag('datatime');
-                       views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
-                     views_bonus_eml_print_close_tag('datatime');
-                   }
+                  views_bonus_eml_print_open_tag('measurementScale');
+                  if ($attribute_formatstring[0]['value']) {
+                   views_bonus_eml_print_open_tag('datatime');
+                     views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
+                   views_bonus_eml_print_close_tag('datatime');
+                  }                                      
+                  // if ($attribute_unit[0]['value']) {
+                  //   views_bonus_eml_print_open_tag('ratio');
+                  //     views_bonus_eml_print_open_tag('unit');
+                  //       views_bonus_eml_print_value('customUnit', $attribute_unit);
+                  //     views_bonus_eml_print_close_tag('unit');
+                  //     if ($attribute_precision[0]['value']) {
+                  //       views_bonus_eml_print_value('precision',      $attribute_precision);
+                  //     }
+                  //     views_bonus_eml_print_open_tag('numericDomain');
+                  //       views_bonus_eml_print_value('numberType', $realNumber);
+                  //       if ($attribute_maximum[0]['value'] ||
+                  //       $attribute_minimum[0]['value']) {
+                  //         views_bonus_eml_print_open_tag('bounds');
+                  //         views_bonus_eml_print_value('maximum',    $attribute_maximum);
+                  //         views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                  //         views_bonus_eml_print_close_tag('bounds');
+                  //       }
+                  //     views_bonus_eml_print_close_tag('numericDomain');
+                  //   views_bonus_eml_print_close_tag('ratio');
+                  // }
                    if ($attribute_maximum[0]['value'] ||
                        $attribute_minimum[0]['value'] ||
                        $attribute_precision[0]['value'] ||
