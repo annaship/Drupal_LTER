@@ -41,19 +41,18 @@ function views_bonus_eml_print_tag_line($label, $content) {
   }
 }
 
+function views_bonus_eml_print_attributed_line($label, $content, $attribute_name = '', $attribute_value = '') {
+  if ($content && $attribute_value) {
+    print '<' . $label . ' ' . $attribute_name . '="' . $attribute_value . '">'
+      . views_bonus_eml_my_strip_tags($content) . '</' . $label . '>';
+  }
+}
+
 function views_bonus_eml_print_value($tag, $content) {
   if ($content[0]['value']) {
     foreach ($content as $in_arr) {
         views_bonus_eml_print_tag_line($tag, views_bonus_eml_my_strip_tags($in_arr['value']));
     }
-  }
-}
-
-function views_bonus_eml_print_attr_line($label, $content, $attribute_name, $attribute_value) {
-  if ($content && $attribute_value) {
-    print '<' . $label . ' ' . $attribute_name . '="' . $attribute_value . '">'
-      . views_bonus_eml_my_strip_tags($content) . '</' . $label . '>';
-
   }
 }
 
@@ -111,10 +110,10 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_value('country',            $person_country);
         views_bonus_eml_print_close_tag('address');
       }
-      views_bonus_eml_print_attr_line('phone',
+      views_bonus_eml_print_attributed_line('phone',
                       views_bonus_eml_get_uniq_value($person_phone),
                       'phonetype', 'voice');
-      views_bonus_eml_print_attr_line('phone',
+      views_bonus_eml_print_attributed_line('phone',
                       views_bonus_eml_get_uniq_value($person_fax),
                       'phonetype', 'fax');
       if ($person_email[0]['email']) {
@@ -289,7 +288,7 @@ function views_bonus_eml_get_geo($site_nid) {
 
   $db_selected = mysql_select_db($database, $con);
 
-// TODO: refactoring, {}, %
+// TODO: refactoring, {}, % - doesn't work :/
   $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
               Y(field_research_site_pt_coords_geo) as latitude,
               AsText(field_research_site_pt_coords_geo) as geo_point
@@ -319,24 +318,16 @@ function views_bonus_eml_get_geo($site_nid) {
     return $site_nodes;
   }
 
-//http://stackoverflow.com/questions/526556/how-to-flatten-a-multi-dimensional-array-to-simple-one-in-php
-
 function flatten_array($array, $preserve_keys = 0, &$out = array()) {
-    # Flatten a multidimensional array to one dimension, optionally preserving keys.
-    #
-    # $array - the array to flatten
-    # $preserve_keys - 0 (default) to not preserve keys, 1 to preserve string keys only, 2 to preserve all keys
-    # $out - internal use argument for recursion
-    if ($array) {
-      foreach($array as $key => $child)
-          if(is_array($child))
-              $out = flatten_array($child, $preserve_keys, $out);
-          elseif($preserve_keys + is_string($key) > 1)
-              $out[$key] = $child;
-          else
-              $out[] = $child;
-//      return $out;
-    }
+  if ($array) {
+    foreach($array as $key => $child)
+        if (is_array($child))
+            $out = flatten_array($child, $preserve_keys, $out);
+        elseif ($preserve_keys + is_string($key) > 1)
+            $out[$key] = $child;
+        else
+            $out[] = $child;
+  }
   return $out;
 }
 
