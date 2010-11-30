@@ -413,8 +413,6 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                  // taxonomic coverage here
                views_bonus_eml_print_close_tag('coverage');
             }
-
-// ===========
             if ($file_methods[0]['value']) {
               views_bonus_eml_print_open_tag('methods');
                 views_bonus_eml_print_open_tag('methodStep');
@@ -440,28 +438,6 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                 }
               views_bonus_eml_print_close_tag('methods');
             }
-// ==================
-  // ??? change as dataset methods ???
-  // methods section  !!! ISG comment added  1st, methods can be opened if this is true $dataset_methods[0]['value']
-  // if we have instruments, but not a description, we need to ignore it all together: changed conditional.
-            // if ($file_instrumentation[0]['value'] ||
-            //    $file_methods[0]['value']         ||
-            //    $quality[0]['value']) {
-            //  views_bonus_eml_print_open_tag('method');
-            //  if ($file_instrumentation[0]['value'] ||
-            //      $file_methods[0]['value']) {
-            //    views_bonus_eml_print_open_tag('methodStep');
-            //      views_bonus_eml_print_value('instrumentation',  $file_instrumentation);
-            //      views_bonus_eml_print_value('description',      $file_methods);
-            //    views_bonus_eml_print_close_tag('methodStep');
-            //  }
-            //  if ($file_quality[0]['value']) {
-            //    views_bonus_eml_print_open_tag('qualityControl');
-            //      views_bonus_eml_print_value('description',      $file_quality);
-            //    views_bonus_eml_print_close_tag('qualityControl');
-            //  }
-            //  views_bonus_eml_print_close_tag('method');
-            // }
 
             // Variables start
             // Take variables here to use in conditions
