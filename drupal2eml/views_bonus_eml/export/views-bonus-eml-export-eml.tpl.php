@@ -391,7 +391,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                views_bonus_eml_print_value('recordDelimiter',      $file_record_delimiter);
                views_bonus_eml_print_value('attributeOrientation', $file_orientation);
                views_bonus_eml_print_open_tag('simpleDelimited');                 
-               $file_delimiter[0]['value'] ? $file_delimiter = $file_delimiter[0]['value'] : $file_delimiter = ',';        
+                 $file_delimiter[0]['value'] ? $file_delimiter = $file_delimiter[0]['value'] : $file_delimiter = ',';        
                  views_bonus_eml_print_tag_line('fieldDelimiter',  $file_delimiter);
                  views_bonus_eml_print_value('quoteCharacter',     $file_quote_character);
                views_bonus_eml_print_close_tag('simpleDelimited');
@@ -399,9 +399,9 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
             views_bonus_eml_print_close_tag('dataFormat');
             if ($file_data_file && $file_data_file[0]['filepath']) {
              foreach ($file_data_file as $file_data) {
-                 views_bonus_eml_print_open_tag('distribution');
-                   views_bonus_eml_print_tag_line('url', $urlBase . $file_data['filepath']);
-                 views_bonus_eml_print_close_tag('distribution');
+               views_bonus_eml_print_open_tag('distribution');
+                 views_bonus_eml_print_tag_line('url', $urlBase . $file_data['filepath']);
+               views_bonus_eml_print_close_tag('distribution');
              }
             }
             views_bonus_eml_print_close_tag('physical');
@@ -414,27 +414,54 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                views_bonus_eml_print_close_tag('coverage');
             }
 
+// ===========
+            if ($file_methods[0]['value']) {
+              views_bonus_eml_print_open_tag('methods');
+                views_bonus_eml_print_open_tag('methodStep');
+                  views_bonus_eml_print_open_tag('description');  
+                     views_bonus_eml_print_open_tag('section');
+                       views_bonus_eml_print_open_tag('para'); 
+                          views_bonus_eml_print_value('literalLayout', $file_methods);
+                       views_bonus_eml_print_close_tag('para');
+                     views_bonus_eml_print_close_tag('section');
+                  views_bonus_eml_print_close_tag('description');
+                  if ($file_instrumentation[0]['value']) {
+                    views_bonus_eml_print_value('instrumentation', $file_instrumentation);
+                  }
+                views_bonus_eml_print_close_tag('methodStep');
+                if ($file_quality[0]['value']) {
+                   views_bonus_eml_print_open_tag('qualityControl');
+                      views_bonus_eml_print_open_tag('description');
+                         views_bonus_eml_print_open_tag('para');
+                             views_bonus_eml_print_value('literalLayout', $file_quality);
+                         views_bonus_eml_print_close_tag('para');
+                      views_bonus_eml_print_close_tag('description');
+                   views_bonus_eml_print_close_tag('qualityControl');
+                }
+              views_bonus_eml_print_close_tag('methods');
+            }
+// ==================
   // ??? change as dataset methods ???
   // methods section  !!! ISG comment added  1st, methods can be opened if this is true $dataset_methods[0]['value']
   // if we have instruments, but not a description, we need to ignore it all together: changed conditional.
-            if ($file_instrumentation[0]['value'] ||
-               $file_methods[0]['value']         ||
-               $quality[0]['value']) {
-             views_bonus_eml_print_open_tag('method');
-             if ($file_instrumentation[0]['value'] ||
-                 $file_methods[0]['value']) {
-               views_bonus_eml_print_open_tag('methodStep');
-                 views_bonus_eml_print_value('instrumentation',  $file_instrumentation);
-                 views_bonus_eml_print_value('description',      $file_methods);
-               views_bonus_eml_print_close_tag('methodStep');
-             }
-             if ($file_quality[0]['value']) {
-               views_bonus_eml_print_open_tag('qualityControl');
-                 views_bonus_eml_print_value('description',      $file_quality);
-               views_bonus_eml_print_close_tag('qualityControl');
-             }
-             views_bonus_eml_print_close_tag('method');
-            }
+            // if ($file_instrumentation[0]['value'] ||
+            //    $file_methods[0]['value']         ||
+            //    $quality[0]['value']) {
+            //  views_bonus_eml_print_open_tag('method');
+            //  if ($file_instrumentation[0]['value'] ||
+            //      $file_methods[0]['value']) {
+            //    views_bonus_eml_print_open_tag('methodStep');
+            //      views_bonus_eml_print_value('instrumentation',  $file_instrumentation);
+            //      views_bonus_eml_print_value('description',      $file_methods);
+            //    views_bonus_eml_print_close_tag('methodStep');
+            //  }
+            //  if ($file_quality[0]['value']) {
+            //    views_bonus_eml_print_open_tag('qualityControl');
+            //      views_bonus_eml_print_value('description',      $file_quality);
+            //    views_bonus_eml_print_close_tag('qualityControl');
+            //  }
+            //  views_bonus_eml_print_close_tag('method');
+            // }
 
             // Variables start
             // Take variables here to use in conditions
