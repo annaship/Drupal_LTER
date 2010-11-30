@@ -1,12 +1,11 @@
 <?php
-  require_once("views-bonus-eml-export-eml-funcions.tpl.php");
-
+// $Id: views-bonus-eml-export-eml-vars.tpl.php, v 3.0 11/09/10 ashipunova Exp $
 /*
- * 1) take all from db as an Obect?/Array?
- * 2) calculate vid version
- * 3) create a template
- * 4) populate data into the template
- */
+ * 1) Create an array $dataset_node with all data related to this dataset
+ * 2) Calculate vid version 
+ */                           
+                                      
+  require_once("views-bonus-eml-export-eml-funcions.tpl.php");
 
   foreach ($themed_rows as $row) {
 
@@ -34,11 +33,19 @@
         'dataset_datamanager',
         'dataset_fieldcrew',
         'dataset_labcrew',
-        'dataset_ext_assoc', 
+        'dataset_ext_assoc',
+        'dataset_site' 
       );        
                       
       foreach ($dataset_reference_names as $dataset_reference_name) {
-        unset($ref_nodes);
+        unset($ref_nodes);                   
+        if ($dataset_reference_name == 'dataset_site') {
+          if ($node->field_dataset_site_ref[0]['nid']) {
+            $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
+            $dataset_node['dataset_site'] = $site_nodes;
+          }          
+        } 
+        else {
         $field_name = "field_" . $dataset_reference_name . "_ref";
         $ref_nid_array = $node->$field_name; 
         if ($ref_nid_array) {
@@ -49,12 +56,13 @@
           }
         }
         $dataset_node[$dataset_reference_name] = $ref_nodes;
+        }
       } 
 
-      if ($node->field_dataset_site_ref[0]['nid']) {
-        $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
-        $dataset_node['dataset_site'] = $site_nodes;
-      }
+      // if ($node->field_dataset_site_ref[0]['nid']) {
+      //   $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
+      //   $dataset_node['dataset_site'] = $site_nodes;
+      // }
 
      unset($datafile_node);
 

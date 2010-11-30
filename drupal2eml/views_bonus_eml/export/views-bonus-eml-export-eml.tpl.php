@@ -6,9 +6,6 @@
  
  require_once("views-bonus-eml-export-eml-vars.tpl.php");
  
-
- // dpr($dataset_node['dataset']);
-  
   /*
    * 3) create and populate a template
    */
