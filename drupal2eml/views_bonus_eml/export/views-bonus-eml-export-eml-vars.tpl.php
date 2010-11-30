@@ -34,20 +34,20 @@
         'dataset_fieldcrew',
         'dataset_labcrew',
         'dataset_ext_assoc',
-        'dataset_site' 
+        'dataset_site', 
       );        
                       
       foreach ($dataset_reference_names as $dataset_reference_name) {
         unset($ref_nodes);                   
+        $field_name = "field_" . $dataset_reference_name . "_ref";
+        $ref_nid_array = $node->$field_name; 
         if ($dataset_reference_name == 'dataset_site') {
           if ($node->field_dataset_site_ref[0]['nid']) {
-            $site_nodes = views_bonus_eml_get_site_information($node->field_dataset_site_ref);
+            $site_nodes = views_bonus_eml_get_site_information($ref_nid_array);
             $dataset_node['dataset_site'] = $site_nodes;
           }          
         } 
         else {
-        $field_name = "field_" . $dataset_reference_name . "_ref";
-        $ref_nid_array = $node->$field_name; 
         if ($ref_nid_array) {
           foreach ($ref_nid_array as $v) {
             foreach ($v as $ref_nid) {
