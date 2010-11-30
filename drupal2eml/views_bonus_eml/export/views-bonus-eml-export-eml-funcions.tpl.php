@@ -56,7 +56,7 @@ function views_bonus_eml_print_value($tag, $content) {
   }
 }
 
-// printing without foreach
+// return value without foreach
 function views_bonus_eml_get_uniq_value($content) {
   if ($content[0]['value']) {
     return views_bonus_eml_my_strip_tags($content[0]['value']);
@@ -64,10 +64,8 @@ function views_bonus_eml_get_uniq_value($content) {
 }
 
 function views_bonus_eml_print_person($person_tag, $content) {
-//      print "\n\$content = ";
-//      print_r($content);
-
-  if ($content[0]->nid) {
+  if ($content[0]->nid) {        
+    // using variables here, because field names could change, easier to keep them in one place
     foreach ($content as $person_node) {
       $person_first_name    = $person_node->field_person_first_name;
       $person_last_name     = $person_node->field_person_last_name;
@@ -82,7 +80,8 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_email         = $person_node->field_person_email;
       $person_personid      = $person_node->field_person_personid;
       $person_role_arr      = $person_node->field_person_role;
-      $person_role          = $person_role_arr[0]['value'];
+      $person_role          = $person_role_arr[0]['value'];                 
+      
       $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
 
       if (in_array($person_tag, $not_show_role)) {
@@ -121,7 +120,6 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_tag_line('electronicMailAddress', $email['email']);
         }
       }
-
       views_bonus_eml_print_value('userId', $person_personid);
       if (in_array($person_tag, $not_show_role)) {
         views_bonus_eml_print_close_tag($person_tag);
@@ -164,7 +162,7 @@ function views_bonus_eml_print_temporal_coverage($beg_end_date) {
 // Collect geo info into one string,
 // only for the first time make $comma_flag = 0, to skip comma
 function views_bonus_eml_collect_geographic_description($label, $content, $comma_flag = 1) {
-  $geoDesc = '';
+  unset($geoDesc);
   if ($content[0]['value']) {
     foreach($content as $value) {
       if ($comma_flag == 1) {
@@ -178,6 +176,7 @@ function views_bonus_eml_collect_geographic_description($label, $content, $comma
   return $geoDesc;
 } // end of function views_bonus_eml_collect_geographic_description
 
+// not used for now
 function views_bonus_eml_get_lon_geo_point($content) {
   $matches = Array();
   if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
@@ -190,8 +189,6 @@ function views_bonus_eml_get_lon_geo_point($content) {
 //    [2] => 18.31466667
 //)
   }
-
-//  return $dataset_site_lon;
 }
 
 // take research_site as geographicCoverage
