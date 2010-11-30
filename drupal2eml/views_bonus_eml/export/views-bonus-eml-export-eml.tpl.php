@@ -466,60 +466,64 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                     views_bonus_eml_print_tag_line('attributeName',    $var_title);
                     views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                     views_bonus_eml_print_value('attributeDefinition', $var_definition);
-                 if ($attribute_formatstring[0]['value'] ||
-                     $attribute_maximum[0]['value'] ||
-                     $attribute_minimum[0]['value'] ||
-                     $attribute_precision[0]['value'] ||
-                     $attribute_unit[0]['value']) {
-                  views_bonus_eml_print_open_tag('measurementScale');
-                  if ($attribute_formatstring[0]['value']) {
-                   views_bonus_eml_print_open_tag('datatime');
-                     views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
-                   views_bonus_eml_print_close_tag('datatime');
-                  }                                      
-                  // if ($attribute_unit[0]['value']) {
-                  //   views_bonus_eml_print_open_tag('ratio');
-                  //     views_bonus_eml_print_open_tag('unit');
-                  //       views_bonus_eml_print_value('customUnit', $attribute_unit);
-                  //     views_bonus_eml_print_close_tag('unit');
-                  //     if ($attribute_precision[0]['value']) {
-                  //       views_bonus_eml_print_value('precision',      $attribute_precision);
-                  //     }
-                  //     views_bonus_eml_print_open_tag('numericDomain');
-                  //       views_bonus_eml_print_value('numberType', $realNumber);
-                  //       if ($attribute_maximum[0]['value'] ||
-                  //       $attribute_minimum[0]['value']) {
-                  //         views_bonus_eml_print_open_tag('bounds');
-                  //         views_bonus_eml_print_value('maximum',    $attribute_maximum);
-                  //         views_bonus_eml_print_value('minimum',    $attribute_minimum);
-                  //         views_bonus_eml_print_close_tag('bounds');
-                  //       }
-                  //     views_bonus_eml_print_close_tag('numericDomain');
-                  //   views_bonus_eml_print_close_tag('ratio');
-                  // }
-                   if ($attribute_maximum[0]['value'] ||
+                    if ($attribute_formatstring[0]['value'] ||
+                       $attribute_maximum[0]['value'] ||
                        $attribute_minimum[0]['value'] ||
                        $attribute_precision[0]['value'] ||
                        $attribute_unit[0]['value']) {
-                     views_bonus_eml_print_open_tag('ratio');
-                     if ($attribute_maximum[0]['value'] ||
-                         $attribute_minimum[0]['value']) {
-                       views_bonus_eml_print_open_tag('numericDomain');
-                         views_bonus_eml_print_open_tag('bounds');
-                           views_bonus_eml_print_value('maximum',    $attribute_maximum);
-                           views_bonus_eml_print_value('minimum',    $attribute_minimum);
-                         views_bonus_eml_print_close_tag('bounds');
-                       views_bonus_eml_print_close_tag('numericDomain');
-                     }
-                     if ($attribute_precision[0]['value']) {
-                       views_bonus_eml_print_value('precision',      $attribute_precision);
-                     }
-                     if ($attribute_unit[0]['value']) {
-                       views_bonus_eml_print_open_tag('unit');
-                         views_bonus_eml_print_value('standardUnit', $attribute_unit);
-                       views_bonus_eml_print_close_tag('unit');
-                     }
-                     views_bonus_eml_print_close_tag('ratio');
+                    views_bonus_eml_print_open_tag('measurementScale');
+                    if ($attribute_formatstring[0]['value']) {
+                      views_bonus_eml_print_open_tag('datatime');
+                       views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
+                      views_bonus_eml_print_close_tag('datatime');
+                    }    
+                  // ratio:     
+                                               
+                  // if ($attribute_maximum[0]['value'] ||
+                  //     $attribute_minimum[0]['value'] ||
+                  //     $attribute_precision[0]['value'] ||
+                  //     $attribute_unit[0]['value']) {
+                  //   views_bonus_eml_print_open_tag('ratio');
+                  //   if ($attribute_unit[0]['value']) {
+                  //     views_bonus_eml_print_open_tag('unit');
+                  //       views_bonus_eml_print_value('customUnit', $attribute_unit);
+                  //     views_bonus_eml_print_close_tag('unit');
+                  //   }
+                  //   if ($attribute_precision[0]['value']) {
+                  //     views_bonus_eml_print_value('precision',      $attribute_precision);
+                  //   }
+                  //   if ($attribute_maximum[0]['value'] ||
+                  //       $attribute_minimum[0]['value']) {
+                  //     views_bonus_eml_print_open_tag('numericDomain');  
+                  //       views_bonus_eml_print_value('numberType', $realNumber); 
+                  //       views_bonus_eml_print_open_tag('bounds');
+                  //         views_bonus_eml_print_value('maximum',    $attribute_maximum);
+                  //         views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                  //       views_bonus_eml_print_close_tag('bounds');
+                  //     views_bonus_eml_print_close_tag('numericDomain');
+                  //   }
+                  //   views_bonus_eml_print_close_tag('ratio');
+                  // }         
+                  // TODO: ask Inigo if he want 'numericDomain' always, even if it is empty. If not - use code just above this line.
+                    if ($attribute_unit[0]['value']) {
+                      views_bonus_eml_print_open_tag('ratio');
+                        views_bonus_eml_print_open_tag('unit');
+                          views_bonus_eml_print_value('customUnit', $attribute_unit);
+                        views_bonus_eml_print_close_tag('unit');
+                        if ($attribute_precision[0]['value']) {
+                          views_bonus_eml_print_value('precision',      $attribute_precision);
+                        }
+                        views_bonus_eml_print_open_tag('numericDomain');
+                          views_bonus_eml_print_value('numberType', $realNumber);
+                          if ($attribute_maximum[0]['value'] ||
+                          $attribute_minimum[0]['value']) {
+                            views_bonus_eml_print_open_tag('bounds');
+                            views_bonus_eml_print_value('maximum',    $attribute_maximum);
+                            views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                            views_bonus_eml_print_close_tag('bounds');
+                          }
+                        views_bonus_eml_print_close_tag('numericDomain');
+                      views_bonus_eml_print_close_tag('ratio');
                     }
                     if ($code_definitions[0]['value']) {
                      views_bonus_eml_print_open_tag('nominal');
