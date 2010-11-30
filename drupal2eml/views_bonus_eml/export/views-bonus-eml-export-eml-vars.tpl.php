@@ -43,8 +43,8 @@
         $ref_nid_array = $node->$field_name; 
         if ($dataset_reference_name == 'dataset_site') {
           if ($node->field_dataset_site_ref[0]['nid']) {
-            $site_nodes = views_bonus_eml_get_site_information($ref_nid_array);
-            $dataset_node['dataset_site'] = $site_nodes;
+            $ref_nodes = views_bonus_eml_get_site_information($ref_nid_array);
+            $dataset_node['dataset_site'] = $ref_nodes;
           }          
         } 
         else {
