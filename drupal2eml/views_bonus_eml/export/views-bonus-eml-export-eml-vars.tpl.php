@@ -41,22 +41,20 @@
         unset($ref_nodes);                   
         $field_name = "field_" . $dataset_reference_name . "_ref";
         $ref_nid_array = $node->$field_name; 
-        if ($dataset_reference_name == 'dataset_site') {
-          if ($node->field_dataset_site_ref[0]['nid']) {
-            $ref_nodes = views_bonus_eml_get_site_information($ref_nid_array);
-            $dataset_node[$dataset_reference_name] = $ref_nodes;
-          }          
-        } 
-        else {
         if ($ref_nid_array) {
-          foreach ($ref_nid_array as $v) {
-            foreach ($v as $ref_nid) {
-              $ref_nodes[] = node_load($ref_nid); 
+          if ($dataset_reference_name == 'dataset_site' &&
+            $node->field_dataset_site_ref[0]['nid']) {
+            $ref_nodes = views_bonus_eml_get_site_information($ref_nid_array);
+          } 
+          else {
+            foreach ($ref_nid_array as $v) {
+              foreach ($v as $ref_nid) {
+                $ref_nodes[] = node_load($ref_nid); 
+              }
             }
           }
         }
         $dataset_node[$dataset_reference_name] = $ref_nodes;
-        }
       } 
 
       // if ($node->field_dataset_site_ref[0]['nid']) {
