@@ -390,14 +390,9 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                views_bonus_eml_print_value('numFooterLines',       $file_num_footer_lines);
                views_bonus_eml_print_value('recordDelimiter',      $file_record_delimiter);
                views_bonus_eml_print_value('attributeOrientation', $file_orientation);
-               views_bonus_eml_print_open_tag('simpleDelimited');
-               if ($file_delimiter[0]['value']) {
-                 views_bonus_eml_print_value('fieldDelimiter',     $file_delimiter);
-               }
-               else {
-                 $file_delimiter = ',';
+               views_bonus_eml_print_open_tag('simpleDelimited');                 
+               $file_delimiter[0]['value'] ? $file_delimiter = $file_delimiter[0]['value'] : $file_delimiter = ',';        
                  views_bonus_eml_print_tag_line('fieldDelimiter',  $file_delimiter);
-               }
                  views_bonus_eml_print_value('quoteCharacter',     $file_quote_character);
                views_bonus_eml_print_close_tag('simpleDelimited');
              views_bonus_eml_print_close_tag('textFormat');
