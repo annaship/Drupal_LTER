@@ -98,7 +98,6 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
    * 1a) create dataset variables here
    */
 
-  // dpr($dataset_node['dataset']);
     $dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
     $dataset_title            = $dataset_node['dataset']->title;
     $dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
@@ -114,10 +113,9 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
     $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
                                  
     // if(user_is_logged_in()){                               
-      $last_settings = prepare_settings();     
+    $last_settings = prepare_settings();     
     // }
                                           
-    // variable_set('eml_settings_acronym', ''); 
     if (!$last_settings['last_acronym']) {    
       drupal_set_message("Please provide the site specific settings");
       $dest = drupal_get_destination();
@@ -162,11 +160,11 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
      }
    }
 
-    /*
-     * 3) create and populate a template
-     */
+   $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0]['value']  . '.' . $ver_vid;
 
-    $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0]['value']  . '.' . $ver_vid;
+  /*
+   * 3) create and populate a template
+   */
 
     print '<?xml version="1.0" encoding="UTF-8" ?>';
 
@@ -280,7 +278,6 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
           views_bonus_eml_print_close_tag('purpose');
         }
 
-        // maintenance log
         if ($dataset_maintenance[0]['value']) {
           views_bonus_eml_print_open_tag('maintenance');
             views_bonus_eml_print_open_tag('description');
@@ -296,14 +293,12 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
         views_bonus_eml_print_person('publisher', $publisher_arr);
         views_bonus_eml_print_tag_line('pubPlace', $views_bonus_eml_site_name);
 
-        // methods section  !!! ISG comment added  1st, methods can be opened if this is true $dataset_methods[0]['value']
-        // if we have instruments, but not a description, we need to ignore it all together: changed conditional.
         if ($dataset_methods[0]['value']) {
           views_bonus_eml_print_open_tag('methods');
             views_bonus_eml_print_open_tag('methodStep');
-              views_bonus_eml_print_open_tag('description');  // !!! ISG added more tags to the description (section/para/literalLayout)
+              views_bonus_eml_print_open_tag('description');  
                  views_bonus_eml_print_open_tag('section');
-                   views_bonus_eml_print_open_tag('para');    // !!! ISG in the future, we may need to parse HTML (like h1,h2,h3, and translate it to EML markup)
+                   views_bonus_eml_print_open_tag('para');    // TODO: !!! ISG in the future, we may need to parse HTML (like h1,h2,h3, and translate it to EML markup)
                                                               //!!! if we could detect paragraphs, and translate them into <para>s, better...
                       views_bonus_eml_print_value('literalLayout', $dataset_methods);
                    views_bonus_eml_print_close_tag('para');
@@ -316,7 +311,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
             if ($dataset_quality[0]['value']) {
                views_bonus_eml_print_open_tag('qualityControl');
                   views_bonus_eml_print_open_tag('description');
-                     views_bonus_eml_print_open_tag('para');  //!!!ISG added structure
+                     views_bonus_eml_print_open_tag('para');
                          views_bonus_eml_print_value('literalLayout', $dataset_quality);
                      views_bonus_eml_print_close_tag('para');
                   views_bonus_eml_print_close_tag('description');
@@ -325,9 +320,9 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
           views_bonus_eml_print_close_tag('methods');
         }
 
-        // project (from CCT research_project). !!! ISG
+       //TODO:  project (from CCT research_project). !!! ISG
 
-  // access tag group - from config file, or from site variable, or... here is my take !!!
+       //TODO: access tag group - from config file, or from site variable, or... here is my take !!!
       
   ?>
   <access scope="document" order="allowFirst" authSystem="knb">
@@ -364,7 +359,8 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
             $datafile_date          = $file_var_array['datafile']->field_beg_end_date;
             $file_instrumentation   = $file_var_array['datafile']->field_instrumentation;
             $file_methods           = $file_var_array['datafile']->field_methods;
-            $file_quality           = $file_var_array['datafile']->field_quality;
+            $file_quality           = $file_var_array['datafile']->field_quality;   
+            $file_title             = $file_var_array['datafile']->title;
 
             views_bonus_eml_print_open_tag('dataTable');
 
@@ -373,7 +369,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                 views_bonus_eml_print_tag_line('entityName', $file_data['filename']);
               }
             } else {
-              views_bonus_eml_print_tag_line('entityName', $file_var_array['datafile']->title);
+              views_bonus_eml_print_tag_line('entityName', $file_title);
             }
 
             views_bonus_eml_print_value('entityDescription', $datafile_description);
@@ -384,7 +380,7 @@ require_once("views-bonus-eml-export-eml-funcions.tpl.php");
                 views_bonus_eml_print_tag_line('objectName', $file_data['filename']);
              }
             } else {
-              views_bonus_eml_print_tag_line('objectName', $file_var_array['datafile']->title);
+              views_bonus_eml_print_tag_line('objectName', $file_title);
             }
             views_bonus_eml_print_open_tag('dataFormat');
             // Here some tags are obligate: textFormat, attributeOrientation,
