@@ -158,39 +158,6 @@ function views_bonus_eml_print_temporal_coverage($beg_end_date) {
   }
 } // end of function "views_bonus_eml_print_temporal_coverage"
 
-
-// Collect geo info into one string,
-// only for the first time make $comma_flag = 0, to skip comma
-function views_bonus_eml_collect_geographic_description($label, $content, $comma_flag = 1) {
-  unset($geoDesc);
-  if ($content[0]['value']) {
-    foreach($content as $value) {
-      if ($comma_flag == 1) {
-        $geoDesc .= ', ' . $label . ': ' . $value['value'];
-      }
-      else {
-        $geoDesc .= $label . ': ' . $value['value'];
-      }
-    }
-  }
-  return $geoDesc;
-} // end of function views_bonus_eml_collect_geographic_description
-
-// not used for now
-function views_bonus_eml_get_lon_geo_point($content) {
-  $matches = Array();
-  if (preg_match("/\((\S+)\s(\S+)\)/", $content, $matches)) {
-    $dataset_site_lon = $matches[1];
-    $dataset_site_lat = $matches[2];
-//     matches = Array
-//(
-//    [0] => (65.75 18.31466667)
-//    [1] => 65.75
-//    [2] => 18.31466667
-//)
-  }
-}
-
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
   if ($content[0]['site_node']->nid) {
@@ -207,12 +174,6 @@ function views_bonus_eml_print_geographic_coverage($content) {
         $research_site_longitude  = $research_site_node['longitude'];
         $research_site_latitude   = $research_site_node['latitude'];
 
-//      not used for now:
-//        $research_site_node['geo_point'] returns "POINT(55.71 19.31466668)"
-//        if we'll need POINT go to views_bonus_eml_get_lon_geo_point and change it as needed,
-//        then call:
-//        views_bonus_eml_get_lon_geo_point($research_site_node['geo_point']);
-
         if ($research_site_landform[0]['value']   ||
             $research_site_geology[0]['value']    ||
             $research_site_soils[0]['value']      ||
@@ -226,7 +187,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $research_site_elevation[0]['value']) {
           views_bonus_eml_print_open_tag('geographicCoverage');
             $geographic_coverage_terms = array (
-                                    // 'Landform',
+                                    'Landform',
                                     'Geology',
                                     'Soils',
                                     'Hydrology',
@@ -235,34 +196,14 @@ function views_bonus_eml_print_geographic_coverage($content) {
                                     'History',
                                     'siteid',
             );
-            $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',
-                                                    $research_site_landform, 0);
             foreach ($geographic_coverage_terms as $geographic_coverage_term) {
-              // 
-              // print "\n\$geographic_coverage_term = $geographic_coverage_term";
-              // $a = strtolower($geographic_coverage_term);
-              // print "\nstrtolower(\$geographic_coverage_term) = $a";        
               $geo_var_name = 'research_site_' . strtolower($geographic_coverage_term);
-              // print "\ngeo_var_name = $geo_var_name";        
-              // print "\n\$\$geo_var_name = $$geo_var_name";        
-              $geoDesc .= views_bonus_eml_collect_geographic_description($geographic_coverage_term, $$geo_var_name);
+              $geo_var      = $$geo_var_name;
+              $geoDesc     .= $geographic_coverage_term . ': ' . $geo_var[0]['value'];
+              if ($geographic_coverage_term != end($geographic_coverage_terms)) {
+               $geoDesc    .= ', ';
+              }
             }                              
-            // $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',
-            //                                         $research_site_landform, 0);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',
-            //                                         $research_site_geology);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',
-            //                                         $research_site_soils);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',
-            //                                         $research_site_hydrology);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation',
-            //                                         $research_site_vegetation);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',
-            //                                         $research_site_climate);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('History',
-            //                                         $research_site_history);
-            // $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',
-            //                                         $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
             if ($research_site_longitude || $research_site_latitude) {
@@ -271,8 +212,6 @@ function views_bonus_eml_print_geographic_coverage($content) {
                 views_bonus_eml_print_tag_line('eastBoundingCoordinate',  $research_site_longitude);
                 views_bonus_eml_print_tag_line('northBoundingCoordinate', $research_site_latitude);
                 views_bonus_eml_print_tag_line('southBoundingCoordinate', $research_site_latitude);
-//[11/10/10 12:17:22 PM] inigo: <northboundingcoordinate>=$latitude; <southboundingCoordinate>=$latitude;
-//[11/10/10 12:17:50 PM] inigo: <westBoundiungCoordinate>=$longitude; <eastboundingCoordinate>=$longitude;
               if ($research_site_elevation[0]['value']) {
                   views_bonus_eml_print_open_tag('boundingAltitudes');
                     views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
