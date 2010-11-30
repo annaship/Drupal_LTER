@@ -6,7 +6,7 @@
  * public functions and variables
  */
 
-function prepare_settings() {     
+function prepare_settings() {
   unset($last_settings);
 
   $default_setting = '';
@@ -64,7 +64,7 @@ function views_bonus_eml_get_uniq_value($content) {
 }
 
 function views_bonus_eml_print_person($person_tag, $content) {
-  if ($content[0]->nid) {        
+  if ($content[0]->nid) {
     // using variables here, because field names could change, easier to keep them in one place
     foreach ($content as $person_node) {
       $person_first_name    = $person_node->field_person_first_name;
@@ -80,8 +80,8 @@ function views_bonus_eml_print_person($person_tag, $content) {
       $person_email         = $person_node->field_person_email;
       $person_personid      = $person_node->field_person_personid;
       $person_role_arr      = $person_node->field_person_role;
-      $person_role          = $person_role_arr[0]['value'];                 
-      
+      $person_role          = $person_role_arr[0]['value'];
+
       $not_show_role        = array ('metadataProvider', 'creator', 'contact', 'publisher');
 
       if (in_array($person_tag, $not_show_role)) {
@@ -225,22 +225,44 @@ function views_bonus_eml_print_geographic_coverage($content) {
             $research_site_latitude               ||
             $research_site_elevation[0]['value']) {
           views_bonus_eml_print_open_tag('geographicCoverage');
+            $geographic_coverage_terms = array (
+                                    // 'Landform',
+                                    'Geology',
+                                    'Soils',
+                                    'Hydrology',
+                                    'Vegetation',
+                                    'Climate',
+                                    'History',
+                                    'siteid',
+            );
             $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',
                                                     $research_site_landform, 0);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',
-                                                    $research_site_geology);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',
-                                                    $research_site_soils);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',
-                                                    $research_site_hydrology);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation',
-                                                    $research_site_vegetation);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',
-                                                    $research_site_climate);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('History',
-                                                    $research_site_history);
-            $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',
-                                                    $research_site_siteid);
+            foreach ($geographic_coverage_terms as $geographic_coverage_term) {
+              // 
+              // print "\n\$geographic_coverage_term = $geographic_coverage_term";
+              // $a = strtolower($geographic_coverage_term);
+              // print "\nstrtolower(\$geographic_coverage_term) = $a";        
+              $geo_var_name = 'research_site_' . strtolower($geographic_coverage_term);
+              // print "\ngeo_var_name = $geo_var_name";        
+              // print "\n\$\$geo_var_name = $$geo_var_name";        
+              $geoDesc .= views_bonus_eml_collect_geographic_description($geographic_coverage_term, $$geo_var_name);
+            }                              
+            // $geoDesc  = views_bonus_eml_collect_geographic_description('Landform',
+            //                                         $research_site_landform, 0);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('Geology',
+            //                                         $research_site_geology);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('Soils',
+            //                                         $research_site_soils);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('Hydrology',
+            //                                         $research_site_hydrology);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('Vegetation',
+            //                                         $research_site_vegetation);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('Climate',
+            //                                         $research_site_climate);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('History',
+            //                                         $research_site_history);
+            // $geoDesc .= views_bonus_eml_collect_geographic_description('siteid',
+            //                                         $research_site_siteid);
             views_bonus_eml_print_tag_line('geographicDescription', $geoDesc);
 
             if ($research_site_longitude || $research_site_latitude) {
@@ -266,7 +288,7 @@ function views_bonus_eml_print_geographic_coverage($content) {
 } // end of function views_bonus_eml_print_geographic_coverage
 
 function views_bonus_eml_get_geo($site_nid) {
-  unset($geo_lon_lat_point);    
+  unset($geo_lon_lat_point);
   $db_url = parse_url($GLOBALS['db_url']);
   if (preg_match("/\/(.+)/", $db_url['path'], $matches)) {
     $db_name = $matches[1];
