@@ -4,6 +4,9 @@
 
 /*
  * public functions and variables
+ * An extra variables in the beginning of some functions are there, 
+ * because field names could change, easier to keep them in fewer places
+ *
  */
 
 function prepare_settings() {
@@ -19,10 +22,10 @@ function prepare_settings() {
     'last_publisher_ref'         => variable_get('eml_settings_publisher_ref',          $default_setting),
   );
 
-    return $last_settings;
+  return $last_settings;
 }
 
-// put allowed HTML tags here
+// add allowed HTML tags here
 function views_bonus_eml_my_strip_tags($content = '') {
   return strip_tags($content, '<p><h1><h2><h3><h4><h5><a><pre><para>');
 }
@@ -65,7 +68,6 @@ function views_bonus_eml_get_uniq_value($content) {
 
 function views_bonus_eml_print_person($person_tag, $content) {
   if ($content[0]->nid) {
-    // using variables here, because field names could change, easier to keep them in one place
     foreach ($content as $person_node) {
       $person_first_name    = $person_node->field_person_first_name;
       $person_last_name     = $person_node->field_person_last_name;
