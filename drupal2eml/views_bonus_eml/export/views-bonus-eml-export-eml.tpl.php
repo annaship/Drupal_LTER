@@ -36,7 +36,7 @@
 
       views_bonus_eml_print_open_tag('dataset');
         views_bonus_eml_print_value('shortName', $dataset_short_name);
-        views_bonus_eml_print_attributed_line('title', $dataset_title);
+        views_bonus_eml_print_line('title', $dataset_title);
 
         // Person refs start
         views_bonus_eml_print_person('creator', $dataset_node['dataset_owner']);
@@ -61,7 +61,7 @@
         //pubDate
         views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
 
-        views_bonus_eml_print_attributed_line('language', $last_settings['last_language']);
+        views_bonus_eml_print_line('language', $last_settings['last_language']);
 
         if ($dataset_abstract[0]['value']) {
           views_bonus_eml_print_open_tag('abstract');
@@ -90,9 +90,9 @@
         // $intellectual_rights from config file
         views_bonus_eml_print_open_tag('intellectualRights');
           views_bonus_eml_print_open_tag('section');
-          views_bonus_eml_print_attributed_line('title', 'Data Policies');
+          views_bonus_eml_print_line('title', 'Data Policies');
             views_bonus_eml_print_open_tag('para');
-              views_bonus_eml_print_attributed_line('literalLayout', $last_settings['last_intellectual_rights']);
+              views_bonus_eml_print_line('literalLayout', $last_settings['last_intellectual_rights']);
             views_bonus_eml_print_close_tag('para');
           views_bonus_eml_print_close_tag('section');
         views_bonus_eml_print_close_tag('intellectualRights');
@@ -101,7 +101,7 @@
         $dataset_datafile_path = $dataset_node['dataset_datafiles'][0]['datafile']->field_data_file[0]['filepath'];
         if ($dataset_datafile_path && !$dataset_node['dataset_datafiles'][1]) {
           views_bonus_eml_print_open_tag('distribution');
-            views_bonus_eml_print_attributed_line('url', $urlBase . dirname($dataset_datafile_path));
+            views_bonus_eml_print_line('url', $urlBase . dirname($dataset_datafile_path));
           views_bonus_eml_print_close_tag('distribution');
         }
 
@@ -134,7 +134,7 @@
         views_bonus_eml_print_person('contact', $dataset_node['dataset_contact']);
         //publisher, specific for every given site from config file,
         views_bonus_eml_print_person('publisher', $publisher_arr);
-        views_bonus_eml_print_attributed_line('pubPlace', $views_bonus_eml_site_name);
+        views_bonus_eml_print_line('pubPlace', $views_bonus_eml_site_name);
 
         if ($dataset_methods[0]['value']) {
           views_bonus_eml_print_open_tag('methods');
@@ -173,9 +173,9 @@
      if ($acr) {
        views_bonus_eml_print_open_tag('allow');
           $access_string = "uid=$acr, o=lter, dc=ecoinformatics, dc=org";
-          views_bonus_eml_print_attributed_line('principal',  $access_string);
+          views_bonus_eml_print_line('principal',  $access_string);
           $access_string = 'all';
-          views_bonus_eml_print_attributed_line('permission', $access_string);
+          views_bonus_eml_print_line('permission', $access_string);
        views_bonus_eml_print_close_tag('allow');
       }
     ?>
@@ -209,10 +209,10 @@
 
             if ($file_data_file) {
               foreach ($file_data_file as $file_data) {
-                views_bonus_eml_print_attributed_line('entityName', $file_data['filename']);
+                views_bonus_eml_print_line('entityName', $file_data['filename']);
               }
             } else {
-              views_bonus_eml_print_attributed_line('entityName', $file_title);
+              views_bonus_eml_print_line('entityName', $file_title);
             }
 
             views_bonus_eml_print_value('entityDescription', $datafile_description);
@@ -220,10 +220,10 @@
             views_bonus_eml_print_open_tag('physical');
             if ($file_data_file) {
               foreach ($file_data_file as $file_data) {
-                views_bonus_eml_print_attributed_line('objectName', $file_data['filename']);
+                views_bonus_eml_print_line('objectName', $file_data['filename']);
              }
             } else {
-              views_bonus_eml_print_attributed_line('objectName', $file_title);
+              views_bonus_eml_print_line('objectName', $file_title);
             }
             views_bonus_eml_print_open_tag('dataFormat');
             // Here some tags are obligate: textFormat, attributeOrientation,
@@ -235,7 +235,7 @@
                views_bonus_eml_print_value('attributeOrientation', $file_orientation);
                views_bonus_eml_print_open_tag('simpleDelimited');                 
                  $file_delimiter[0]['value'] ? $file_delimiter = $file_delimiter[0]['value'] : $file_delimiter = ',';        
-                 views_bonus_eml_print_attributed_line('fieldDelimiter',  $file_delimiter);
+                 views_bonus_eml_print_line('fieldDelimiter',  $file_delimiter);
                  views_bonus_eml_print_value('quoteCharacter',     $file_quote_character);
                views_bonus_eml_print_close_tag('simpleDelimited');
              views_bonus_eml_print_close_tag('textFormat');
@@ -243,7 +243,7 @@
             if ($file_data_file && $file_data_file[0]['filepath']) {
              foreach ($file_data_file as $file_data) {
                views_bonus_eml_print_open_tag('distribution');
-                 views_bonus_eml_print_attributed_line('url', $urlBase . $file_data['filepath']);
+                 views_bonus_eml_print_line('url', $urlBase . $file_data['filepath']);
                views_bonus_eml_print_close_tag('distribution');
              }
             }
@@ -300,7 +300,7 @@
                 $var_missingvalues      = $var_node->field_var_missingvalues;
 
                   views_bonus_eml_print_open_tag('attribute');
-                    views_bonus_eml_print_attributed_line('attributeName',    $var_title);
+                    views_bonus_eml_print_line('attributeName',    $var_title);
                     views_bonus_eml_print_value('attributeLabel',      $attribute_label);
                     views_bonus_eml_print_value('attributeDefinition', $var_definition);
                     if ($attribute_formatstring[0]['value'] ||
@@ -368,11 +368,11 @@
                          foreach ($code_definitions as $code_definition) {      
                            views_bonus_eml_print_open_tag('enumeratedDomain');
                              if (preg_match("/(.+)=(.+)/", $code_definition['value'], $matches)) {     
-                               views_bonus_eml_print_attributed_line('code',       $matches[1]);
-                               views_bonus_eml_print_attributed_line('definition', $matches[2]);
+                               views_bonus_eml_print_line('code',       $matches[1]);
+                               views_bonus_eml_print_line('definition', $matches[2]);
                               }
                               else {
-                                views_bonus_eml_print_attributed_line('codeDefinition', $code_definition['value']);
+                                views_bonus_eml_print_line('codeDefinition', $code_definition['value']);
                               }
                            views_bonus_eml_print_close_tag('enumeratedDomain');
                          }
@@ -388,11 +388,11 @@
                    views_bonus_eml_print_open_tag('missingValueCode');
                    foreach ($var_missingvalues as $var_missingvalue) {
                       if (preg_match("/(.+)=(.+)/", $var_missingvalue['value'], $matches)) {
-                        views_bonus_eml_print_attributed_line('code',       $matches[1]);
-                        views_bonus_eml_print_attributed_line('definition', $matches[2]);
+                        views_bonus_eml_print_line('code',       $matches[1]);
+                        views_bonus_eml_print_line('definition', $matches[2]);
                       }
                       else {
-                        views_bonus_eml_print_attributed_line('missingValues', $var_missingvalue['value']);
+                        views_bonus_eml_print_line('missingValues', $var_missingvalue['value']);
                       }
                    }
                    views_bonus_eml_print_close_tag('missingValueCode');

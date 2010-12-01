@@ -38,7 +38,7 @@ function views_bonus_eml_print_close_tag($tag) {
   print '</' . $tag . '>';
 }
 
-function views_bonus_eml_print_attributed_line($label, $content, $attribute_name = '', $attribute_value = '') {
+function views_bonus_eml_print_line($label, $content, $attribute_name = '', $attribute_value = '') {
   if ($content) {
     $attribute_value ? $attribute = ' ' . $attribute_name . '="' . $attribute_value . '"' : $attribute = '';
     
@@ -49,17 +49,10 @@ function views_bonus_eml_print_attributed_line($label, $content, $attribute_name
 function views_bonus_eml_print_value($tag, $content) {
   if ($content[0]['value']) {
     foreach ($content as $inner_array) {
-        views_bonus_eml_print_attributed_line($tag, views_bonus_eml_my_strip_tags($inner_array['value']));
+        views_bonus_eml_print_line($tag, views_bonus_eml_my_strip_tags($inner_array['value']));
     }
   }
 }
-// 
-// // return value without foreach
-// function views_bonus_eml_get_uniq_value($content) {
-//   if ($content[0]['value']) {
-//     return views_bonus_eml_my_strip_tags($content[0]['value']);
-//   }
-// }
 
 function views_bonus_eml_print_person($person_tag, $content) {
   if ($content[0]->nid) {
@@ -106,20 +99,20 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_value('country',            $person_country);
         views_bonus_eml_print_close_tag('address');
       }
-      views_bonus_eml_print_attributed_line('phone', $person_phone[0]['value'],
+      views_bonus_eml_print_line('phone', $person_phone[0]['value'],
                                             'phonetype', 'voice');
-      views_bonus_eml_print_attributed_line('phone', $person_fax[0]['value'],
+      views_bonus_eml_print_line('phone', $person_fax[0]['value'],
                                             'phonetype', 'fax');
       if ($person_email[0]['email']) {
         foreach($person_email as $email) {
-          views_bonus_eml_print_attributed_line('electronicMailAddress', $email['email']);
+          views_bonus_eml_print_line('electronicMailAddress', $email['email']);
         }
       }
       views_bonus_eml_print_value('userId', $person_personid);
       if (in_array($person_tag, $not_show_role)) {
         views_bonus_eml_print_close_tag($person_tag);
       } else {
-        views_bonus_eml_print_attributed_line('role', $person_tag);
+        views_bonus_eml_print_line('role', $person_tag);
         views_bonus_eml_print_close_tag('associatedParty');
       }
     }
@@ -135,16 +128,16 @@ function views_bonus_eml_print_temporal_coverage($beg_end_date) {
       $second_date = $dataset_date['value2'];
       if ($first_date == $second_date) {
          views_bonus_eml_print_open_tag('singleDateTime');
-           views_bonus_eml_print_attributed_line('calendarDate', $first_date);
+           views_bonus_eml_print_line('calendarDate', $first_date);
          views_bonus_eml_print_close_tag('singleDateTime');
       }
       else {
         views_bonus_eml_print_open_tag('rangeOfDates');
           views_bonus_eml_print_open_tag('beginDate');
-            views_bonus_eml_print_attributed_line('calendarDate', $first_date);
+            views_bonus_eml_print_line('calendarDate', $first_date);
           views_bonus_eml_print_close_tag('beginDate');
           views_bonus_eml_print_open_tag('endDate');
-            views_bonus_eml_print_attributed_line('calendarDate', $second_date);
+            views_bonus_eml_print_line('calendarDate', $second_date);
           views_bonus_eml_print_close_tag('endDate');
         views_bonus_eml_print_close_tag('rangeOfDates');
       }
@@ -199,14 +192,14 @@ function views_bonus_eml_print_geographic_coverage($content) {
                $geoDesc    .= ', ';
               }
             }                              
-            views_bonus_eml_print_attributed_line('geographicDescription', $geoDesc);
+            views_bonus_eml_print_line('geographicDescription', $geoDesc);
 
             if ($research_site_longitude || $research_site_latitude) {
               views_bonus_eml_print_open_tag('boundingCoordinates');
-                views_bonus_eml_print_attributed_line('westBoundingCoordinate',  $research_site_longitude);
-                views_bonus_eml_print_attributed_line('eastBoundingCoordinate',  $research_site_longitude);
-                views_bonus_eml_print_attributed_line('northBoundingCoordinate', $research_site_latitude);
-                views_bonus_eml_print_attributed_line('southBoundingCoordinate', $research_site_latitude);
+                views_bonus_eml_print_line('westBoundingCoordinate',  $research_site_longitude);
+                views_bonus_eml_print_line('eastBoundingCoordinate',  $research_site_longitude);
+                views_bonus_eml_print_line('northBoundingCoordinate', $research_site_latitude);
+                views_bonus_eml_print_line('southBoundingCoordinate', $research_site_latitude);
               if ($research_site_elevation[0]['value']) {
                   views_bonus_eml_print_open_tag('boundingAltitudes');
                     views_bonus_eml_print_value('altitudeMinimum',  $research_site_elevation);
