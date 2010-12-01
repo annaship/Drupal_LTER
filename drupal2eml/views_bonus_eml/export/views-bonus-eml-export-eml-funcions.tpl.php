@@ -45,9 +45,9 @@ function views_bonus_eml_print_tag_line($label, $content) {
 }
 
 function views_bonus_eml_print_attributed_line($label, $content, $attribute_name = '', $attribute_value = '') {
-  if ($content && $attribute_value) {
-    print '<' . $label . ' ' . $attribute_name . '="' . $attribute_value . '">'
-      . views_bonus_eml_my_strip_tags($content) . '</' . $label . '>';
+  if ($content) {
+    isset($attribute_value) ? $attribute = ' ' . $attribute_name . '="' . $attribute_value . '"' : $attribute = "";
+    print '<' . $label .  $attribute . '>' . views_bonus_eml_my_strip_tags($content) . '</' . $label . '>';
   }
 }
 
