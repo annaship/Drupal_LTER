@@ -20,13 +20,12 @@
     unset($ext_assoc_nodes);
     unset($site_nodes);
 
-  //   1) take all from db in one Array $dataset_node
+    //   1) take all from db in one Array $dataset_node
     foreach ($row as $row_nid) {
       $node = node_load($row_nid);
       $dataset_node['dataset'] = $node;
 
-  //  refs                  
-  // TODO: there are 3 similar arrays, remove
+      //  refs                  
       $dataset_reference_names = array(
         'dataset_owner',
         'dataset_contact',
@@ -124,8 +123,8 @@
     } 
 
     $acr = $last_settings['last_acronym'];
-    $metadata_provider_arr = array (node_load($last_settings['last_metadata_provider_ref']));
-    $publisher_arr         = array (node_load($last_settings['last_publisher_ref']));
+    $metadata_provider_arr     = array (node_load($last_settings['last_metadata_provider_ref']));
+    $publisher_arr             = array (node_load($last_settings['last_publisher_ref']));
     $views_bonus_eml_site_name = variable_get('site_name', NULL);
 
     /* -----------------
@@ -134,18 +133,8 @@
      */
     $ver_vid = $dataset_node['dataset']->vid;
 
-  //  persons and sites vid
-    $dataset_ref = array(
-      'dataset_owner',
-      'dataset_contact',
-      'dataset_datamanager',
-      'dataset_fieldcrew',
-      'dataset_labcrew',
-      'dataset_ext_assoc',
-      'dataset_sites'
-    );
-
-    foreach ($dataset_ref as $ref) {
+  //  persons and sites vid          
+    foreach ($dataset_reference_names as $ref) {
       if ($dataset_node[$ref][0]) {
         foreach ($dataset_node[$ref] as $person_site) {
           $ver_vid += $person_site->vid;

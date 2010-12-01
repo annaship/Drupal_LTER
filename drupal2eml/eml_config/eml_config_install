@@ -1,5 +1,12 @@
 <?php
 // eml_config.install                  
 
+  function eml_config_uninstall() {
+    variable_del('eml_settings_acronym');   
+    variable_del('eml_settings_language');
+    variable_del('eml_settings_intellectual_rights');
+    variable_del('eml_settings_metadata_provider_ref');
+    variable_del('eml_settings_publisher_ref');
+  }
 
 ?>
