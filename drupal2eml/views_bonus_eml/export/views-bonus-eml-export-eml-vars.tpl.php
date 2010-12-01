@@ -141,9 +141,11 @@
 
   //  persons and sites vid          
     foreach ($dataset_reference_names as $ref) {
-      if ($dataset_node[$ref][0]) {
+      if (isset($dataset_node[$ref][0])) {
         foreach ($dataset_node[$ref] as $person_site) {
-          $ver_vid += $person_site->vid;
+          if (isset($person_site->vid)) {
+            $ver_vid += $person_site->vid;
+          }
         }
       }
     }

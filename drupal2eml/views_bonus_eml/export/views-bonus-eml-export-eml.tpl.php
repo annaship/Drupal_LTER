@@ -52,7 +52,7 @@
 
         if ($associated_party_arr) {
           foreach ($associated_party_arr as $key => $value) {
-            if ($dataset_node[$value][0]->nid) {
+            if (isset($dataset_node[$value][0]->nid)) {
                 views_bonus_eml_print_person($key, $dataset_node[$value]);
             }
           }
@@ -99,13 +99,13 @@
 
         // if there is one and only one file take path from it
         $dataset_datafile_path = $dataset_node['dataset_datafiles'][0]['datafile']->field_data_file[0]['filepath'];
-        if ($dataset_datafile_path && !$dataset_node['dataset_datafiles'][1]) {
+        if (isset($dataset_datafile_path) && !isset($dataset_node['dataset_datafiles'][1])) {
           views_bonus_eml_print_open_tag('distribution');
             views_bonus_eml_print_line('url', $urlBase . dirname($dataset_datafile_path));
           views_bonus_eml_print_close_tag('distribution');
         }
 
-        if ($dataset_node['dataset_site'][0]['site_node']->nid || $dataset_beg_end_date[0]['value']) {
+        if (isset($dataset_node['dataset_site'][0]['site_node']->nid) || isset($dataset_beg_end_date[0]['value'])) {
           views_bonus_eml_print_open_tag('coverage');
             views_bonus_eml_print_geographic_coverage($dataset_node['dataset_site']);
             views_bonus_eml_print_temporal_coverage($dataset_beg_end_date);
@@ -147,11 +147,11 @@
                    views_bonus_eml_print_close_tag('para');
                  views_bonus_eml_print_close_tag('section');
               views_bonus_eml_print_close_tag('description');
-              if ($dataset_instrumentation[0]['value']) {
+              if (isset($dataset_instrumentation[0]['value'])) {
                 views_bonus_eml_print_all_values('instrumentation', $dataset_instrumentation);
               }
             views_bonus_eml_print_close_tag('methodStep');
-            if ($dataset_quality[0]['value']) {
+            if (isset($dataset_quality[0]['value'])) {
                views_bonus_eml_print_open_tag('qualityControl');
                   views_bonus_eml_print_open_tag('description');
                      views_bonus_eml_print_open_tag('para');
@@ -249,7 +249,7 @@
             }
             views_bonus_eml_print_close_tag('physical');
 
-            if ($file_var_array['datafile_sites'][0]['site_node']->nid || $datafile_date[0]['value']) {
+            if (isset($file_var_array['datafile_sites'][0]['site_node']->nid) || isset($datafile_date[0]['value'])) {
                views_bonus_eml_print_open_tag('coverage');
                  views_bonus_eml_print_geographic_coverage($file_var_array['datafile_sites']);
                  views_bonus_eml_print_temporal_coverage($datafile_date);
@@ -266,11 +266,11 @@
                        views_bonus_eml_print_close_tag('para');
                      views_bonus_eml_print_close_tag('section');
                   views_bonus_eml_print_close_tag('description');
-                  if ($file_instrumentation[0]['value']) {
+                  if (isset($file_instrumentation[0]['value'])) {
                     views_bonus_eml_print_all_values('instrumentation', $file_instrumentation);
                   }
                 views_bonus_eml_print_close_tag('methodStep');
-                if ($file_quality[0]['value']) {
+                if (isset($file_quality[0]['value'])) {
                    views_bonus_eml_print_open_tag('qualityControl');
                       views_bonus_eml_print_open_tag('description');
                          views_bonus_eml_print_open_tag('para');
@@ -296,8 +296,12 @@
                 $attribute_minimum      = $var_node->field_attribute_minimum;
                 $attribute_precision    = $var_node->field_attribute_precision;
                 $attribute_unit         = $var_node->field_attribute_unit;
-                $code_definitions       = $var_node->field_code_definition;
-                $var_missingvalues      = $var_node->field_var_missingvalues;
+                if (isset($var_node->field_code_definition)) {
+                  $code_definitions     = $var_node->field_code_definition;
+                }
+                if (isset($var_node->field_var_missingvalues)) {
+                  $var_missingvalues    = $var_node->field_var_missingvalues;
+                }
 
                   views_bonus_eml_print_open_tag('attribute');
                     views_bonus_eml_print_line('attributeName',    $var_title);
@@ -351,7 +355,9 @@
                           views_bonus_eml_print_all_values('precision',      $attribute_precision);
                         }
                         views_bonus_eml_print_open_tag('numericDomain');
-                          views_bonus_eml_print_all_values('numberType', $realNumber);
+                          // TODO: ask Inigo about value of $realNumber
+                          $realNumber = '';
+                          views_bonus_eml_print_line('numberType', $realNumber);
                           if ($attribute_maximum[0]['value'] ||
                           $attribute_minimum[0]['value']) {
                             views_bonus_eml_print_open_tag('bounds');
@@ -362,7 +368,7 @@
                         views_bonus_eml_print_close_tag('numericDomain');
                       views_bonus_eml_print_close_tag('ratio');
                     }
-                    if ($code_definitions[0]['value']) {
+                    if (isset($code_definitions[0]['value'])) {
                      views_bonus_eml_print_open_tag('nominal');
                        views_bonus_eml_print_open_tag('nonNumericDomain');
                          foreach ($code_definitions as $code_definition) {      
@@ -384,7 +390,7 @@
                    //            $attribute_maximum || $attribute_minimum ||
                    //            $attribute_precision || $attribute_unit)
 
-                 if ($var_missingvalues[0]['value']) {
+                 if (isset($var_missingvalues[0]['value'])) {
                    views_bonus_eml_print_open_tag('missingValueCode');
                    foreach ($var_missingvalues as $var_missingvalue) {
                       if (preg_match("/(.+)=(.+)/", $var_missingvalue['value'], $matches)) {

@@ -148,7 +148,7 @@ function views_bonus_eml_print_temporal_coverage($beg_end_date) {
 
 // take research_site as geographicCoverage
 function views_bonus_eml_print_geographic_coverage($content) {
-  if ($content[0]['site_node']->nid) {
+  if (isset($content[0]['site_node']->nid)) {
     foreach ($content as $research_site_node) {
         $research_site_landform   = $research_site_node['site_node']->field_research_site_landform;
         $research_site_geology    = $research_site_node['site_node']->field_research_site_geology;
