@@ -40,7 +40,7 @@ function views_bonus_eml_print_close_tag($tag) {
 
 function views_bonus_eml_print_attributed_line($label, $content, $attribute_name = '', $attribute_value = '') {
   if ($content) {
-    $attribute_value ? $attribute = ' ' . $attribute_name . '="' . $attribute_value . '"' : $attribute = "";
+    $attribute_value ? $attribute = ' ' . $attribute_name . '="' . $attribute_value . '"' : $attribute = '';
     
     print '<' . $label .  $attribute . '>' . views_bonus_eml_my_strip_tags($content) . '</' . $label . '>';
   }
@@ -48,18 +48,18 @@ function views_bonus_eml_print_attributed_line($label, $content, $attribute_name
 
 function views_bonus_eml_print_value($tag, $content) {
   if ($content[0]['value']) {
-    foreach ($content as $in_arr) {
-        views_bonus_eml_print_attributed_line($tag, views_bonus_eml_my_strip_tags($in_arr['value']));
+    foreach ($content as $inner_array) {
+        views_bonus_eml_print_attributed_line($tag, views_bonus_eml_my_strip_tags($inner_array['value']));
     }
   }
 }
-
-// return value without foreach
-function views_bonus_eml_get_uniq_value($content) {
-  if ($content[0]['value']) {
-    return views_bonus_eml_my_strip_tags($content[0]['value']);
-  }
-}
+// 
+// // return value without foreach
+// function views_bonus_eml_get_uniq_value($content) {
+//   if ($content[0]['value']) {
+//     return views_bonus_eml_my_strip_tags($content[0]['value']);
+//   }
+// }
 
 function views_bonus_eml_print_person($person_tag, $content) {
   if ($content[0]->nid) {
@@ -106,12 +106,10 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_value('country',            $person_country);
         views_bonus_eml_print_close_tag('address');
       }
-      views_bonus_eml_print_attributed_line('phone',
-                      views_bonus_eml_get_uniq_value($person_phone),
-                      'phonetype', 'voice');
-      views_bonus_eml_print_attributed_line('phone',
-                      views_bonus_eml_get_uniq_value($person_fax),
-                      'phonetype', 'fax');
+      views_bonus_eml_print_attributed_line('phone', $person_phone[0]['value'],
+                                            'phonetype', 'voice');
+      views_bonus_eml_print_attributed_line('phone', $person_fax[0]['value'],
+                                            'phonetype', 'fax');
       if ($person_email[0]['email']) {
         foreach($person_email as $email) {
           views_bonus_eml_print_attributed_line('electronicMailAddress', $email['email']);
