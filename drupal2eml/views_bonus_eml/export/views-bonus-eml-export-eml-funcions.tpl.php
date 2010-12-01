@@ -46,7 +46,7 @@ function views_bonus_eml_print_line($label, $content, $attribute_name = '', $att
   }
 }
 
-function views_bonus_eml_print_all_value($tag, $content) {
+function views_bonus_eml_print_all_values($tag, $content) {
   if ($content[0]['value']) {
     foreach ($content as $inner_array) {
         views_bonus_eml_print_line($tag, views_bonus_eml_my_strip_tags($inner_array['value']));
@@ -81,22 +81,22 @@ function views_bonus_eml_print_person($person_tag, $content) {
       }
       if($person_last_name[0]['value']){
         views_bonus_eml_print_open_tag('individualName');
-          views_bonus_eml_print_all_value('givenName',        $person_first_name);
-          views_bonus_eml_print_all_value('surName',          $person_last_name);
+          views_bonus_eml_print_all_values('givenName',        $person_first_name);
+          views_bonus_eml_print_all_values('surName',          $person_last_name);
         views_bonus_eml_print_close_tag('individualName');
       }
       if ($person_organization[0]['value']) {
-        views_bonus_eml_print_all_value('organization',       $person_organization);
+        views_bonus_eml_print_all_values('organization',       $person_organization);
       }
       if ($person_address[0]['value'] ||
           $person_city[0]['value']    ||
           $person_country[0]['value']) {
         views_bonus_eml_print_open_tag('address');
-          views_bonus_eml_print_all_value('deliveryPoint',      $person_address);
-          views_bonus_eml_print_all_value('city',               $person_city);
-          views_bonus_eml_print_all_value('administrativeArea', $person_state);
-          views_bonus_eml_print_all_value('postalCode',         $person_zipcode);
-          views_bonus_eml_print_all_value('country',            $person_country);
+          views_bonus_eml_print_all_values('deliveryPoint',      $person_address);
+          views_bonus_eml_print_all_values('city',               $person_city);
+          views_bonus_eml_print_all_values('administrativeArea', $person_state);
+          views_bonus_eml_print_all_values('postalCode',         $person_zipcode);
+          views_bonus_eml_print_all_values('country',            $person_country);
         views_bonus_eml_print_close_tag('address');
       }
       views_bonus_eml_print_line('phone', $person_phone[0]['value'],
@@ -108,7 +108,7 @@ function views_bonus_eml_print_person($person_tag, $content) {
           views_bonus_eml_print_line('electronicMailAddress', $email['email']);
         }
       }
-      views_bonus_eml_print_all_value('userId', $person_personid);
+      views_bonus_eml_print_all_values('userId', $person_personid);
       if (in_array($person_tag, $not_show_role)) {
         views_bonus_eml_print_close_tag($person_tag);
       } else {
@@ -202,8 +202,8 @@ function views_bonus_eml_print_geographic_coverage($content) {
                 views_bonus_eml_print_line('southBoundingCoordinate', $research_site_latitude);
               if ($research_site_elevation[0]['value']) {
                   views_bonus_eml_print_open_tag('boundingAltitudes');
-                    views_bonus_eml_print_all_value('altitudeMinimum',  $research_site_elevation);
-                    views_bonus_eml_print_all_value('altitudeMaximum',  $research_site_elevation);
+                    views_bonus_eml_print_all_values('altitudeMinimum',  $research_site_elevation);
+                    views_bonus_eml_print_all_values('altitudeMaximum',  $research_site_elevation);
                   views_bonus_eml_print_close_tag('boundingAltitudes');
               }
               views_bonus_eml_print_close_tag('boundingCoordinates');
