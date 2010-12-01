@@ -35,7 +35,7 @@
 
 
       views_bonus_eml_print_open_tag('dataset');
-        views_bonus_eml_print_value('shortName', $dataset_short_name);
+        views_bonus_eml_print_all_value('shortName', $dataset_short_name);
         views_bonus_eml_print_line('title', $dataset_title);
 
         // Person refs start
@@ -59,14 +59,14 @@
         }    
         
         //pubDate
-        views_bonus_eml_print_value('pubDate',  $dataset_publication_date);
+        views_bonus_eml_print_all_value('pubDate',  $dataset_publication_date);
 
         views_bonus_eml_print_line('language', $last_settings['last_language']);
 
         if ($dataset_abstract[0]['value']) {
           views_bonus_eml_print_open_tag('abstract');
            views_bonus_eml_print_open_tag('para');
-            views_bonus_eml_print_value('literalLayout', $dataset_abstract);
+            views_bonus_eml_print_all_value('literalLayout', $dataset_abstract);
            views_bonus_eml_print_close_tag('para');
           views_bonus_eml_print_close_tag('abstract');
         }
@@ -74,15 +74,15 @@
         // TODO: add if, depend of structure
         views_bonus_eml_print_open_tag('keywordSet');
           // dpr($node->taxonomy);
-          // views_bonus_eml_print_value('keyword', node->taxonomy->term);
-          // views_bonus_eml_print_value('keywordThesaurus', node->taxonomy->vocabularyName);
+          // views_bonus_eml_print_all_value('keyword', node->taxonomy->term);
+          // views_bonus_eml_print_all_value('keywordThesaurus', node->taxonomy->vocabularyName);
         views_bonus_eml_print_close_tag('keywordSet');
 
         if ($dataset_add_info[0]['value']) {
           views_bonus_eml_print_open_tag('additionalInfo');
             views_bonus_eml_print_open_tag('para');
-               views_bonus_eml_print_value('literalLayout', $dataset_add_info);
-               views_bonus_eml_print_value('related_links', $dataset_related_links);
+               views_bonus_eml_print_all_value('literalLayout', $dataset_add_info);
+               views_bonus_eml_print_all_value('related_links', $dataset_related_links);
             views_bonus_eml_print_close_tag('para');
           views_bonus_eml_print_close_tag('additionalInfo');
         }
@@ -116,7 +116,7 @@
         if ($dataset_purpose[0]['value']) {
           views_bonus_eml_print_open_tag('purpose');
              views_bonus_eml_print_open_tag('para');
-                views_bonus_eml_print_value('literalLayout', $dataset_purpose);
+                views_bonus_eml_print_all_value('literalLayout', $dataset_purpose);
              views_bonus_eml_print_close_tag('para');
           views_bonus_eml_print_close_tag('purpose');
         }
@@ -125,7 +125,7 @@
           views_bonus_eml_print_open_tag('maintenance');
             views_bonus_eml_print_open_tag('description');
                views_bonus_eml_print_open_tag('para');
-                  views_bonus_eml_print_value('literalLayout', $dataset_maintenance);
+                  views_bonus_eml_print_all_value('literalLayout', $dataset_maintenance);
                views_bonus_eml_print_close_tag('para');
             views_bonus_eml_print_close_tag('description');
           views_bonus_eml_print_close_tag('maintenance');
@@ -143,19 +143,19 @@
                  views_bonus_eml_print_open_tag('section');
                    views_bonus_eml_print_open_tag('para');    // TODO: !!! ISG in the future, we may need to parse HTML (like h1,h2,h3, and translate it to EML markup)
                                                               //!!! if we could detect paragraphs, and translate them into <para>s, better...
-                      views_bonus_eml_print_value('literalLayout', $dataset_methods);
+                      views_bonus_eml_print_all_value('literalLayout', $dataset_methods);
                    views_bonus_eml_print_close_tag('para');
                  views_bonus_eml_print_close_tag('section');
               views_bonus_eml_print_close_tag('description');
               if ($dataset_instrumentation[0]['value']) {
-                views_bonus_eml_print_value('instrumentation', $dataset_instrumentation);
+                views_bonus_eml_print_all_value('instrumentation', $dataset_instrumentation);
               }
             views_bonus_eml_print_close_tag('methodStep');
             if ($dataset_quality[0]['value']) {
                views_bonus_eml_print_open_tag('qualityControl');
                   views_bonus_eml_print_open_tag('description');
                      views_bonus_eml_print_open_tag('para');
-                         views_bonus_eml_print_value('literalLayout', $dataset_quality);
+                         views_bonus_eml_print_all_value('literalLayout', $dataset_quality);
                      views_bonus_eml_print_close_tag('para');
                   views_bonus_eml_print_close_tag('description');
                views_bonus_eml_print_close_tag('qualityControl');
@@ -215,7 +215,7 @@
               views_bonus_eml_print_line('entityName', $file_title);
             }
 
-            views_bonus_eml_print_value('entityDescription', $datafile_description);
+            views_bonus_eml_print_all_value('entityDescription', $datafile_description);
 
             views_bonus_eml_print_open_tag('physical');
             if ($file_data_file) {
@@ -229,14 +229,14 @@
             // Here some tags are obligate: textFormat, attributeOrientation,
             // simpleDelimited, fieldDelimiter, complex
              views_bonus_eml_print_open_tag('textFormat');
-               views_bonus_eml_print_value('numHeaderLines',       $file_num_header_line);
-               views_bonus_eml_print_value('numFooterLines',       $file_num_footer_lines);
-               views_bonus_eml_print_value('recordDelimiter',      $file_record_delimiter);
-               views_bonus_eml_print_value('attributeOrientation', $file_orientation);
+               views_bonus_eml_print_all_value('numHeaderLines',       $file_num_header_line);
+               views_bonus_eml_print_all_value('numFooterLines',       $file_num_footer_lines);
+               views_bonus_eml_print_all_value('recordDelimiter',      $file_record_delimiter);
+               views_bonus_eml_print_all_value('attributeOrientation', $file_orientation);
                views_bonus_eml_print_open_tag('simpleDelimited');                 
                  $file_delimiter[0]['value'] ? $file_delimiter = $file_delimiter[0]['value'] : $file_delimiter = ',';        
                  views_bonus_eml_print_line('fieldDelimiter',  $file_delimiter);
-                 views_bonus_eml_print_value('quoteCharacter',     $file_quote_character);
+                 views_bonus_eml_print_all_value('quoteCharacter',     $file_quote_character);
                views_bonus_eml_print_close_tag('simpleDelimited');
              views_bonus_eml_print_close_tag('textFormat');
             views_bonus_eml_print_close_tag('dataFormat');
@@ -262,19 +262,19 @@
                   views_bonus_eml_print_open_tag('description');  
                      views_bonus_eml_print_open_tag('section');
                        views_bonus_eml_print_open_tag('para'); 
-                          views_bonus_eml_print_value('literalLayout', $file_methods);
+                          views_bonus_eml_print_all_value('literalLayout', $file_methods);
                        views_bonus_eml_print_close_tag('para');
                      views_bonus_eml_print_close_tag('section');
                   views_bonus_eml_print_close_tag('description');
                   if ($file_instrumentation[0]['value']) {
-                    views_bonus_eml_print_value('instrumentation', $file_instrumentation);
+                    views_bonus_eml_print_all_value('instrumentation', $file_instrumentation);
                   }
                 views_bonus_eml_print_close_tag('methodStep');
                 if ($file_quality[0]['value']) {
                    views_bonus_eml_print_open_tag('qualityControl');
                       views_bonus_eml_print_open_tag('description');
                          views_bonus_eml_print_open_tag('para');
-                             views_bonus_eml_print_value('literalLayout', $file_quality);
+                             views_bonus_eml_print_all_value('literalLayout', $file_quality);
                          views_bonus_eml_print_close_tag('para');
                       views_bonus_eml_print_close_tag('description');
                    views_bonus_eml_print_close_tag('qualityControl');
@@ -301,8 +301,8 @@
 
                   views_bonus_eml_print_open_tag('attribute');
                     views_bonus_eml_print_line('attributeName',    $var_title);
-                    views_bonus_eml_print_value('attributeLabel',      $attribute_label);
-                    views_bonus_eml_print_value('attributeDefinition', $var_definition);
+                    views_bonus_eml_print_all_value('attributeLabel',      $attribute_label);
+                    views_bonus_eml_print_all_value('attributeDefinition', $var_definition);
                     if ($attribute_formatstring[0]['value'] ||
                        $attribute_maximum[0]['value'] ||
                        $attribute_minimum[0]['value'] ||
@@ -311,7 +311,7 @@
                     views_bonus_eml_print_open_tag('measurementScale');
                     if ($attribute_formatstring[0]['value']) {
                       views_bonus_eml_print_open_tag('datatime');
-                       views_bonus_eml_print_value('formatstring',   $attribute_formatstring);
+                       views_bonus_eml_print_all_value('formatstring',   $attribute_formatstring);
                       views_bonus_eml_print_close_tag('datatime');
                     }    
                   // ratio:     
@@ -323,19 +323,19 @@
                   //   views_bonus_eml_print_open_tag('ratio');
                   //   if ($attribute_unit[0]['value']) {
                   //     views_bonus_eml_print_open_tag('unit');
-                  //       views_bonus_eml_print_value('customUnit', $attribute_unit);
+                  //       views_bonus_eml_print_all_value('customUnit', $attribute_unit);
                   //     views_bonus_eml_print_close_tag('unit');
                   //   }
                   //   if ($attribute_precision[0]['value']) {
-                  //     views_bonus_eml_print_value('precision',      $attribute_precision);
+                  //     views_bonus_eml_print_all_value('precision',      $attribute_precision);
                   //   }
                   //   if ($attribute_maximum[0]['value'] ||
                   //       $attribute_minimum[0]['value']) {
                   //     views_bonus_eml_print_open_tag('numericDomain');  
-                  //       views_bonus_eml_print_value('numberType', $realNumber); 
+                  //       views_bonus_eml_print_all_value('numberType', $realNumber); 
                   //       views_bonus_eml_print_open_tag('bounds');
-                  //         views_bonus_eml_print_value('maximum',    $attribute_maximum);
-                  //         views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                  //         views_bonus_eml_print_all_value('maximum',    $attribute_maximum);
+                  //         views_bonus_eml_print_all_value('minimum',    $attribute_minimum);
                   //       views_bonus_eml_print_close_tag('bounds');
                   //     views_bonus_eml_print_close_tag('numericDomain');
                   //   }
@@ -345,18 +345,18 @@
                     if ($attribute_unit[0]['value']) {
                       views_bonus_eml_print_open_tag('ratio');
                         views_bonus_eml_print_open_tag('unit');
-                          views_bonus_eml_print_value('customUnit', $attribute_unit);
+                          views_bonus_eml_print_all_value('customUnit', $attribute_unit);
                         views_bonus_eml_print_close_tag('unit');
                         if ($attribute_precision[0]['value']) {
-                          views_bonus_eml_print_value('precision',      $attribute_precision);
+                          views_bonus_eml_print_all_value('precision',      $attribute_precision);
                         }
                         views_bonus_eml_print_open_tag('numericDomain');
-                          views_bonus_eml_print_value('numberType', $realNumber);
+                          views_bonus_eml_print_all_value('numberType', $realNumber);
                           if ($attribute_maximum[0]['value'] ||
                           $attribute_minimum[0]['value']) {
                             views_bonus_eml_print_open_tag('bounds');
-                            views_bonus_eml_print_value('maximum',    $attribute_maximum);
-                            views_bonus_eml_print_value('minimum',    $attribute_minimum);
+                            views_bonus_eml_print_all_value('maximum',    $attribute_maximum);
+                            views_bonus_eml_print_all_value('minimum',    $attribute_minimum);
                             views_bonus_eml_print_close_tag('bounds');
                           }
                         views_bonus_eml_print_close_tag('numericDomain');
