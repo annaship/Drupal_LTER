@@ -37,10 +37,10 @@
       );        
                       
       foreach ($dataset_reference_names as $dataset_reference_name) {
-        unset($ref_nodes);                   
+        $ref_nodes = Array();
         $field_name = "field_" . $dataset_reference_name . "_ref";
-        $ref_nid_array = $node->$field_name; 
-        if ($ref_nid_array) {
+        if (isset($node->$field_name)) {
+          $ref_nid_array = $node->$field_name; 
           if ($dataset_reference_name == 'dataset_site' &&
             $node->field_dataset_site_ref[0]['nid']) {
             $ref_nodes = views_bonus_eml_get_site_information($ref_nid_array);
@@ -68,12 +68,12 @@
       if ($field_dataset_datafile_ref_nid) {
         foreach ($field_dataset_datafile_ref_nid as $v) {
           foreach ($v as $datafile_nid) {
-           unset($variable_nodes);
-           unset($datafile_site_nodes);
-            $datafile_node = node_load($datafile_nid);
+            $variable_nodes      = Array();
+            $datafile_site_nodes = Array();
+            $datafile_node       = node_load($datafile_nid);
     //      variables
-            $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
-            if ($field_datafile_variable_ref_nids) {
+            if (isset($datafile_node->field_datafile_variable_ref)) {
+              $field_datafile_variable_ref_nids = $datafile_node->field_datafile_variable_ref;
               foreach ($field_datafile_variable_ref_nids as $value) {
                 foreach ($value as $var_nid) {
                   $variable_nodes[] = node_load($var_nid);
@@ -81,7 +81,7 @@
               }
             }
     //      sites
-            if ($datafile_node->field_datafile_site_ref[0]['nid']) {
+            if (isset($datafile_node->field_datafile_site_ref[0]['nid'])) {
               $datafile_site_nodes = views_bonus_eml_get_site_information($datafile_node->field_datafile_site_ref);
             }
     //      all file related data
@@ -98,19 +98,25 @@
    * 1a) create dataset variables here
    */
 
-    $dataset_short_name       = $dataset_node['dataset']->field_dataset_short_name;
-    $dataset_title            = $dataset_node['dataset']->title;
-    $dataset_publication_date = $dataset_node['dataset']->field_dataset_publication_date;
-    $dataset_abstract         = $dataset_node['dataset']->field_dataset_abstract;
-    $dataset_add_info         = $dataset_node['dataset']->field_dataset_add_info;
-    $dataset_beg_end_date     = $dataset_node['dataset']->field_beg_end_date;
-    $dataset_purpose          = $dataset_node['dataset']->field_dataset_purpose;
-    $dataset_maintenance      = $dataset_node['dataset']->field_dataset_maintenance;
-    $dataset_instrumentation  = $dataset_node['dataset']->field_instrumentation;
-    $dataset_methods          = $dataset_node['dataset']->field_methods;
-    $dataset_quality          = $dataset_node['dataset']->field_quality;
-    $dataset_id               = $dataset_node['dataset']->field_dataset_id;
-    $dataset_related_links    = $dataset_node['dataset']->field_dataset_related_links;
+    $dataset_short_name        = $dataset_node['dataset']->field_dataset_short_name;
+    $dataset_title             = $dataset_node['dataset']->title;
+    $dataset_publication_date  = $dataset_node['dataset']->field_dataset_publication_date;
+    $dataset_abstract          = $dataset_node['dataset']->field_dataset_abstract;
+    $dataset_add_info          = $dataset_node['dataset']->field_dataset_add_info;
+    $dataset_beg_end_date      = $dataset_node['dataset']->field_beg_end_date;
+    $dataset_purpose           = $dataset_node['dataset']->field_dataset_purpose;
+    $dataset_maintenance       = $dataset_node['dataset']->field_dataset_maintenance;
+    $dataset_methods           = $dataset_node['dataset']->field_methods;
+    $dataset_id                = $dataset_node['dataset']->field_dataset_id;
+    $dataset_related_links     = $dataset_node['dataset']->field_dataset_related_links;
+    // have to check those two fields due to strange Notice after reinstall
+    // TODO: find why those and only those?
+    if (isset($dataset_node['dataset']->field_instrumentation)){
+      $dataset_instrumentation = $dataset_node['dataset']->field_instrumentation;
+    }
+    if (isset($dataset_node['dataset']->field_quality)){
+      $dataset_quality         = $dataset_node['dataset']->field_quality;
+    }
                                 
     // if(user_is_logged_in()){                               
     $last_settings = prepare_settings();     

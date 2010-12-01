@@ -1,5 +1,4 @@
 <?php
-// eml_config.install                  
 
   function eml_config_uninstall() {
     variable_del('eml_settings_acronym');   
