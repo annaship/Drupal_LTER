@@ -153,8 +153,10 @@
   // vid of datafiles + variables + datafile_sites
    $flatten_files = flatten_array($dataset_node['dataset_datafiles']);
    if ($flatten_files) {
-     foreach ($flatten_files as $object_value) {
-       $ver_vid += $object_value->vid;
+     foreach ($flatten_files as $object_value) {   
+       if (isset($object_value->vid)) {
+         $ver_vid += $object_value->vid; 
+       }
      }
    }
 

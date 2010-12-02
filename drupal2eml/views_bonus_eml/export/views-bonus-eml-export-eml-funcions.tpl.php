@@ -47,7 +47,7 @@ function views_bonus_eml_print_line($label, $content, $attribute_name = '', $att
 }
 
 function views_bonus_eml_print_all_values($tag, $content) {
-  if ($content[0]['value']) {
+  if (isset($content[0]['value'])) {
     foreach ($content as $inner_array) {
         views_bonus_eml_print_line($tag, views_bonus_eml_my_strip_tags($inner_array['value']));
     }
@@ -183,7 +183,8 @@ function views_bonus_eml_print_geographic_coverage($content) {
                                     'Climate',
                                     'History',
                                     'siteid',
-            );
+            );       
+            $geoDesc = '';
             foreach ($geographic_coverage_terms as $geographic_coverage_term) {
               $geo_var_name = 'research_site_' . strtolower($geographic_coverage_term);
               $geo_var      = $$geo_var_name;
