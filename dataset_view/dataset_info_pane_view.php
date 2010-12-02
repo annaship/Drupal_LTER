@@ -9,36 +9,6 @@ $view->api_version = 2;
 $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 $handler = $view->new_display('default', 'Defaults', 'default');
 $handler->override_option('fields', array(
-  'title' => array(
-    'label' => 'Title',
-    'alter' => array(
-      'alter_text' => 0,
-      'text' => '',
-      'make_link' => 0,
-      'path' => '',
-      'link_class' => '',
-      'alt' => '',
-      'prefix' => '',
-      'suffix' => '',
-      'target' => '',
-      'help' => '',
-      'trim' => 0,
-      'max_length' => '',
-      'word_boundary' => 1,
-      'ellipsis' => 1,
-      'html' => 0,
-      'strip_tags' => 0,
-    ),
-    'empty' => '',
-    'hide_empty' => 0,
-    'empty_zero' => 0,
-    'link_to_node' => 0,
-    'exclude' => 0,
-    'id' => 'title',
-    'table' => 'node',
-    'field' => 'title',
-    'relationship' => 'none',
-  ),
   'timestamp' => array(
     'label' => 'Created date',
     'alter' => array(
@@ -307,7 +277,7 @@ $handler->override_option('fields', array(
     'empty_zero' => 0,
     'link_to_node' => 0,
     'label_type' => 'custom',
-    'format' => 'default',
+    'format' => 'short',
     'multiple' => array(
       'multiple_number' => '',
       'multiple_from' => '',
