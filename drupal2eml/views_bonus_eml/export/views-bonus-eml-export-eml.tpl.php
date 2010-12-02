@@ -287,7 +287,7 @@
             views_bonus_eml_print_open_tag('attributeList');
 
             foreach ($file_var_array['variables'] as $var_node) {
-              if ($var_node->nid) {
+              if ($var_node->nid) {                                     
                 $var_title              = $var_node->title;
                 $attribute_label        = $var_node->field_attribute_label;
                 $var_definition         = $var_node->field_var_definition;
@@ -296,9 +296,11 @@
                 $attribute_minimum      = $var_node->field_attribute_minimum;
                 $attribute_precision    = $var_node->field_attribute_precision;
                 $attribute_unit         = $var_node->field_attribute_unit;
+                $code_definitions       = Array();
                 if (isset($var_node->field_code_definition)) {
                   $code_definitions     = $var_node->field_code_definition;
-                }
+                }     
+                $var_missingvalues      = Array();
                 if (isset($var_node->field_var_missingvalues)) {
                   $var_missingvalues    = $var_node->field_var_missingvalues;
                 }
