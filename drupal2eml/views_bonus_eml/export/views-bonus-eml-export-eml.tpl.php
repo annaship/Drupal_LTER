@@ -347,7 +347,7 @@
                   //   }
                   //   views_bonus_eml_print_close_tag('ratio');
                   // }         
-                  // TODO: ask Inigo if he want 'numericDomain' always, even if it is empty. If not - use code just above this line.
+                  // TODO: ask Inigo if he want 'numericDomain' always, even if it is empty. If not - use code just above this line. What to check here? 
                     if ($attribute_unit[0]['value']) {
                       views_bonus_eml_print_open_tag('ratio');
                         views_bonus_eml_print_open_tag('unit');
@@ -357,8 +357,6 @@
                           views_bonus_eml_print_all_values('precision',      $attribute_precision);
                         }
                         views_bonus_eml_print_open_tag('numericDomain');
-                          // TODO: ask Inigo about value of $realNumber
-                          $realNumber = '';
                           views_bonus_eml_print_line('numberType', $realNumber);
                           if ($attribute_maximum[0]['value'] ||
                           $attribute_minimum[0]['value']) {

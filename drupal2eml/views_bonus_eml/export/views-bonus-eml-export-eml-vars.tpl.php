@@ -161,5 +161,6 @@
    }
 
    $package_id = 'knb-lter-' . $acr . '.' . $dataset_id[0]['value']  . '.' . $ver_vid;
+   $realNumber = 'real';
 
  }
