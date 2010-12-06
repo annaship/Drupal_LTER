@@ -121,12 +121,46 @@
     // if(user_is_logged_in()){                               
     $last_settings = prepare_settings();     
     // }
-                                          
-    if (!$last_settings['last_acronym']) {    
+
+//    global $user;
+//    print "\n UUU";
+////    $a = drupal_get_destination();
+////    dpr($a);
+//    print "\n AAA";
+////    dpr(!$GLOBALS["user"]->uid);
+//
+//    $a= 0;
+//    if ($a) {
+//      print "\na";
+//    }
+//    if (isset ($a)) {
+//      print "\nisset(a)";
+//    }
+//    if (!empty($a)) {
+//      print "\n!empty(a)";
+//    }
+//    print "\n AaA";
+//    if ($user->uid)
+//    !$GLOBALS["user"]->uid
+//    edit any node content
+//    create node content
+//user_access('search content')
+//    if (!$last_settings['last_acronym'] && $user->uid) {
+//    url(('user/register'), drupal_get_destination());
+
+
+    if (!$last_settings['last_acronym'] && user_access('create node content', 'edit any node content')) {
       drupal_set_message("Please provide the site specific settings");
       $dest = drupal_get_destination();
       drupal_goto('eml_config', $dest);
-    } 
+    }
+    elseif (empty($GLOBALS["user"]->uid)) {
+//      $current_destination = drupal_get_destination();
+
+      drupal_set_message('Please login in');
+
+      drupal_goto((user/login), drupal_get_destination());
+    }
 
     $acr = $last_settings['last_acronym'];
     $metadata_provider_arr     = array (node_load($last_settings['last_metadata_provider_ref']));
