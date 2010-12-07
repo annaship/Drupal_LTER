@@ -122,7 +122,7 @@
     $last_settings = prepare_settings();     
     // }
 
-//    global $user;
+    global $user;
 //    print "\n UUU";
 ////    $a = drupal_get_destination();
 ////    dpr($a);
@@ -149,17 +149,14 @@
 //    url(('user/register'), drupal_get_destination());
 
 
-    if (!$last_settings['last_acronym'] && user_access('create node content', 'edit any node content')) {
-      drupal_set_message("Please provide the site specific settings");
-      $dest = drupal_get_destination();
-      drupal_goto('eml_config', $dest);
-    }
-    elseif (empty($GLOBALS["user"]->uid)) {
-//      $current_destination = drupal_get_destination();
-
+    $current_destination = drupal_get_destination();
+    if (empty($user->uid)) {
       drupal_set_message('Please login in');
-
-      drupal_goto((user/login), drupal_get_destination());
+      drupal_goto('user/login', $current_destination);
+    }
+    elseif (!$last_settings['last_acronym']) {
+      drupal_set_message("Please provide the site specific settings");
+      drupal_goto('eml_config', $current_destination);
     }
 
     $acr = $last_settings['last_acronym'];

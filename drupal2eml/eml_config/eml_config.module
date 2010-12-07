@@ -11,7 +11,7 @@ function eml_config_menu() {
   $items['eml_config'] = array (
     'title' => t('Create an EML config file'),
     'page callback' => 'eml_config_page',
-    'access arguments' => array('access content'),
+    'access arguments' => array('administer nodes'),
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'eml_config_form.inc',
     );
