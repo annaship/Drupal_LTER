@@ -118,36 +118,9 @@
       $dataset_quality         = $dataset_node['dataset']->field_quality;
     }
                                 
-    // if(user_is_logged_in()){                               
     $last_settings = prepare_settings();     
-    // }
 
     global $user;
-//    print "\n UUU";
-////    $a = drupal_get_destination();
-////    dpr($a);
-//    print "\n AAA";
-////    dpr(!$GLOBALS["user"]->uid);
-//
-//    $a= 0;
-//    if ($a) {
-//      print "\na";
-//    }
-//    if (isset ($a)) {
-//      print "\nisset(a)";
-//    }
-//    if (!empty($a)) {
-//      print "\n!empty(a)";
-//    }
-//    print "\n AaA";
-//    if ($user->uid)
-//    !$GLOBALS["user"]->uid
-//    edit any node content
-//    create node content
-//user_access('search content')
-//    if (!$last_settings['last_acronym'] && $user->uid) {
-//    url(('user/register'), drupal_get_destination());
-
 
     $current_destination = drupal_get_destination();
     if (empty($user->uid)) {
