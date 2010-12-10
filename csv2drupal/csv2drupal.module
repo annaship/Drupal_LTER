@@ -21,4 +21,23 @@ function csv2drupal_menu() {
 function csv2drupal_page() {
 //  return drupal_get_form('csv2drupal_form');
   dpr("HERE URRA!");
+  $content = getdataset();
+  dpr($content);
+}
+
+//TODO add file name as a parametr, get throgh form or from predifined folder
+function getdataset() {
+  $row = 1;
+  if (($handle = fopen("/Users/ashipunova/work/drupal/lter/new/today/dataset.csv", "r")) !== FALSE) {
+      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+          $num = count($data);
+          echo "<p> $num fields in line $row: <br /></p>\n";
+          $row++;
+          for ($c = 0; $c < $num; $c++) {
+              echo $data[$c] . "<br />\n";
+          }
+      }
+      fclose($handle);
+      return $data;
+  }
 }
