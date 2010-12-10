@@ -19,25 +19,57 @@ function csv2drupal_menu() {
 }
 
 function csv2drupal_page() {
-//  return drupal_get_form('csv2drupal_form');
+  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
   dpr("HERE URRA!");
-  $content = getdataset();
+  $content = csv_to_array($file);
   dpr($content);
 }
 
 //TODO add file name as a parametr, get throgh form or from predifined folder
-function getdataset() {
-  $row = 1;
-  if (($handle = fopen("/Users/ashipunova/work/drupal/lter/new/today/dataset.csv", "r")) !== FALSE) {
-      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-          $num = count($data);
-          echo "<p> $num fields in line $row: <br /></p>\n";
-          $row++;
-          for ($c = 0; $c < $num; $c++) {
-              echo $data[$c] . "<br />\n";
-          }
-      }
-      fclose($handle);
-      return $data;
-  }
+//function getdataset() {
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+//  if (($handle = fopen($file, "r")) === FALSE) return;
+//  while (($cols = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//    print("\$cols\n");
+//    dpr($cols);
+////      foreach( $cols as $key => $val ) {
+//        $dataset_array += $cols;
+////      }
+////      echo print_r($cols, 1);
+//  }
+//  if (($handle = fopen($file, "r")) !== FALSE) {
+//      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//          $num = count($data);
+////          echo "<p> $num fields in line $row: <br /></p>\n";
+//          $row++;
+//          for ($c = 0; $c < $num; $c++) {
+////              echo $data[$c] . "<br />\n";
+//              $dataset_array += $data;
+//          }
+//      }
+//      fclose($handle);
+//  }
+//      return $dataset_array;
+//}
+
+  function csv_to_array($filename='', $delimiter=',')
+{
+    if(!file_exists($filename) || !is_readable($filename))
+        return FALSE;
+
+    $header = NULL;
+    $data = array();
+    if (($handle = fopen($filename, 'r')) !== FALSE)
+    {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
+        {
+            if(!$header)
+                $header = $row;
+            else
+                $data[] = array_combine($header, $row);
+        }
+        fclose($handle);
+    }
+    return $data;
 }
+
