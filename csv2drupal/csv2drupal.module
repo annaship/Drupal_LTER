@@ -19,7 +19,9 @@ function csv2drupal_menu() {
 }
 
 function csv2drupal_page() {
-  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+
+  $file = "/Users/ashipunova/work/drupal/lter/new/today/variable_h.csv";
   dpr("HERE URRA!");
   $content = csv_to_array($file);
   dpr($content);
@@ -52,6 +54,7 @@ function csv2drupal_page() {
 //      return $dataset_array;
 //}
 
+//works great with title in row
   function csv_to_array($filename='', $delimiter=',')
 {
     if(!file_exists($filename) || !is_readable($filename))
