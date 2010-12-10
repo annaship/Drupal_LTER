@@ -1,0 +1,24 @@
+<?php
+// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
+/*
+ * Form for eml settings, required by views_bonus_eml_export
+ * ?q=csv2drupal
+*/
+
+function csv2drupal_menu() {
+  
+  $items = array();
+  $items['csv2drupal'] = array (
+    'title' => t('Export CSV files into predefined custom content types for the LTER project'),
+    'page callback' => 'csv2drupal_page',
+    'access arguments' => array('administer nodes'),
+    'type' => MENU_SUGGESTED_ITEM,
+//    'file' => 'csv2drupal_form.inc',
+    );
+  return $items;
+}
+
+function csv2drupal_page() {
+//  return drupal_get_form('csv2drupal_form');
+  dpr("HERE URRA!");
+}

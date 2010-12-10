@@ -1,0 +1,9 @@
+<?php
+
+  function csv2drupal_install() {
+  }
+
+  function csv2drupal_uninstall() {
+  }
+
+?>

@@ -1,0 +1,5 @@
+; $Id: csv2drupal.info, v 1.0 12/10/10 5:05 PM ashipunova Exp $
+name = CSV2Drupal
+description = "Export CSV files into predefined custom content types for the LTER project"
+core = 6.x
+
