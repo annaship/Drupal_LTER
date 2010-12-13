@@ -224,38 +224,52 @@ function create_dataset_node($file, $uid) {
 //  dpr($content);
 
   foreach ($content as $value) {
-//    dpr('HERE = ');
-//    dpr($value['Associated Researcher']);
-
 //    collect multiple values
     $ext_assoc[] = $value['Associated Researcher'];
   }
 
-//taking person id
+  $ext_assoc_arr = array();
+//taking person id (they should be created first)
   foreach ($ext_assoc as $key => $value) {
-    $q = db_query('SELECT nid FROM node WHERE type="person" and title = %d;', $value);
-    while ($nid = db_result($q)) {
+    $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+    $q = db_query($sql, $value);
 //      dpr($value);
+      while ($nid = db_result($q)) {
 //      dpr($nid);
-
+      $ext_assoc_arr[][nid] = $nid;
     }
   }
+//      dpr($ext_assoc_arr);
 
-  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
-  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'"; 
-  $q = db_query($sql, $value);
+//  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
+//  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+//  $q = db_query($sql, $value);
+////
+//  while ($nid = db_result($q)) {
+//    $n = node_load($nid);
+//    dpr($nid);
+////    dpr("data_set node = ");
+////    dpr($n);
+////    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+////    $node = node_submit($n);
+////    node_save($node);
 //
-  while ($nid = db_result($q)) {
-    $n = node_load($nid);
-    dpr($nid);
-//    dpr("data_set node = ");
-//    dpr($n);
-//    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
-//    $node = node_submit($n);
-//    node_save($node);
+////    var_dump
+//  }
 
-//    var_dump
-  }
+//      Array
+//(
+//    [0] => Array
+//        (
+//            [nid] => 3110
+//        )
+//
+//    [1] => Array
+//        (
+//            [nid] => 3111
+//        )
+//
+//)
 
 //      [field_dataset_datafile_ref] => Array
 //        (
@@ -314,7 +328,7 @@ function create_dataset_node($file, $uid) {
 //      $node->field_dataset_contact_ref[0]['value']      = $value['Contact'];
 //      $node->field_dataset_datafile_ref[0]['value']     = $value['Data File Structure'];
 //      $node->field_dataset_datamanager_ref[0]['value']  = $value['Data Manager'];
-      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
+      $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
 //      $node->field_dataset_fieldcrew_ref[0]['value']    = $value['Field Crew'];
       $node->field_dataset_id[0]['value']               = $value['Dataset ID'];
 //      $node->field_dataset_labcrew_ref[0]['value']      = $value['Lab Crew'];
@@ -328,8 +342,8 @@ function create_dataset_node($file, $uid) {
       $node->field_instrumentation[0]['value']          = $value['Instrumentation'];
       $node->field_methods[0]['value']                  = $value['Methods'];
       $node->field_quality[0]['value']                  = $value['Quality Assurance'];
-//      dpr($node);
-//      dpr('NEW\n');
+      dpr($node);
+      dpr('NEW\n');
 
   
 }
