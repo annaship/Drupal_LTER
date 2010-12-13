@@ -246,9 +246,6 @@ function create_dataset_node($file, $uid) {
     $instrumentation         = $value['Instrumentation'];
     $methods                 = $value['Methods'];
     $quality_assurance       = $value['Quality Assurance'];
-
-//    collect multiple values
-//    $associated_researcher[] = $value['Associated Researcher'];
   }
 
   $ext_assoc_arr = taking_person_ids($associated_researcher);
@@ -308,19 +305,19 @@ function create_dataset_node($file, $uid) {
 
   //taking person id (they should be created first)
 
-function taking_person_ids($ext_assoc) {
-  if (isset ($ext_assoc)) {
+function taking_person_ids($persons) {
+  if (isset ($persons)) {
     echo 'HERE';
-    dpr($ext_assoc);
-    $ext_assoc_arr = array();
-    foreach ($ext_assoc as $ext_assoc_value) {
+    dpr($persons);
+    $persons_arr = array();
+    foreach ($persons as $persons_value) {
       $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
-      $q = db_query($sql, $ext_assoc_value);
+      $q = db_query($sql, $persons_value);
         while ($nid = db_result($q)) {
-        $ext_assoc_arr[][nid] = $nid;
+        $persons_arr[][nid] = $nid;
       }
     }
-    return $ext_assoc_arr;
+    return $persons_arr;
   }
 }
   
