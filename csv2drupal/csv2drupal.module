@@ -32,7 +32,7 @@ function csv2drupal_page() {
 //  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
 //  create_datafile_node($file);
 
-  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
   create_dataset_node($file, $uid);
 
 //  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
@@ -224,6 +224,83 @@ function create_dataset_node($file, $uid) {
 //  dpr($content);
 
   foreach ($content as $value) {
+//    dpr('HERE = ');
+//    dpr($value['Associated Researcher']);
+
+//    collect multiple values
+    $ext_assoc[] = $value['Associated Researcher'];
+  }
+
+//taking person id
+  foreach ($ext_assoc as $key => $value) {
+    $q = db_query('SELECT nid FROM node WHERE type="person" and title = %d;', $value);
+    while ($nid = db_result($q)) {
+      dpr($value);
+      dpr($nid);
+
+    }
+  }
+
+//  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+//  $q = db_query($sql, "Laoreet Nulla Hos Saluto Minim Si Gilvus");
+////
+//  while ($nid = db_result($q)) {
+//    $n = node_load($nid);
+//    dpr($nid);
+////    dpr("data_set node = ");
+////    dpr($n);
+////    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+////    $node = node_submit($n);
+////    node_save($node);
+//
+////    var_dump
+//  }
+
+//      [field_dataset_datafile_ref] => Array
+//        (
+//            [0] => Array
+//                (
+//                    [nid] => 2788
+//                )
+//
+//            [1] => Array
+//                (
+//                    [nid] => 2784
+//                )
+//
+//        )
+
+//  Array
+//(
+//    [0] => Terry Chapin
+//    [1] => Jim Laundre
+//    [2] => Donie Bret-Harte
+//    [3] => Michelle Mack
+//)
+
+//  beg_end_date
+//dataset_abstract
+//dataset_add_info
+//dataset_biblio_ref
+//dataset_contact_ref
+//dataset_datafile_ref
+//dataset_datamanager_ref
+//dataset_ext_assoc_ref
+//dataset_fieldcrew_ref
+//dataset_id
+//dataset_labcrew_ref
+//dataset_maintenance
+//dataset_owner_ref
+//dataset_publication_date
+//dataset_purpose
+//dataset_related_links
+//dataset_short_name
+//dataset_site_ref
+//instrumentation
+//methods
+//quality
+
+
       $node = new StdClass();
       $node->type = "data_set";
       $node->uid = $uid;
@@ -236,7 +313,7 @@ function create_dataset_node($file, $uid) {
 //      $node->field_dataset_contact_ref[0]['value']      = $value['Contact'];
 //      $node->field_dataset_datafile_ref[0]['value']     = $value['Data File Structure'];
 //      $node->field_dataset_datamanager_ref[0]['value']  = $value['Data Manager'];
-//      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
+      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
 //      $node->field_dataset_fieldcrew_ref[0]['value']    = $value['Field Crew'];
       $node->field_dataset_id[0]['value']               = $value['Dataset ID'];
 //      $node->field_dataset_labcrew_ref[0]['value']      = $value['Lab Crew'];
@@ -250,8 +327,8 @@ function create_dataset_node($file, $uid) {
       $node->field_instrumentation[0]['value']          = $value['Instrumentation'];
       $node->field_methods[0]['value']                  = $value['Methods'];
       $node->field_quality[0]['value']                  = $value['Quality Assurance'];
-      dpr($node);
-      dpr('NEW\n');
+//      dpr($node);
+//      dpr('NEW\n');
 
-  }
+  
 }
