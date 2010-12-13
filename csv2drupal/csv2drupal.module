@@ -221,24 +221,16 @@ function create_variable_node($file, $uid) {
 
 function create_dataset_node($file, $uid) {
   $content = csv_to_array($file);
-//  dpr($content);
 
+  $ext_assoc_names = array();
   foreach ($content as $value) {
 //    collect multiple values
-    $ext_assoc[] = $value['Associated Researcher'];
+    $ext_assoc_names[] = $value['Associated Researcher'];
   }
 
-  $ext_assoc_arr = array();
-//taking person id (they should be created first)
-  foreach ($ext_assoc as $key => $value) {
-    $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
-    $q = db_query($sql, $value);
-//      dpr($value);
-      while ($nid = db_result($q)) {
-//      dpr($nid);
-      $ext_assoc_arr[][nid] = $nid;
-    }
-  }
+  $ext_assoc_arr = taking_person_ids($ext_assoc_names);
+  
+
 //      dpr($ext_assoc_arr);
 
 //  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
@@ -347,3 +339,20 @@ function create_dataset_node($file, $uid) {
 
   
 }
+
+  //taking person id (they should be created first)
+
+function taking_person_ids($ext_assoc) {
+  echo 'HERE';
+  dpr($ext_assoc);
+  $ext_assoc_arr = array();
+  foreach ($ext_assoc as $ext_assoc_value) {
+    $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+    $q = db_query($sql, $ext_assoc_value);
+      while ($nid = db_result($q)) {
+      $ext_assoc_arr[][nid] = $nid;
+    }
+  }
+  return $ext_assoc_arr;
+}
+  
