@@ -224,28 +224,28 @@ function create_dataset_node($file, $uid) {
 
   $ext_assoc_names = array();
   foreach ($content as $value) {
-    $title                   = $value['Title'];
-    $date_range              = $value['Date Range'];
-    $abstract                = $value['Abstract'];
-    $additional_information  = $value['Additional Information'];
-    $related_bibliography    = $value['Related Bibliography'];
-    $contact                 = $value['Contact'];
-    $data_file_structure     = $value['Data File Structure'];
-    $data_manager            = $value['Data Manager'];
-    $associated_researcher[] = $value['Associated Researcher'];
-    $field_crew              = $value['Field Crew'];
-    $dataset_id              = $value['Dataset ID'];
-    $lab_crew                = $value['Lab Crew'];
-    $maintenance             = $value['Maintenance'];
-    $owner                   = $value['Owner'];
-    $publication_date        = $value['Publication Date'];
-    $purpose                 = $value['Purpose'];
-    $related_links           = $value['Related Links'];
-    $short_name              = $value['Short Name'];
-    $site                    = $value['Site'];
-    $instrumentation         = $value['Instrumentation'];
-    $methods                 = $value['Methods'];
-    $quality_assurance       = $value['Quality Assurance'];
+isset ($title)                   ? $title = $title                                      : $title                   = $value['Title'];
+isset ($date_range)              ? $date_range = $date_range                            : $date_range              = $value['Date Range'];
+isset ($abstract)                ? $abstract = $abstract                                : $abstract                = $value['Abstract'];
+isset ($additional_information)  ? $additional_information = $additional_information    : $additional_information  = $value['Additional Information'];
+isset ($related_bibliography)    ? $related_bibliography = $related_bibliography        : $related_bibliography    = $value['Related Bibliography'];
+isset ($contact)                 ? $contact = $contact                                  : $contact                 = $value['Contact'];
+isset ($data_file_structure)     ? $data_file_structure = $data_file_structure          : $data_file_structure     = $value['Data File Structure'];
+isset ($data_manager)            ? $data_manager = $data_manager                        : $data_manager            = $value['Data Manager'];
+//isset ($associated_researcher) ? $associated_researcher[] = $associated_researcher[]  : $associated_researcher[] = $value['Associated Researcher'];
+isset ($field_crew)              ? $field_crew = $field_crew                            : $field_crew              = $value['Field Crew'];
+isset ($dataset_id)              ? $dataset_id = $dataset_id                            : $dataset_id              = $value['Dataset ID'];
+isset ($lab_crew)                ? $lab_crew = $lab_crew                                : $lab_crew                = $value['Lab Crew'];
+isset ($maintenance)             ? $maintenance = $maintenance                          : $maintenance             = $value['Maintenance'];
+isset ($owner)                   ? $owner = $owner                                      : $owner                   = $value['Owner'];
+isset ($publication_date)        ? $publication_date = $publication_date                : $publication_date        = $value['Publication Date'];
+isset ($purpose)                 ? $purpose = $purpose                                  : $purpose                 = $value['Purpose'];
+isset ($related_links)           ? $related_links = $related_links                      : $related_links           = $value['Related Links'];
+isset ($short_name)              ? $short_name = $short_name                            : $short_name              = $value['Short Name'];
+isset ($site)                    ? $site = $site                                        : $site                    = $value['Site'];
+isset ($instrumentation)         ? $instrumentation = $instrumentation                  : $instrumentation         = $value['Instrumentation'];
+isset ($methods)                 ? $methods = $methods                                  : $methods                 = $value['Methods'];
+isset ($quality_assurance)       ? $quality_assurance = $quality_assurance              : $quality_assurance       = $value['Quality Assurance'];
   }
 
   $ext_assoc_arr = taking_person_ids($associated_researcher);
@@ -268,7 +268,6 @@ function create_dataset_node($file, $uid) {
 //
 ////    var_dump
 //  }
-
 
 
       $node = new StdClass();
@@ -303,12 +302,10 @@ function create_dataset_node($file, $uid) {
   
 }
 
-  //taking person id (they should be created first)
-
+//taking person id (they should be created first)
+// TODO the same for files and other refs (bib, sites)
 function taking_person_ids($persons) {
   if (isset ($persons)) {
-    echo 'HERE';
-    dpr($persons);
     $persons_arr = array();
     foreach ($persons as $persons_value) {
       $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
