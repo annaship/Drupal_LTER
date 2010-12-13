@@ -235,26 +235,27 @@ function create_dataset_node($file, $uid) {
   foreach ($ext_assoc as $key => $value) {
     $q = db_query('SELECT nid FROM node WHERE type="person" and title = %d;', $value);
     while ($nid = db_result($q)) {
-      dpr($value);
-      dpr($nid);
+//      dpr($value);
+//      dpr($nid);
 
     }
   }
 
-//  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
-//  $q = db_query($sql, "Laoreet Nulla Hos Saluto Minim Si Gilvus");
-////
-//  while ($nid = db_result($q)) {
-//    $n = node_load($nid);
-//    dpr($nid);
-////    dpr("data_set node = ");
-////    dpr($n);
-////    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
-////    $node = node_submit($n);
-////    node_save($node);
+  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
+  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'"; 
+  $q = db_query($sql, $value);
 //
-////    var_dump
-//  }
+  while ($nid = db_result($q)) {
+    $n = node_load($nid);
+    dpr($nid);
+//    dpr("data_set node = ");
+//    dpr($n);
+//    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+//    $node = node_submit($n);
+//    node_save($node);
+
+//    var_dump
+  }
 
 //      [field_dataset_datafile_ref] => Array
 //        (
