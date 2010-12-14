@@ -1,6 +1,7 @@
 <?php
 
 function get_info_from_file() {
+//  call 5 times for each csv file?
   $filename = get_file_name();
   $content = get_content($filename);
 
@@ -10,7 +11,11 @@ function get_info_from_file() {
 
 function get_file_name() {
 //  TODO: form here
-  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
+//  variable
+//  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
+//  dataset
+  $filename = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
+
   return $filename;
 }
 
@@ -51,18 +56,30 @@ function get_content($filename) {
 }
 
 function create_nodes($content) {
-//    dpr($content);
+//TODO link node references
+  
+  $uid            = get_uid();
+  $person_nodes    = create_person_node($content, $uid);
+//  dpr($person_nodes);
+  $variables_nodes = create_variable_node($content, $uid);
+//  dpr($variables_nodes);
+  $site_nodes      = create_site_node($content, $uid);
+//  dpr($site_nodes);
+  $datafile_nodes  = create_datafile_node($content, $uid);
+//  dpr($datafile_nodes);
+  $dataset_nodes   = create_dataset_node($content, $uid);
+  dpr($dataset_nodes);
 
-  $uid = get_uid();
-  $variables_node = create_variable_node($content, $uid);
-  dpr($variables_node);
-  $dataset_node = create_dataset_node($content, $uid);
-  dpr($dataset_node);
+//  TODO link referrer
 }
 
 function get_uid() {
   global $user;
   return $user->uid;
+}
+
+function create_person_node() {
+//  dpr("create_person_node");
 }
 
 function create_variable_node($content, $uid) {
@@ -87,42 +104,80 @@ function create_variable_node($content, $uid) {
   return $node;
 }
 
+function create_site_node() {
+//  dpr("create_site_node");
+}
+
+function create_datafile_node() {
+//  dpr("create_datafile_node");
+}
+
 function create_dataset_node($content, $uid) {
 
+  $dataset_values = set_dataset_values($content);
+  $node = put_values_into_node($dataset_values);
+  dpr($dataset_values);
 
-//  dpr($content);
-
-  foreach ($content as $value) {
-      $node = new StdClass();
-      $node->type = "data_set";
-      $node->uid = $uid;
-//        $node->is_new = 1;
-      $node->title = $value['Title'];
-      $node->field_beg_end_date[0]['value']             = $value['Date Range'];
-      $node->field_dataset_abstract[0]['value']         = $value['Abstract'];
-      $node->field_dataset_add_info[0]['value']         = $value['Additional Information'];
-//      $node->field_dataset_biblio_ref[0]['value']       = $value['Related Bibliography'];
-//      $node->field_dataset_contact_ref[0]['value']      = $value['Contact'];
-//      $node->field_dataset_datafile_ref[0]['value']     = $value['Data File Structure'];
-//      $node->field_dataset_datamanager_ref[0]['value']  = $value['Data Manager'];
-//      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
-//      $node->field_dataset_fieldcrew_ref[0]['value']    = $value['Field Crew'];
-      $node->field_dataset_id[0]['value']               = $value['Dataset ID'];
-//      $node->field_dataset_labcrew_ref[0]['value']      = $value['Lab Crew'];
-      $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'];
-//      $node->field_dataset_owner_ref[0]['value']        = $value['Owner'];
-      $node->field_dataset_publication_date[0]['value'] = $value['Publication Date'];
-      $node->field_dataset_purpose[0]['value']          = $value['Purpose'];
-      $node->field_dataset_related_links[0]['value']    = $value['Related Links'];
-      $node->field_dataset_short_name[0]['value']       = $value['Short Name'];
-//      $node->field_dataset_site_ref[0]['value']         = $value['Site'];
-      $node->field_instrumentation[0]['value']          = $value['Instrumentation'];
-      $node->field_methods[0]['value']                  = $value['Methods'];
-      $node->field_quality[0]['value']                  = $value['Quality Assurance'];
-//      dpr('NEW\n');
-
-  }
 //    dpr($node);
     return $node;
 
+}
+
+function set_dataset_values($content) {
+  dpr($content);
+  $ext_assoc_names = array();
+    foreach ($content as $value) {
+
+//    TODO all !!! value collect as $associated_researcher
+    $title = get_value($value, 'title');
+    $date_range             = get_array_of_values($value, 'Date Range');
+    $abstract               = get_array_of_values($value, 'Abstract');
+    $additional_information = get_array_of_values($value, 'Additional Information');
+    $related_bibliography   = get_array_of_values($value, 'Related Bibliography');
+    $contact                = get_array_of_values($value, 'Contact');
+    $data_file_structure    = get_array_of_values($value, 'Data File Structure');
+    $data_manager           = get_array_of_values($value, 'Data Manager');
+    $associated_researcher  = get_array_of_values($value, 'Associated Researcher');
+    $field_crew             = get_array_of_values($value, 'Field Crew');
+    $dataset_id             = get_value($value, 'Dataset ID');
+    $lab_crew               = get_array_of_values($value, 'Lab Crew');
+    $maintenance            = get_value($value, 'Maintenance');
+    $owner                  = get_array_of_values($value, 'Owner');
+    $publication_date       = get_array_of_values($value, 'Publication Date');
+    $purpose                = get_value($value, 'Purpose');
+    $related_links          = get_array_of_values($value, 'Related Links');
+    $short_name             = get_array_of_values($value, 'Short Name');
+    $site                   = get_array_of_values($value, 'Site');
+    $instrumentation        = get_array_of_values($value, 'Instrumentation');
+    $methods                = get_array_of_values($value, 'Methods');
+    $quality_assurance      = get_value($value, 'Quality Assurance');
+  }
+//  dpr($associated_researcher);
+
+}
+
+function get_value($value, $name) {
+  $res = '';
+  isset (${$name}) ? ${$name} = ${$name} : ${$name} = $value[$name];
+  $res = ${$name};
+//  TODO function to tr \n with <br/>
+//  and other text changing if needed
+
+  return $res;
+}
+
+function get_array_of_values($value, $name) {
+  $res = '';
+
+  if (!empty($value[$name])) {
+    ${$name}[] = $value[$name];
+  }
+  $res = ${$name};
+  dpr($res);
+  return $res;
+
+}
+
+function put_values_into_node($dataset_values) {
+//  print_r("UUU");
 }
