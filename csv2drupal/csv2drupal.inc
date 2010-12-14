@@ -124,35 +124,35 @@ function create_dataset_node($content, $uid) {
 }
 
 function set_dataset_values($content) {
-  dpr($content);
-  $ext_assoc_names = array();
+//  dpr($content);
+  
     foreach ($content as $value) {
 
-//    TODO all !!! value collect as $associated_researcher
+//    TODO make a function
     $title = get_value($value, 'title');
-    $date_range             = get_array_of_values($value, 'Date Range');
-    $abstract               = get_array_of_values($value, 'Abstract');
-    $additional_information = get_array_of_values($value, 'Additional Information');
-    $related_bibliography   = get_array_of_values($value, 'Related Bibliography');
-    $contact                = get_array_of_values($value, 'Contact');
-    $data_file_structure    = get_array_of_values($value, 'Data File Structure');
-    $data_manager           = get_array_of_values($value, 'Data Manager');
-    $associated_researcher  = get_array_of_values($value, 'Associated Researcher');
-    $field_crew             = get_array_of_values($value, 'Field Crew');
-    $dataset_id             = get_value($value, 'Dataset ID');
-    $lab_crew               = get_array_of_values($value, 'Lab Crew');
-    $maintenance            = get_value($value, 'Maintenance');
-    $owner                  = get_array_of_values($value, 'Owner');
-    $publication_date       = get_array_of_values($value, 'Publication Date');
-    $purpose                = get_value($value, 'Purpose');
-    $related_links          = get_array_of_values($value, 'Related Links');
-    $short_name             = get_array_of_values($value, 'Short Name');
-    $site                   = get_array_of_values($value, 'Site');
-    $instrumentation        = get_array_of_values($value, 'Instrumentation');
-    $methods                = get_array_of_values($value, 'Methods');
-    $quality_assurance      = get_value($value, 'Quality Assurance');
+    if (!empty ($value['Date Range'])) $date_range[] = $value['Date Range'];
+    $abstract = get_value($value, 'Abstract');
+    $additional_information = get_value($value, 'Additional Information');
+    if (!empty ($value['Related Bibliography'])) $related_bibliography[] = $value['Related Bibliography'];
+    if (!empty ($value['Contact'])) $contact[] = $value['Contact'];
+    if (!empty ($value['Data File Structure'])) $data_file_structure[] = $value['Data File Structure'];
+    if (!empty ($value['Data Manager'])) $data_manager[] = $value['Data Manager'];
+    if (!empty ($value['Associated Researcher'])) $associated_researcher[] = $value['Associated Researcher'];
+    if (!empty ($value['Field Crew'])) $field_crew[] = $value['Field Crew'];
+    $dataset_id = get_value($value, 'Dataset ID');
+    if (!empty ($value['Lab Crew'])) $lab_crew[] = $value['Lab Crew'];
+    $maintenance = get_value($value, 'Maintenance');
+    if (!empty ($value['Owner'])) $owner[] = $value['Owner'];
+    if (!empty ($value['Publication Date'])) $publication_date[] = $value['Publication Date'];
+    $purpose = get_value($value, 'Purpose');
+    if (!empty ($value['Related Links'])) $related_links[] = $value['Related Links'];
+    if (!empty ($value['Short Name'])) $short_name[] = $value['Short Name'];
+    if (!empty ($value['Site'])) $site[] = $value['Site'];
+    if (!empty ($value['Instrumentation'])) $instrumentation[] = $value['Instrumentation'];
+    if (!empty ($value['Methods'])) $methods[] = $value['Methods'];
+    $quality_assurance = get_value($value, 'Quality Assurance');
   }
-//  dpr($associated_researcher);
+  dpr($related_bibliography);
 
 }
 
@@ -166,15 +166,10 @@ function get_value($value, $name) {
   return $res;
 }
 
-function get_array_of_values($value, $name) {
-  $res = '';
-
-  if (!empty($value[$name])) {
-    ${$name}[] = $value[$name];
+function get_array_of_values() {
+  if (!empty($value['Related Bibliography'])) {
+    $related_bibliography[] = $value['Related Bibliography'];
   }
-  $res = ${$name};
-  dpr($res);
-  return $res;
 
 }
 
