@@ -125,9 +125,34 @@ function create_dataset_node($content, $uid) {
 
 function set_dataset_values($content) {
   $dataset_values = array();
-
+  $dataset_tags   = array(
+    'Abstract',
+    'Additional Information',
+    'Associated Researcher',
+    'Contact',
+    'Data File Structure',
+    'Data Manager',
+    'Dataset ID',
+    'Date Range',
+    'Field Crew',
+    'Instrumentation',
+    'Lab Crew',
+    'Maintenance',
+    'Methods',
+    'Owner',
+    'Publication Date',
+    'Purpose',
+    'Related Bibliography',
+    'Related Links',
+    'Short Name',
+    'Site',
+  );
+  
   foreach ($content as $value) {
-//    TODO make a function
+//    TODO make a function or cycle by array
+    foreach ($dataset_tags as $dataset_tag) {
+      if (!empty ($value[$dataset_tag])) $dataset_values[$dataset_tag][] = $value[$dataset_tag];
+    }
     if (!empty ($value['Title'])) $dataset_values['Title'][] = $value['Title'];
 
 //      $a = get_value($value, 'Title');
