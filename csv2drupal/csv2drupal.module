@@ -1,75 +1,22 @@
 <?php
 // $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
 /*
- * Form for eml settings, required by views_bonus_eml_export
  * ?q=csv2drupal
 */
 
 function csv2drupal_menu() {
-  
+
   $items = array();
   $items['csv2drupal'] = array (
-    'title' => t('Export CSV files into predefined custom content types for the LTER project'),
+    'title' => t('Create an EML config file'),
     'page callback' => 'csv2drupal_page',
     'access arguments' => array('administer nodes'),
     'type' => MENU_SUGGESTED_ITEM,
-//    'file' => 'csv2drupal_form.inc',
+    'file' => 'csv2drupal_form.inc',
     );
   return $items;
 }
 
 function csv2drupal_page() {
-dpr("HERE!!!");
-module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
-//$a = get_include_path(); //= ".:/usr/lib/php"
-//$a = PATH_SEPARATOR; // :
-//$a = 
-$objReader = PHPExcel_IOFactory::createReader('Excel2007');
-$objReader->setReadDataOnly(true);
-
-$file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
-
-$objPHPExcel = $objReader->load($file);
-
-$objWorksheet = $objPHPExcel->getActiveSheet();
-
-$highestRow = $objWorksheet->getHighestRow(); // e.g. 10
-$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
-
-//dpr($highestColumn);
-
-$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
-
-echo '<table>' . "\n";
-for ($row = 1; $row <= $highestRow; ++$row) {
-  echo '<tr>' . "\n";
-
-  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
-  }
-
-  echo '</tr>' . "\n";
+  return drupal_get_form('csv2drupal_form');
 }
-echo '</table>' . "\n";
-
-
-
-//  set_include_path(get_include_path() . PATH_SEPARATOR . 'PhpExcel/Classes/');
-//
-//include("PHPExcel.php");
-//include_once 'PHPExcel/IOFactory.php';
-//$objPHPExcel = PHPExcel_IOFactory::load("template2.xls");
-//$objPHPExcel->setActiveSheetIndex(0);
-//$aSheet = $objPHPExcel->getActiveSheet();
-//
-//$aSheet->setCellValue('D23',$index[0]);
-//$aSheet->setCellValue('E23',$index[1]);
-////… здесь делаем какие-то записи
-//
-////создаем объект класса-писателя
-//include("PHPExcel/Writer/Excel5.php");
-//$objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
-////сохраняем в тот-же файл
-//$objWriter->save('template2.xls');
-}
-

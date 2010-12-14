@@ -1,24 +1,17 @@
 <?php
-// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
-/*
- * Form for eml settings, required by views_bonus_eml_export
- * ?q=csv2drupal
-*/
 
-function csv2drupal_menu() {
-  
-  $items = array();
-  $items['csv2drupal'] = array (
-    'title' => t('Export CSV files into predefined custom content types for the LTER project'),
-    'page callback' => 'csv2drupal_page',
-    'access arguments' => array('administer nodes'),
-    'type' => MENU_SUGGESTED_ITEM,
-//    'file' => 'csv2drupal_form.inc',
-    );
-  return $items;
+function get_info_from_file() {
+  dpr("get_info_from_file");
+}
+function create_nodes() {
+  dpr("create_nodes");
 }
 
-function csv2drupal_page() {
+
+function caaa() {
+
+
+
 
   global $user;
   $uid = $user->uid;
@@ -43,11 +36,11 @@ function csv2drupal_page() {
 //
 //  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
 //  create_keywords_node($file);
-  
+
 //  dpr("HERE URRA!");
 //  dpr($content_a);
 
-  
+
 
 //Name
 //Label
@@ -158,6 +151,26 @@ function csv2drupal_page() {
     return $data;
 }
 
+//vertical title
+  function csv_to_array_ver($filename='', $delimiter=',')
+{
+//    dpr("HERE!!!");
+////    if(!file_exists($filename) || !is_readable($filename)) {
+////        return FALSE;
+////    }
+//
+////    $header = NULL;
+//    $data = array();
+//    $csvData = file_get_contents($filename);
+//        dpr($csvData);
+//
+////    $csvNumColumns = 22;
+////    $csvDelim = ";";
+//    $data = str_getcsv($csvData);
+//    dpr($data);
+//    return $data;
+}
+
 function chop_field_names(&$header) {
   foreach ($header as $key => $value) {
     $header[$key] = rtrim($value, " ");
@@ -221,101 +234,37 @@ function create_variable_node($file, $uid) {
 
 function create_dataset_node($file, $uid) {
   $content = csv_to_array($file);
+//  dpr($content);
 
-  $ext_assoc_names = array();
   foreach ($content as $value) {
-//    TODO all !!! value collect as $associated_researcher
-    isset ($title)                   ? $title = $title                                      : $title                   = $value['Title'];
-    isset ($date_range)              ? $date_range = $date_range                            : $date_range              = $value['Date Range'];
-    isset ($abstract)                ? $abstract = $abstract                                : $abstract                = $value['Abstract'];
-    isset ($additional_information)  ? $additional_information = $additional_information    : $additional_information  = $value['Additional Information'];
-    isset ($related_bibliography)    ? $related_bibliography = $related_bibliography        : $related_bibliography    = $value['Related Bibliography'];
-    isset ($contact)                 ? $contact = $contact                                  : $contact                 = $value['Contact'];
-    isset ($data_file_structure)     ? $data_file_structure = $data_file_structure          : $data_file_structure     = $value['Data File Structure'];
-    isset ($data_manager)            ? $data_manager = $data_manager                        : $data_manager            = $value['Data Manager'];
-    $associated_researcher[] = $value['Associated Researcher'];
-    isset ($field_crew)              ? $field_crew = $field_crew                            : $field_crew              = $value['Field Crew'];
-    isset ($dataset_id)              ? $dataset_id = $dataset_id                            : $dataset_id              = $value['Dataset ID'];
-    isset ($lab_crew)                ? $lab_crew = $lab_crew                                : $lab_crew                = $value['Lab Crew'];
-    isset ($maintenance)             ? $maintenance = $maintenance                          : $maintenance             = $value['Maintenance'];
-    isset ($owner)                   ? $owner = $owner                                      : $owner                   = $value['Owner'];
-    isset ($publication_date)        ? $publication_date = $publication_date                : $publication_date        = $value['Publication Date'];
-    isset ($purpose)                 ? $purpose = $purpose                                  : $purpose                 = $value['Purpose'];
-    isset ($related_links)           ? $related_links = $related_links                      : $related_links           = $value['Related Links'];
-    isset ($short_name)              ? $short_name = $short_name                            : $short_name              = $value['Short Name'];
-    isset ($site)                    ? $site = $site                                        : $site                    = $value['Site'];
-    isset ($instrumentation)         ? $instrumentation = $instrumentation                  : $instrumentation         = $value['Instrumentation'];
-    isset ($methods)                 ? $methods = $methods                                  : $methods                 = $value['Methods'];
-    isset ($quality_assurance)       ? $quality_assurance = $quality_assurance              : $quality_assurance       = $value['Quality Assurance'];
-  }
-
-  $ext_assoc_arr = taking_person_ids($associated_researcher);
-//
-//
-//      dpr($ext_assoc_arr);
-
-//  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
-//  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
-//  $q = db_query($sql, $value);
-////
-//  while ($nid = db_result($q)) {
-//    $n = node_load($nid);
-//    dpr($nid);
-////    dpr("data_set node = ");
-////    dpr($n);
-////    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
-////    $node = node_submit($n);
-////    node_save($node);
-//
-////    var_dump
-//  }
-
-
       $node = new StdClass();
-      $node->type                                       = "data_set";
-      $node->uid                                        = $uid;
-      $node->title                                      = $title;
-      $node->field_beg_end_date[0]['value']             = $date_range; //!!!
-      $node->field_dataset_abstract[0]['value']         = $abstract;
-      $node->field_dataset_add_info[0]['value']         = $additional_information;
-      $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; //!!!
-      $node->field_dataset_contact_ref[0]['value']      = $contact; //!!!
-      $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure; //!!!
-      $node->field_dataset_datamanager_ref[0]['value']  = $data_manager; //!!!
-      $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-      $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew; //!!!
-      $node->field_dataset_id[0]['value']               = $dataset_id;
-      $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; //!!!
-      $node->field_dataset_maintenance[0]['value']      = $maintenance;
-      $node->field_dataset_owner_ref[0]['value']        = $owner; //!!!
-      $node->field_dataset_publication_date[0]['value'] = $publication_date;
-      $node->field_dataset_purpose[0]['value']          = $purpose;
-      $node->field_dataset_related_links[0]['value']    = $related_links; //!!!
-      $node->field_dataset_short_name[0]['value']       = $short_name;
-      $node->field_dataset_site_ref[0]['value']         = $site; //!!!
-      $node->field_instrumentation[0]['value']          = $instrumentation; //!!!
-      $node->field_methods[0]['value']                  = $methods; //!!!
-      $node->field_quality[0]['value']                  = $quality_assurance;
-
+      $node->type = "data_set";
+      $node->uid = $uid;
+//        $node->is_new = 1;
+      $node->title = $value['Title'];
+      $node->field_beg_end_date[0]['value']             = $value['Date Range'];
+      $node->field_dataset_abstract[0]['value']         = $value['Abstract'];
+      $node->field_dataset_add_info[0]['value']         = $value['Additional Information'];
+//      $node->field_dataset_biblio_ref[0]['value']       = $value['Related Bibliography'];
+//      $node->field_dataset_contact_ref[0]['value']      = $value['Contact'];
+//      $node->field_dataset_datafile_ref[0]['value']     = $value['Data File Structure'];
+//      $node->field_dataset_datamanager_ref[0]['value']  = $value['Data Manager'];
+//      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
+//      $node->field_dataset_fieldcrew_ref[0]['value']    = $value['Field Crew'];
+      $node->field_dataset_id[0]['value']               = $value['Dataset ID'];
+//      $node->field_dataset_labcrew_ref[0]['value']      = $value['Lab Crew'];
+      $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'];
+//      $node->field_dataset_owner_ref[0]['value']        = $value['Owner'];
+      $node->field_dataset_publication_date[0]['value'] = $value['Publication Date'];
+      $node->field_dataset_purpose[0]['value']          = $value['Purpose'];
+      $node->field_dataset_related_links[0]['value']    = $value['Related Links'];
+      $node->field_dataset_short_name[0]['value']       = $value['Short Name'];
+//      $node->field_dataset_site_ref[0]['value']         = $value['Site'];
+      $node->field_instrumentation[0]['value']          = $value['Instrumentation'];
+      $node->field_methods[0]['value']                  = $value['Methods'];
+      $node->field_quality[0]['value']                  = $value['Quality Assurance'];
       dpr($node);
       dpr('NEW\n');
 
-  
-}
-
-//taking person id (they should be created first)
-// TODO the same for files and other refs (bib, sites)
-function taking_person_ids($persons) {
-  if (isset ($persons)) {
-    $persons_arr = array();
-    foreach ($persons as $persons_value) {
-      $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
-      $q = db_query($sql, $persons_value);
-        while ($nid = db_result($q)) {
-        $persons_arr[][nid] = $nid;
-      }
-    }
-    return $persons_arr;
   }
 }
-  
