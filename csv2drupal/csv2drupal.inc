@@ -124,12 +124,13 @@ function create_dataset_node($content, $uid) {
 }
 
 function set_dataset_values($content) {
-//  dpr($content);
-  
-    foreach ($content as $value) {
+  $dataset_values = array();
 
+  foreach ($content as $value) {
 //    TODO make a function
-    $title = get_value($value, 'title');
+    if (!empty ($value['Title'])) $dataset_values['Title'][] = $value['Title'];
+
+//      $a = get_value($value, 'Title');
     if (!empty ($value['Date Range'])) $date_range[] = $value['Date Range'];
     $abstract = get_value($value, 'Abstract');
     $additional_information = get_value($value, 'Additional Information');
@@ -152,17 +153,16 @@ function set_dataset_values($content) {
     if (!empty ($value['Methods'])) $methods[] = $value['Methods'];
     $quality_assurance = get_value($value, 'Quality Assurance');
   }
-  dpr($related_bibliography);
+  dpr($dataset_values);
 
 }
 
 function get_value($value, $name) {
   $res = '';
-  isset (${$name}) ? ${$name} = ${$name} : ${$name} = $value[$name];
-  $res = ${$name};
+//  isset (${$name}) ? ${$name} = ${$name} : ${$name} = $value[$name];
+  $res = $value[$name];
 //  TODO function to tr \n with <br/>
 //  and other text changing if needed
-
   return $res;
 }
 
