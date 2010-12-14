@@ -13,6 +13,7 @@
 //
 //  return $items;
 //}
+  return drupal_get_form('csv2drupal_form');
 
 function csv2drupal_form() {
   $form = array();
