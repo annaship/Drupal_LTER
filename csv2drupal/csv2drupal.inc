@@ -146,55 +146,17 @@ function set_dataset_values($content) {
     'Related Links',
     'Short Name',
     'Site',
+    'Title',
+    'Quality Assurance',
   );
   
   foreach ($content as $value) {
-//    TODO make a function or cycle by array
+//    TODO take nid for references
     foreach ($dataset_tags as $dataset_tag) {
       if (!empty ($value[$dataset_tag])) $dataset_values[$dataset_tag][] = $value[$dataset_tag];
     }
-    if (!empty ($value['Title'])) $dataset_values['Title'][] = $value['Title'];
-
-//      $a = get_value($value, 'Title');
-    if (!empty ($value['Date Range'])) $date_range[] = $value['Date Range'];
-    $abstract = get_value($value, 'Abstract');
-    $additional_information = get_value($value, 'Additional Information');
-    if (!empty ($value['Related Bibliography'])) $related_bibliography[] = $value['Related Bibliography'];
-    if (!empty ($value['Contact'])) $contact[] = $value['Contact'];
-    if (!empty ($value['Data File Structure'])) $data_file_structure[] = $value['Data File Structure'];
-    if (!empty ($value['Data Manager'])) $data_manager[] = $value['Data Manager'];
-    if (!empty ($value['Associated Researcher'])) $associated_researcher[] = $value['Associated Researcher'];
-    if (!empty ($value['Field Crew'])) $field_crew[] = $value['Field Crew'];
-    $dataset_id = get_value($value, 'Dataset ID');
-    if (!empty ($value['Lab Crew'])) $lab_crew[] = $value['Lab Crew'];
-    $maintenance = get_value($value, 'Maintenance');
-    if (!empty ($value['Owner'])) $owner[] = $value['Owner'];
-    if (!empty ($value['Publication Date'])) $publication_date[] = $value['Publication Date'];
-    $purpose = get_value($value, 'Purpose');
-    if (!empty ($value['Related Links'])) $related_links[] = $value['Related Links'];
-    if (!empty ($value['Short Name'])) $short_name[] = $value['Short Name'];
-    if (!empty ($value['Site'])) $site[] = $value['Site'];
-    if (!empty ($value['Instrumentation'])) $instrumentation[] = $value['Instrumentation'];
-    if (!empty ($value['Methods'])) $methods[] = $value['Methods'];
-    $quality_assurance = get_value($value, 'Quality Assurance');
   }
   dpr($dataset_values);
-
-}
-
-function get_value($value, $name) {
-  $res = '';
-//  isset (${$name}) ? ${$name} = ${$name} : ${$name} = $value[$name];
-  $res = $value[$name];
-//  TODO function to tr \n with <br/>
-//  and other text changing if needed
-  return $res;
-}
-
-function get_array_of_values() {
-  if (!empty($value['Related Bibliography'])) {
-    $related_bibliography[] = $value['Related Bibliography'];
-  }
 
 }
 
