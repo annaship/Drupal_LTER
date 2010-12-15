@@ -46,6 +46,18 @@ function _person_field_names() {
   );
 }
 
+function _person_field_name_tag() {
+  static $person_field_name_tag;
+  $person_field_names = _person_field_names();
+  $person_tags = _person_tags();
+  if (empty($person_field_name_tag)) {
+    $person_field_name_tag =  array_combine($person_field_names, $person_tags);
+  }
+//  dpr($person_field_name_tag);
+  return $person_field_name_tag;
+}
+  
+
 function get_info_from_file() {
 //  call 5 times for each csv file?
   $filename = get_file_name();
@@ -125,20 +137,16 @@ function get_uid() {
 }
 
 function create_person_node($content, $uid) {
-  dpr("create_person_node");
+//  dpr("create_person_node");
 
   $person_values = set_person_values($content);
   $node = put_person_values_into_node($person_values, $uid);
-  dpr($person_values);
+//  dpr($person_values);
 
-//    dpr($node);
-//  $n = node_load(31);
-//  dpr($n);
     return $node;
 }
 
 function set_person_values($content) {
-//  dpr($content);
   $person_values_all = array();
   $person_tags   = _person_tags();
   foreach ($content as $value) {
@@ -149,11 +157,12 @@ function set_person_values($content) {
     }
     $person_values_all[] = $person_values;
   }
-  dpr($person_values_all);
+//  dpr($person_values_all);
   return $person_values_all;
 }
 
 function put_person_values_into_node($person_values, $uid) {
+ $person_field_name_tags = _person_field_name_tag();
   foreach ($person_values as $person_value) {
 //    TODO create a combined array and take key value to not repeat all below
       $node = new StdClass();
@@ -165,7 +174,9 @@ function put_person_values_into_node($person_values, $uid) {
         $node->field_person_first_name = array($person_value['First Name']);
       }
 //    TODO  do the same, to avoid empty array with [0] or
-
+    foreach ($person_field_name_tags as $key => $value) {
+      $node->$key = array($person_value[$value]);
+    }
       $node->field_person_last_name = array($person_value['Last Name']);
       $node->field_person_organization = array($person_value['Organization']);
       $node->field_person_role = array($person_value['Role']);
@@ -183,7 +194,7 @@ function put_person_values_into_node($person_values, $uid) {
 //     TODO what if not one?
       $node->field_person_pubs = array(array('nid' => $person_value['Publications']['value']));
 
-      dpr($node);
+//      dpr($node);
   }
 
 }
