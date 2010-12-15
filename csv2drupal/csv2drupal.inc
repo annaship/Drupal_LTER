@@ -134,15 +134,13 @@ function put_person_values_into_node($person_values, $uid) {
       if (!empty($person_value['First Name'])) {
         $node->field_person_first_name = array($person_value['First Name']);
       }
-      else {
-       $node->field_person_first_name = array();
-      }
-//    TODO  do the same, to avoid empty array with [0]
+//    TODO  do the same, to avoid empty array with [0] or
+
       $node->field_person_last_name = array($person_value['Last Name']);
       $node->field_person_organization = array($person_value['Organization']);
       $node->field_person_role = array($person_value['Role']);
       $node->field_person_title = array($person_value['Title']);
-      $node->field_person_email = array($person_value['Email']);
+      $node->field_person_email = array(array('email' => $person_value['Email']['value']));
       $node->field_person_address = array($person_value['Address']);
       $node->field_person_city = array($person_value['City']);
       $node->field_person_state = array($person_value['State']);
@@ -151,8 +149,9 @@ function put_person_values_into_node($person_values, $uid) {
       $node->field_person_phone = array($person_value['Phone']);
       $node->field_person_fax = array($person_value['Fax']);
       $node->field_person_personid = array($person_value['personid']);
-      $node->field_person_uid = array($person_value['person_uid']);
-      $node->field_person_pubs = array($person_value['Publications']);
+      $node->field_person_uid = array(array('uid' => $person_value['person_uid']['value']));
+//     TODO what if not one?
+      $node->field_person_pubs = array(array('nid' => $person_value['Publications']['value']));
 
       dpr($node);
   }
