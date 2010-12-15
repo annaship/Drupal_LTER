@@ -1,5 +1,51 @@
 <?php
 
+//function _AcademicStaff_Salutations() {
+//  return array('Professor','Dr','Mr','Ms');
+//}
+
+function _person_tags() {
+   return array (
+    'Address',
+    'City',
+    'Country',
+    'Email',
+    'Fax',
+    'First Name',
+    'Last Name',
+    'Organization',
+    'personid',
+    'Phone',
+    'Publications',
+    'Role',
+    'State',
+    'Title',
+    'person_uid',
+    'Zip Code',      
+  );
+}
+
+function _person_field_names() {
+  return array (
+    field_person_address,
+    field_person_city,
+    field_person_country,
+    field_person_email,
+    field_person_fax,
+    field_person_first_name,
+    field_person_last_name,
+    field_person_organization,
+    field_person_personid,
+    field_person_phone,
+    field_person_pubs,
+    field_person_role,
+    field_person_state,
+    field_person_title,
+    field_person_uid,
+    field_person_zipcode,
+  );
+}
+
 function get_info_from_file() {
 //  call 5 times for each csv file?
   $filename = get_file_name();
@@ -94,24 +140,7 @@ function create_person_node($content, $uid) {
 function set_person_values($content) {
 //  dpr($content);
   $person_values_all = array();
-  $person_tags   = array(
-    'Last Name',
-    'Organization',
-    'Role',
-    'Title',
-    'Email',
-    'Address',
-    'City',
-    'State',
-    'Zip Code',
-    'Country',
-    'Phone',
-    'Fax',
-    'personid',
-    'person_uid',
-    'Publications',
-  );
-
+  $person_tags   = _person_tags();
   foreach ($content as $value) {
 //    TODO take nid for references
     $person_values = array();
@@ -120,6 +149,7 @@ function set_person_values($content) {
     }
     $person_values_all[] = $person_values;
   }
+  dpr($person_values_all);
   return $person_values_all;
 }
 
@@ -241,7 +271,7 @@ function taking_person_ids($persons) {
   if (isset ($persons)) {
     $persons_arr = array();
     foreach ($persons as $persons_value) {
-      $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
       $q = db_query($sql, $persons_value);
         while ($nid = db_result($q)) {
         $persons_arr[][nid] = $nid;
