@@ -383,22 +383,28 @@ function person_subform($form, $role) {
    'Zimbabwe' => t('Zimbabwe'),
  );
 
+  $mysql_connection = db_set_active();
+  if (!$mysql_connection) {
+    die($errDbConn . mysql_error() . " :: " . mysql_errno());
+  }
+
+  $sql = "SELECT nid FROM {content_type_person}
+                          WHERE (field_person_role_value = '%s'
+                            and nid = (SELECT max(nid) FROM {content_type_person}
+                                        WHERE field_person_role_value = '%s'))";
+
 // If Metadata Provider exists take the last one and use by default
-  $query = db_query('SELECT nid FROM content_type_person 
-                      WHERE (field_person_role_value = "Metadata Provider" 
-                        and nid = (SELECT max(nid) FROM content_type_person 
-                                    WHERE field_person_role_value = "Metadata Provider"))');
-          
+  $person_role_value = 'Metadata Provider';
+  $query = db_query($sql, $person_role_value, $person_role_value);
   $metadata_provider_nid = db_result($query);
-  if ($metadata_provider_nid) {
+
+ if ($metadata_provider_nid) {
     $persion_node = node_load($metadata_provider_nid);
   }    
   // If Publisher exists take the last one and use by default
   if ($role == 'publisher') {
-    $query = db_query('SELECT nid FROM content_type_person 
-                        WHERE field_person_role_value = "Publisher" 
-                          and nid = (SELECT max(nid) FROM content_type_person 
-                                      WHERE field_person_role_value = "Publisher")');
+    $person_role_value = 'Publisher';
+    $query = db_query($sql, $person_role_value, $person_role_value);
     $publisher_nid = db_result($query);    
     
     if ($publisher_nid) {
