@@ -4,8 +4,6 @@ function get_info_from_file() {
 //  call 5 times for each csv file?
   $filename = get_file_name();
   $content = get_content($filename);
-
-//  dpr($content);
   return $content;
 }
 
@@ -14,8 +12,10 @@ function get_file_name() {
 //  variable
 //  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
 //  dataset
-  $filename = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
+  $module_name = "csv2drupal";
+  $module_path = drupal_get_path('module', $module_name);
 
+  $filename = $module_path . "/1982_2000gs81tusbm_Person.csv";
   return $filename;
 }
 
@@ -61,14 +61,14 @@ function create_nodes($content) {
   $uid            = get_uid();
   $person_nodes    = create_person_node($content, $uid);
 //  dpr($person_nodes);
-  $variables_nodes = create_variable_node($content, $uid);
+//  $variables_nodes = create_variable_node($content, $uid);
 //  dpr($variables_nodes);
-  $site_nodes      = create_site_node($content, $uid);
+//  $site_nodes      = create_site_node($content, $uid);
 //  dpr($site_nodes);
-  $datafile_nodes  = create_datafile_node($content, $uid);
+//  $datafile_nodes  = create_datafile_node($content, $uid);
 //  dpr($datafile_nodes);
-  $dataset_nodes   = create_dataset_node($content, $uid);
-  dpr($dataset_nodes);
+//  $dataset_nodes   = create_dataset_node($content, $uid);
+//  dpr($dataset_nodes);
 
 //  TODO link referrer
 }
@@ -78,8 +78,68 @@ function get_uid() {
   return $user->uid;
 }
 
-function create_person_node() {
-//  dpr("create_person_node");
+function create_person_node($content, $uid) {
+  dpr("create_person_node");
+
+  $person_values = set_person_values($content);
+  $node = put_values_into_node($person_values, $uid);
+//  dpr($person_values);
+
+//    dpr($node);
+    return $node;
+
+}
+
+function set_person_values($content) {
+//  dpr($content);
+  $person_values = array();
+  $person_tags   = array(
+    'Last Name',
+    'Organization',
+    'Role',
+    'Title',
+    'Email',
+    'Address',
+    'City',
+    'State',
+    'Zip Code',
+    'Country',
+    'Phone',
+    'Fax',
+    'personid',
+    'person_uid',
+    'Publications',
+  );
+
+  foreach ($content as $value) {
+//      dpr($value);
+//    TODO take nid for references
+      //    Array
+//(
+//    [Last Name] => Shaver
+//    [Organization] => Marine Biological Lab
+//    [Role] => Lead Principal Investigator
+//    [Title] =>
+//    [Email] => gshaver@mbl.edu
+//    [Address] => 7 MBL St
+//    [City] => Woods Hole
+//    [State] => MA
+//    [Zip Code] => 02543
+//    [Country] => USA
+//    [Phone] => 508 289 7492
+//    [Fax] =>
+//    [personid] =>
+//    [person_uid] =>
+//    [Publications] =>
+//)
+    foreach ($person_tags as $person_tag) {
+      
+      if (!empty ($value[$person_tag])) $person_values[$person_tag]['value'] = $value[$person_tag];
+    }
+    $person_values_all[] = $person_values;
+  }
+  dpr($person_values_all);
+  return $person_values;
 }
 
 function create_variable_node($content, $uid) {
