@@ -217,36 +217,21 @@ function views_bonus_eml_print_geographic_coverage($content) {
 
 function views_bonus_eml_get_geo($site_nid) {
   unset($geo_lon_lat_point);
-  $db_url = parse_url($GLOBALS['db_url']);
-  if (preg_match("/\/(.+)/", $db_url['path'], $matches)) {
-    $db_name = $matches[1];
-  }
+    $mysql_connection = db_set_active();
+    if (!$mysql_connection) {
+      die($errDbConn . mysql_error() . " :: " . mysql_errno());
+    }
 
-  $server   = $db_url['host'];
-  $username = $db_url['user'];
-  $password = $db_url['pass'];
-  $database = $db_name;
+   $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
+                 Y(field_research_site_pt_coords_geo) as latitude,
+                 AsText(field_research_site_pt_coords_geo) as geo_point
+                 FROM {content_type_research_site}
+                 WHERE vid=(SELECT max(vid)
+                            FROM {content_type_research_site}
+                            WHERE nid = '%d')";
 
-  $con = mysql_connect($server, $username, $password);
-
-  if (!$con) {
-    die($errDbConn . mysql_error() . " :: " . mysql_errno());
-  }
-
-  $db_selected = mysql_select_db($database, $con);
-
-// TODO: refactoring, {}, % - doesn't work :/
-  $db_query = ("SELECT X(field_research_site_pt_coords_geo) as longitude,
-              Y(field_research_site_pt_coords_geo) as latitude,
-              AsText(field_research_site_pt_coords_geo) as geo_point
-              FROM $db_name.content_type_research_site
-              WHERE vid=(SELECT max(vid)
-                         FROM $db_name.content_type_research_site
-                         WHERE nid = '$site_nid')");
-
-  $result = mysql_query($db_query) or die(mysql_error());
-
-  $geo_lon_lat_point = mysql_fetch_array($result);
+  $query = db_query($sql, $site_nid);
+  $geo_lon_lat_point =  db_fetch_array($query);
   return $geo_lon_lat_point;
 }
 
