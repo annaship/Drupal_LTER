@@ -15,7 +15,7 @@ function get_file_name() {
   $module_name = "csv2drupal";
   $module_path = drupal_get_path('module', $module_name);
 
-  $filename = $module_path . "/1982_2000gs81tusbm_Person.csv";
+  $filename = $module_path . "/files/csv_examples_hor/1982_2000gs81tusbm_Person.csv";
   return $filename;
 }
 
@@ -82,17 +82,18 @@ function create_person_node($content, $uid) {
   dpr("create_person_node");
 
   $person_values = set_person_values($content);
-  $node = put_values_into_node($person_values, $uid);
-//  dpr($person_values);
+  $node = put_person_values_into_node($person_values, $uid);
+  dpr($person_values);
 
 //    dpr($node);
+//  $n = node_load(31);
+//  dpr($n);
     return $node;
-
 }
 
 function set_person_values($content) {
 //  dpr($content);
-  $person_values = array();
+  $person_values_all = array();
   $person_tags   = array(
     'Last Name',
     'Organization',
@@ -112,34 +113,50 @@ function set_person_values($content) {
   );
 
   foreach ($content as $value) {
-//      dpr($value);
 //    TODO take nid for references
-      //    Array
-//(
-//    [Last Name] => Shaver
-//    [Organization] => Marine Biological Lab
-//    [Role] => Lead Principal Investigator
-//    [Title] =>
-//    [Email] => gshaver@mbl.edu
-//    [Address] => 7 MBL St
-//    [City] => Woods Hole
-//    [State] => MA
-//    [Zip Code] => 02543
-//    [Country] => USA
-//    [Phone] => 508 289 7492
-//    [Fax] =>
-//    [personid] =>
-//    [person_uid] =>
-//    [Publications] =>
-//)
-    foreach ($person_tags as $person_tag) {
-      
+    $person_values = array();
+    foreach ($person_tags as $person_tag) {      
       if (!empty ($value[$person_tag])) $person_values[$person_tag]['value'] = $value[$person_tag];
     }
     $person_values_all[] = $person_values;
   }
-  dpr($person_values_all);
-  return $person_values;
+  return $person_values_all;
+}
+
+function put_person_values_into_node($person_values, $uid) {
+  foreach ($person_values as $person_value) {
+//    TODO create a combined array and take key value to not repeat all below
+      $node = new StdClass();
+      $node->type = "person";
+      $node->uid = $uid;
+      $node->title = $person_value['First Name']['value'] . " " . $person_value['Last Name']['value']; 
+      //TODO First + Last Name!
+      if (!empty($person_value['First Name'])) {
+        $node->field_person_first_name = array($person_value['First Name']);
+      }
+      else {
+       $node->field_person_first_name = array();
+      }
+//    TODO  do the same, to avoid empty array with [0]
+      $node->field_person_last_name = array($person_value['Last Name']);
+      $node->field_person_organization = array($person_value['Organization']);
+      $node->field_person_role = array($person_value['Role']);
+      $node->field_person_title = array($person_value['Title']);
+      $node->field_person_email = array($person_value['Email']);
+      $node->field_person_address = array($person_value['Address']);
+      $node->field_person_city = array($person_value['City']);
+      $node->field_person_state = array($person_value['State']);
+      $node->field_person_zipcode = array($person_value['Zip Code']);
+      $node->field_person_country = array($person_value['Country']);
+      $node->field_person_phone = array($person_value['Phone']);
+      $node->field_person_fax = array($person_value['Fax']);
+      $node->field_person_personid = array($person_value['personid']);
+      $node->field_person_uid = array($person_value['person_uid']);
+      $node->field_person_pubs = array($person_value['Publications']);
+
+      dpr($node);
+  }
+
 }
 
 function create_variable_node($content, $uid) {
@@ -175,7 +192,7 @@ function create_datafile_node() {
 function create_dataset_node($content, $uid) {
 
   $dataset_values = set_dataset_values($content);
-  $node = put_values_into_node($dataset_values, $uid);
+  $node = put_dataset_values_into_node($dataset_values, $uid);
 //  dpr($dataset_values);
 
 //    dpr($node);
@@ -235,7 +252,7 @@ function taking_person_ids($persons) {
   }
 }
 
-function put_values_into_node($dataset_values, $uid) {
+function put_dataset_values_into_node($dataset_values, $uid) {
 //  print_r("UUU");
 //Abstract] => Array
 //        (
@@ -364,6 +381,6 @@ function put_values_into_node($dataset_values, $uid) {
 // TODO add format
     $node->field_quality                  = array($dataset_values['Quality Assurance']);
 // TODO add format
-    dpr($node);
+//    dpr($node);
 }
 
