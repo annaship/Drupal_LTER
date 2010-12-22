@@ -1,9 +1,5 @@
 <?php
 
-//function _AcademicStaff_Salutations() {
-//  return array('Professor','Dr','Mr','Ms');
-//}
-
 function _person_tags() {
    return array (
     'Address',
@@ -46,6 +42,36 @@ function _person_field_names() {
   );
 }
 
+function _variable_field_names() {
+  return array (
+    field_attribute_label,
+    field_var_definition,
+    field_var_missingvalues,
+    field_attribute_unit,
+    field_attribute_maximum,
+    field_attribute_minimum,
+    field_attribute_precision,
+    field_attribute_formatstring,
+    field_code_definition,
+    field_attribute_assoc_datafile,
+  );
+}
+
+function _variable_tags() {
+   return array (
+    'Label',
+    'Definition',
+    'Missing Values',
+    'unit',
+    'Maximum Value',
+    'Minimum Value',
+    'precision',
+    'Date Format',
+    'Code-Definition',
+    'Associated Data Files',
+  );
+}
+
 function _person_field_name_tag() {
   static $person_field_name_tag;
   $person_field_names = _person_field_names();
@@ -53,10 +79,23 @@ function _person_field_name_tag() {
   if (empty($person_field_name_tag)) {
     $person_field_name_tag =  array_combine($person_field_names, $person_tags);
   }
-//  dpr($person_field_name_tag);
+  dpr($person_field_name_tag);
+  $a = _variable_field_name_tag();
   return $person_field_name_tag;
 }
-  
+
+function _variable_field_name_tag() {
+  static $variable_field_name_tag;
+  $variable_field_names = _variable_field_names();
+//  dpr($variable_field_names);
+  $variable_tags = _variable_tags();
+
+  if (empty($variable_field_name_tag)) {
+    $variable_field_name_tag =  array_combine($variable_field_names, $variable_tags);
+  }
+  dpr($variable_field_name_tag);
+  return $variable_field_name_tag;
+}
 
 function get_info_from_file() {
 //  call 5 times for each csv file?
@@ -82,6 +121,7 @@ function get_content($filename) {
   return $content;
 }
 
+//title in the first row
  function csv_to_array($filename='', $delimiter=',') {
     if(!file_exists($filename) || !is_readable($filename)) {
         return FALSE;
@@ -179,7 +219,7 @@ function put_person_values_into_node($person_values, $uid) {
         $node->field_person_pubs = array(array('nid' => $person_value['Publications']['value']));
       
     }
-      dpr($node);
+//      dpr($node);
   }
 
 }
