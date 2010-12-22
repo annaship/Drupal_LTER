@@ -72,30 +72,69 @@ function _variable_tags() {
   );
 }
 
-function _person_field_name_tag() {
-  static $person_field_name_tag;
-  $person_field_names = _person_field_names();
-  $person_tags = _person_tags();
-  if (empty($person_field_name_tag)) {
-    $person_field_name_tag =  array_combine($person_field_names, $person_tags);
+function _combine_field_names_and_tags($node_type) {
+  static $field_names_tags;
+  $field_names_tags = "";
+  $field_names = "";
+  $tags = "";
+
+  switch ($node_type) {
+    case "person" :
+      $field_names = _person_field_names();
+      $tags = _person_tags();
+    break;
+
+    case "variable" :
+      $field_names = _variable_field_names();
+      $tags = _variable_tags();
+    break;
+
+    case "site" :
+      $field_names = _site_field_names();
+      $tags = _site_tags();
+    break;
+
+    case "datafile" :
+      $field_names = _datafile_field_names();
+      $tags = _datafile_tags();
+    break;
+
+    case "dataset" :
+      $field_names = _dataset_field_names();
+      $tags = _dataset_tags();
+    break;
   }
-  dpr($person_field_name_tag);
-  $a = _variable_field_name_tag();
-  return $person_field_name_tag;
+  if (empty($field_names_tags)) {
+    $field_names_tags =  array_combine($field_names, $tags);
+  }
+  return $field_names_tags;
 }
 
-function _variable_field_name_tag() {
-  static $variable_field_name_tag;
-  $variable_field_names = _variable_field_names();
-//  dpr($variable_field_names);
-  $variable_tags = _variable_tags();
-
-  if (empty($variable_field_name_tag)) {
-    $variable_field_name_tag =  array_combine($variable_field_names, $variable_tags);
-  }
-  dpr($variable_field_name_tag);
-  return $variable_field_name_tag;
-}
+//function _person_field_name_tag() {
+//  static $person_field_name_tag;
+//  $person_field_names = _person_field_names();
+//  $person_tags = _person_tags();
+//  if (empty($person_field_name_tag)) {
+//    $person_field_name_tag =  array_combine($person_field_names, $person_tags);
+//  }
+////  dpr($person_field_name_tag);
+//  $a = _combine_field_names_and_tags('person');
+//  _combine_field_names_and_tags('variable');
+//  return $person_field_name_tag;
+//}
+//
+//function _variable_field_name_tag() {
+//  static $variable_field_name_tag;
+//  $variable_field_names = _variable_field_names();
+////  dpr($variable_field_names);
+//  $variable_tags = _variable_tags();
+//
+//  if (empty($variable_field_name_tag)) {
+//    $variable_field_name_tag =  array_combine($variable_field_names, $variable_tags);
+//  }
+////  dpr($variable_field_name_tag);
+//  return $variable_field_name_tag;
+//}
 
 function get_info_from_file() {
 //  call 5 times for each csv file?
@@ -121,7 +160,7 @@ function get_content($filename) {
   return $content;
 }
 
-//title in the first row
+//Titles must be in the first row
  function csv_to_array($filename='', $delimiter=',') {
     if(!file_exists($filename) || !is_readable($filename)) {
         return FALSE;
@@ -177,13 +216,9 @@ function get_uid() {
 }
 
 function create_person_node($content, $uid) {
-//  dpr("create_person_node");
-
   $person_values = set_person_values($content);
   $node = put_person_values_into_node($person_values, $uid);
-//  dpr($person_values);
-
-    return $node;
+  return $node;
 }
 
 function set_person_values($content) {
@@ -203,7 +238,7 @@ function set_person_values($content) {
 
 function put_person_values_into_node($person_values, $uid) {
   $tag_name = '';
- $person_field_name_tags = _person_field_name_tag();
+  $person_field_name_tags = _combine_field_names_and_tags('person');
   foreach ($person_values as $person_value) {
     $node = new StdClass();
     $node->type  = "person";
@@ -219,13 +254,13 @@ function put_person_values_into_node($person_values, $uid) {
         $node->field_person_pubs = array(array('nid' => $person_value['Publications']['value']));
       
     }
-//      dpr($node);
+      dpr($node);
   }
 
 }
 
 function create_variable_node($content, $uid) {
-
+//TODO use arrays as person to avoid repetition
   foreach ($content as $value) {
       $node = new StdClass();
       $node->type = "variable";
@@ -266,6 +301,7 @@ function create_dataset_node($content, $uid) {
 }
 
 function set_dataset_values($content) {
+//  TODO move $dataset_tags in a function
   $dataset_values = array();
   $dataset_tags   = array(
     'Abstract',
@@ -318,6 +354,7 @@ function taking_person_ids($persons) {
 }
 
 function put_dataset_values_into_node($dataset_values, $uid) {
+//  TODO use arrays of field names and tags as a person
 //  print_r("UUU");
 //Abstract] => Array
 //        (
