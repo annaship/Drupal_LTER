@@ -174,11 +174,10 @@ function put_person_values_into_node($person_values, $uid) {
         $node->$key = array($person_value[$value]);
       }
     
-      if (!empty($person_value[$value]['value'])) {
         $node->field_person_email = array(array('email' => $person_value['Email']['value']));
         $node->field_person_uid = array(array('uid' => $person_value['person_uid']['value']));
         $node->field_person_pubs = array(array('nid' => $person_value['Publications']['value']));
-      }
+      
     }
       dpr($node);
   }
